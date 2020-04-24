@@ -1,0 +1,36 @@
+{
+    "$id": "https://example.com/extends.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Extend entity",
+    "allOf": [
+        {
+            "$ref": "./addresses.schema.json#/definitions/address"
+        },
+        {
+            "$ref": "./person.schema.json#"
+        },
+        {
+            "properties": {
+                "type": {
+                    "enum": [
+                        "residential",
+                        "business"
+                    ]
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        {
+            "properties": {
+                "newProperty": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "newProperty"
+            ]
+        }
+    ]
+}

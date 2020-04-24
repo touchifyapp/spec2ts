@@ -1,0 +1,56 @@
+{
+    "$id": "https://example.com/composition.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Composition of multiple entities",
+    "type": "object",
+    "properties": {
+        "userId": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "maxLength": 5
+                },
+                {
+                    "type": "number",
+                    "minimum": 0
+                }
+            ]
+        },
+        "details": {
+            "oneOf": [
+                {
+                    "$ref": "./addresses.schema.json#/definitions/address"
+                },
+                {
+                    "$ref": "./person.schema.json#"
+                }
+            ]
+        },
+        "billing_address": {
+            "$ref": "./addresses.schema.json#/definitions/address"
+        },
+        "shipping_address": {
+            "allOf": [
+                {
+                    "$ref": "./addresses.schema.json#/definitions/address"
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "residential",
+                                "business"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "type"
+                    ]
+                }
+            ]
+        },
+        "extended_address": {
+            "$ref": "./extends.schema.json#"
+        }
+    }
+}

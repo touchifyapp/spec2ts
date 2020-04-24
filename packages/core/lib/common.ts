@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 
-export type KeywordTypeName = "any" | "number" | "object" | "string" | "boolean" | "undefined" | "null";
+export type KeywordTypeName = "any" | "number" | "object" | "string" | "boolean" | "unknown" | "undefined" | "null";
 
 export const questionToken = ts.createToken(ts.SyntaxKind.QuestionToken);
 
@@ -51,6 +51,9 @@ export function createKeywordType(type: KeywordTypeName): ts.KeywordTypeNode {
 
         case "boolean":
             return ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword);
+
+        case "unknown":
+            return ts.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
 
         case "undefined":
             return ts.createKeywordTypeNode(ts.SyntaxKind.UndefinedKeyword);

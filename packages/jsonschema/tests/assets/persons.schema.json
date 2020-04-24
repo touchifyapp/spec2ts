@@ -1,0 +1,7 @@
+{
+    "title": "Persons",
+    "type": "array",
+    "items": {
+        "$ref": "./person.schema.json#"
+    }
+}
