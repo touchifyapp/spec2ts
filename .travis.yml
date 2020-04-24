@@ -1,0 +1,26 @@
+if: tag IS blank
+
+git:
+  depth: 3
+
+language: node_js
+
+node_js:
+  - "12"
+  - "10"
+  - "8"
+
+os:
+  - linux
+
+cache: npm
+
+install: npm ci
+
+before_script:
+  - git config --global user.email test@example.com
+  - git config --global user.name "Tester McPerson"
+  - npx lerna bootstrap
+
+script:
+  - npm run test:ci
