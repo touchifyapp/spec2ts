@@ -17,9 +17,7 @@
         "*.js",
         "*.d.ts",
         "bin/**/*.js",
-        "bin/**/*.d.ts",
-        "cli/**/*.js",
-        "cli/**/*.d.ts"
+        "bin/**/*.d.ts"
     ],
     "scripts": {
         "build": "npm run clean && npm run lint && npm run build:ts",
@@ -28,9 +26,9 @@
         "test:jest": "jest -c ../../jest.config.js --rootDir . --passWithNoTests",
         "test:coverage": "npm run test -- -- --coverage",
         "lint": "npm run lint:ts",
-        "lint:ts": "eslint --ext .ts *.ts {bin,cli}/**/*.ts",
+        "lint:ts": "eslint --ext .ts *.ts cli/**/*.ts",
         "clean": "npm run clean:ts",
-        "clean:ts": "rimraf *.{js,d.ts} {bin,cli}/**/*.{js,d.ts}",
+        "clean:ts": "rimraf *.{js,d.ts} cli/**/*.{js,d.ts}",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
