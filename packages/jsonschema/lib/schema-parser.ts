@@ -21,12 +21,13 @@ export interface ParseSchemaOptions extends ParserOptions {
 
 export type JSONSchema = $RefParser.JSONSchema;
 
-export async function parseSchemaFile(file: string): Promise<ts.Statement[]> {
+export async function parseSchemaFile(file: string, options: ParseSchemaOptions = {}): Promise<ts.Statement[]> {
     const schema = await $RefParser.parse(file);
 
     return parseSchema(schema, {
         name: getSchemaName(schema, file),
-        cwd: path.resolve(path.dirname(file)) + "/"
+        cwd: path.resolve(path.dirname(file)) + "/",
+        ...options
     });
 }
 

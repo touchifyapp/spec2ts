@@ -1,7 +1,7 @@
 {
-    "name": "@spec2ts/jsonschema",
+    "name": "@spec2ts/openapi",
     "version": "0.0.0",
-    "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
+    "description": "Utility to convert OpenAPI specifications to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
     "main": "index.js",
@@ -9,9 +9,6 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/touchifyapp/spec2ts"
-    },
-    "bin": {
-        "jsonschema2ts": "./bin/jsonschema2ts.js"
     },
     "files": [
         "*.js",
@@ -31,17 +28,18 @@
         "lint": "npm run lint:ts",
         "lint:ts": "eslint --ext .ts *.ts lib/**/*.ts",
         "clean": "npm run clean:ts",
-        "clean:ts": "rimraf *.{js,d.ts} lib/**/*.{js,d.ts}",
-        "prepublishOnly": "npm test && npm run build"
+        "clean:ts": "rimraf *.{js,d.ts} lib/**/*.{js,d.ts}"
     },
     "dependencies": {
-        "@apidevtools/json-schema-ref-parser": "^8.0.0",
         "@spec2ts/core": "^0.0.0",
+        "@spec2ts/jsonschema": "^0.0.0",
         "yargs": "^15.3.1"
     },
+    "devDependencies": {},
     "keywords": [
-        "json",
-        "schema",
+        "openapi",
+        "specification",
+        "openapi3",
         "spec",
         "typescript",
         "compile",

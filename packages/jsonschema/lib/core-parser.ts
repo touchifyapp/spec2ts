@@ -28,8 +28,8 @@ export type JSONReference = { $ref: string };
 
 export interface ParserOptions {
     cwd?: string;
-    noAny?: boolean;
-    useDates?: boolean;
+    avoidAny?: boolean;
+    enableDate?: boolean;
 }
 
 export interface ParserContext {
@@ -125,7 +125,7 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
         return ts.createTypeReferenceNode("Blob", []);
     }
 
-    if (context.options.useDates && (schema.format === "date" || schema.format === "date-time")) {
+    if (context.options.enableDate && (schema.format === "date" || schema.format === "date-time")) {
         return ts.createTypeReferenceNode("Date", []);
     }
 
@@ -310,7 +310,7 @@ export function getSchemaName(schema: JSONSchema, path?: string): string {
 }
 
 export function getAnyType(context: ParserContext): ts.KeywordTypeNode {
-    return context.options.noAny ?
+    return context.options.avoidAny ?
         core.keywordType.unknown :
         core.keywordType.any;
 }

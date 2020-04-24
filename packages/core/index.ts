@@ -4,5 +4,5 @@ export * from "./lib/expression";
 export * from "./lib/finder";
 export * from "./lib/sourcefile";
 
-export * as cli from "./lib/printer";
+export * as cli from "./lib/cli";
 export * as printer from "./lib/printer";
