@@ -1,0 +1,16 @@
+# Built result
+*.d.ts
+*.js
+!packages/*/types/**/*.d.ts
+!*.config.js
+
+# Test results
+**/coverage/
+**/tests/generated/
+
+# Dependencies
+node_modules/
+
+# Temp files
+*.tmp
+*.log
