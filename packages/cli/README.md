@@ -65,8 +65,8 @@ Options:
 
 ## Implementations
 
-- **JSON Schema:** See `@spec2ts/jsonschema`'s [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema/README.md)
-- **Open API Specification:** See `@spec2ts/openapi`'s [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi/README.md)
+- **JSON Schema:** See `@spec2ts/jsonschema`'s [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema/README.md).
+- **Open API Specification:** See `@spec2ts/openapi`'s [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi/README.md).
 
 ## License
 

@@ -56,10 +56,10 @@ async function generateSchema(schema: JSONSchema): Promise<string> {
 
 ```typescript
 import { printer } from "@spec2ts/core";
-import { parseOpenApi, OpenAPIObject } from "@spec2ts/openapi";
+import { parseOpenApiFile } from "@spec2ts/openapi";
 
-async function generateSpec(spec: OpenAPIObject): Promise<string> {
-    const result = await parseOpenApi(spec);
+async function generateSpec(path: string): Promise<string> {
+    const result = await parseOpenApiFile(path);
     return printer.printNodes(result);
 }
 ```
