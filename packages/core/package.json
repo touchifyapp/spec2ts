@@ -10,6 +10,9 @@
         "type": "git",
         "url": "https://github.com/touchifyapp/spec2ts"
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "files": [
         "*.js",
         "*.d.ts",
