@@ -29,15 +29,21 @@
         "test:jest": "jest",
         "test:coverage": "npm run test -- -- --coverage",
         "lint": "npm run lint:ts",
-        "lint:ts": "eslint --ext .ts *.ts lib/**/*.ts",
+        "lint:ts": "eslint --ext .ts *.ts {bin,cli,lib}/**/*.ts",
         "clean": "npm run clean:ts",
-        "clean:ts": "rimraf *.{js,d.ts} lib/**/*.{js,d.ts}",
+        "clean:ts": "rimraf *.{js,d.ts} {bin,cli,lib}/**/*.{js,d.ts}",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
         "@apidevtools/json-schema-ref-parser": "^8.0.0",
         "@spec2ts/core": "^0.0.0",
         "yargs": "^15.3.1"
+    },
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "jest": "^25.4.0",
+        "rimraf": "^3.0.2",
+        "typescript": "^3.8.3"
     },
     "keywords": [
         "json",
