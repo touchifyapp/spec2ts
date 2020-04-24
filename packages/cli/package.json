@@ -1,0 +1,63 @@
+{
+    "name": "@spec2ts/cli",
+    "version": "0.0.0",
+    "description": "Utility to convert specifications (Open API, JSON Schemas) to TypeScript using TypeScript native compiler",
+    "author": "Touchify <dev@touchify.co>",
+    "license": "MIT",
+    "main": "index.js",
+    "homepage": "https://github.com/touchifyapp/spec2ts#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/touchifyapp/spec2ts"
+    },
+    "bin": {
+        "spec2ts": "./bin/spec2ts.js"
+    },
+    "files": [
+        "*.js",
+        "*.d.ts",
+        "bin/**/*.js",
+        "bin/**/*.d.ts",
+        "cli/**/*.js",
+        "cli/**/*.d.ts"
+    ],
+    "scripts": {
+        "build": "npm run clean && npm run lint && npm run build:ts",
+        "build:ts": "tsc -p .",
+        "test": "npm run clean && npm run lint && npm run test:jest",
+        "test:jest": "jest -c ../../jest.config.js --rootDir . --passWithNoTests",
+        "test:coverage": "npm run test -- -- --coverage",
+        "lint": "npm run lint:ts",
+        "lint:ts": "eslint --ext .ts *.ts {bin,cli}/**/*.ts",
+        "clean": "npm run clean:ts",
+        "clean:ts": "rimraf *.{js,d.ts} {bin,cli}/**/*.{js,d.ts}",
+        "prepublishOnly": "npm test && npm run build"
+    },
+    "dependencies": {
+        "@spec2ts/jsonschema": "^0.0.0",
+        "@spec2ts/openapi": "^0.0.0"
+    },
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "jest": "^25.4.0",
+        "rimraf": "^3.0.2",
+        "typescript": "^3.8.3"
+    },
+    "keywords": [
+        "spec",
+        "jsonschema",
+        "json",
+        "schema",
+        "openapi",
+        "openapiv3",
+        "typescript",
+        "compile",
+        "compiler",
+        "ast",
+        "transpile",
+        "interface",
+        "typing",
+        "spec2ts",
+        "share"
+    ]
+}
