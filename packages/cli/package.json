@@ -5,7 +5,7 @@
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
     "main": "index.js",
-    "homepage": "https://github.com/touchifyapp/spec2ts#readme",
+    "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/cli#readme",
     "repository": {
         "type": "git",
         "url": "https://github.com/touchifyapp/spec2ts"

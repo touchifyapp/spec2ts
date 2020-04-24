@@ -27,7 +27,7 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
         .positional("input", {
             array: true,
             type: "string",
-            describe: "Path to JSON Schema(s) to convert to TypeScript",
+            describe: "Path to OpenAPI Specification(s) to convert to TypeScript",
             demandOption: true
         })
 

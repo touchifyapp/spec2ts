@@ -1,11 +1,11 @@
 {
     "name": "@spec2ts/openapi",
     "version": "0.0.0",
-    "description": "Utility to convert OpenAPI specifications to Typescript using TypeScript native compiler",
+    "description": "Utility to convert OpenAPI v3 specifications to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
     "main": "index.js",
-    "homepage": "https://github.com/touchifyapp/spec2ts#readme",
+    "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi#readme",
     "repository": {
         "type": "git",
         "url": "https://github.com/touchifyapp/spec2ts"
