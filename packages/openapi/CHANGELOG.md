@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.0.0...@spec2ts/openapi@1.1.0) (2020-04-27)
+
+
+### Features
+
+* **openapi:** add lowerHeaders option ([7520550](https://github.com/touchifyapp/spec2ts/commit/752055038827457c5058578be0d1ddf01ffead04))
+
+
+
+
+
 # 1.0.0 (2020-04-24)
 
 
