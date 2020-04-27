@@ -61,6 +61,20 @@ describe("openapi-parser", () => {
             expect(headers[0]).toHaveProperty("name.text", "FindPetsHeaders");
         });
 
+        test("should export a type with raw names for operations headers", async () => {
+            const schema = loadSpec("petstore-expanded.yml");
+            const { headers } = await parseOpenApi(schema);
+
+            expect(headers[0]).toHaveProperty(["members", 0, "name", "text"], "X-Header");
+        });
+
+        test("should export a type with lower names for operations headers if lowerHeaders option is specified", async () => {
+            const schema = loadSpec("petstore-expanded.yml");
+            const { headers } = await parseOpenApi(schema, { lowerHeaders: true });
+
+            expect(headers[0]).toHaveProperty(["members", 0, "name", "text"], "x-header");
+        });
+
         test("should export a type for operations responses", async () => {
             const schema = loadSpec("petstore-expanded.yml");
             const { responses, all } = await parseOpenApi(schema);

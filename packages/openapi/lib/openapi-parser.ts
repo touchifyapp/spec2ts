@@ -24,7 +24,9 @@ export {
     ParseOpenApiResult
 };
 
-export type ParseOpenApiOptions = ParserOptions;
+export interface ParseOpenApiOptions extends ParserOptions {
+    lowerHeaders?: boolean;
+}
 
 export async function parseOpenApiFile(file: string, options: ParseOpenApiOptions = {}): Promise<ParseOpenApiResult> {
     const schema = await $RefParser.parse(file) as OpenAPIObject;

@@ -51,6 +51,11 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
             describe: "Build `Date` for format `date` and `date-time`"
         })
 
+        .option("lowerHeaders", {
+            type: "boolean",
+            describe: "Avoid the `any` type and use `unknown` instead"
+        })
+
         .option("banner", {
             type: "string",
             alias: "b",

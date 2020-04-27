@@ -21,6 +21,8 @@ import {
     pascalCase
 } from "@spec2ts/jsonschema/lib/core-parser";
 
+import type { ParseOpenApiOptions } from "./openapi-parser";
+
 export interface ParseOpenApiResult {
     import: ts.Statement[];
     params: ts.Statement[];
@@ -35,7 +37,11 @@ export interface ParseOpenApiResult {
 
 const VERBS = ["GET", "PUT", "POST", "DELETE", "OPTIONS", "HEAD", "PATCH", "TRACE"];
 
-export function parsePathItem(path: string, item: PathItemObject, context: ParserContext, result: ParseOpenApiResult): void {
+export interface OApiParserContext extends ParserContext {
+    options: ParseOpenApiOptions;
+}
+
+export function parsePathItem(path: string, item: PathItemObject, context: OApiParserContext, result: ParseOpenApiResult): void {
     let baseParams: ParsedParams | undefined;
     if (item.parameters) {
         baseParams = parseParameters(
@@ -55,7 +61,7 @@ export function parsePathItem(path: string, item: PathItemObject, context: Parse
     });
 }
 
-export function parseOperation(path: string, verb: string, operation: OperationObject, baseParams: ParsedParams | undefined, context: ParserContext, result: ParseOpenApiResult): void {
+export function parseOperation(path: string, verb: string, operation: OperationObject, baseParams: ParsedParams | undefined, context: OApiParserContext, result: ParseOpenApiResult): void {
     const name = getOperationName(verb, path, operation.operationId, context);
     if (operation.parameters) {
         parseParameters(name, operation.parameters, baseParams, context, result);
@@ -77,7 +83,7 @@ export function parseOperation(path: string, verb: string, operation: OperationO
     }
 }
 
-export function parseParameters(baseName: string, data: Array<ReferenceObject | ParameterObject>, baseParams: ParsedParams = {}, context: ParserContext, result: ParseOpenApiResult): ParsedParams {
+export function parseParameters(baseName: string, data: Array<ReferenceObject | ParameterObject>, baseParams: ParsedParams = {}, context: OApiParserContext, result: ParseOpenApiResult): ParsedParams {
     const params: ParameterObject[] = [];
     const query: ParameterObject[] = [];
     const headers: ParameterObject[] = [];
@@ -116,7 +122,7 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
         if (!params.length) return;
 
         const name = baseName + pascalCase(paramType);
-        const type = getParamType(params, baseParams[paramType], context);
+        const type = getParamType(params, baseParams[paramType], context, paramType === "headers");
 
         addToOpenApiResult(result, paramType,
             core.createTypeOrInterfaceDeclaration({
@@ -134,7 +140,7 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
 
 //#region Utils
 
-export function getContentDeclaration(name: string, content: ReferenceObject | ContentObject, context: ParserContext): ts.Statement | undefined {
+export function getContentDeclaration(name: string, content: ReferenceObject | ContentObject, context: OApiParserContext): ts.Statement | undefined {
     content = resolveReference(content, context);
 
     const schema = getSchemaFromContent(content);
@@ -148,14 +154,19 @@ export function getContentDeclaration(name: string, content: ReferenceObject | C
     });
 }
 
-export function getParamType(data: ParameterObject[], baseType: ts.TypeReferenceNode | undefined, context: ParserContext): ts.TypeNode {
+export function getParamType(data: ParameterObject[], baseType: ts.TypeReferenceNode | undefined, context: OApiParserContext, isHeader?: boolean): ts.TypeNode {
     const required: string[] = [];
 
     const props: Record<string, SchemaObject | ReferenceObject> = {};
     data.forEach(m => {
-        props[m.name] = m.schema || {};
+        let name = m.name;
+        if (isHeader && context.options.lowerHeaders) {
+            name = name.toLowerCase();
+        }
+
+        props[name] = m.schema || {};
         if (m.required) {
-            required.push(m.name);
+            required.push(name);
         }
     });
 
@@ -174,7 +185,7 @@ export function getSchemaFromContent(content: ContentObject): SchemaObject | Ref
         content?.["*/*"]?.schema;
 }
 
-export function getResponseName(operationName: string, statusCode: string, context: ParserContext): string {
+export function getResponseName(operationName: string, statusCode: string, context: OApiParserContext): string {
     let name = operationName + "Response";
 
     const status = parseInt(statusCode);
@@ -195,7 +206,7 @@ export function getResponseName(operationName: string, statusCode: string, conte
     return name;
 }
 
-export function getOperationName(verb: string, path: string, operationId: string | undefined, context: ParserContext): string {
+export function getOperationName(verb: string, path: string, operationId: string | undefined, context: OApiParserContext): string {
     const id = getOperationIdentifier(operationId);
     if (id) {
         return id;
@@ -204,7 +215,7 @@ export function getOperationName(verb: string, path: string, operationId: string
     return getPathName(`${verb} ${path}`, context);
 }
 
-export function getPathName(path: string, context: ParserContext): string {
+export function getPathName(path: string, context: OApiParserContext): string {
     path = path.replace(/\{(.+?)\}/, "by $1").replace(/\{(.+?)\}/g, "and $1");
     let name = pascalCase(path);
 
