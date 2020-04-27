@@ -53,7 +53,7 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
 
         .option("lowerHeaders", {
             type: "boolean",
-            describe: "Avoid the `any` type and use `unknown` instead"
+            describe: "Lowercase headers keys to match Node.js standard"
         })
 
         .option("banner", {
@@ -67,7 +67,7 @@ export async function handler(options: BuildTsFromOpenApiOptions): Promise<void>
     const files = await cli.findFiles(options.input);
 
     for (const file of files) {
-        const ast = await parseOpenApiFile(file);
+        const ast = await parseOpenApiFile(file, options);
         const content = printer.printNodes(ast.all);
 
         const output = cli.getOutputPath(file, options);
