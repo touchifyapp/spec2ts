@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.1.0...@spec2ts/openapi@1.1.1) (2020-04-27)
+
+
+### Bug Fixes
+
+* **openapi:** pass options to parser ([7b02e71](https://github.com/touchifyapp/spec2ts/commit/7b02e7146eafbf8dc2f0cf1fe97cc1051095df63))
+
+
+
+
+
 # [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.0.0...@spec2ts/openapi@1.1.0) (2020-04-27)
 
 

@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/openapi",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Utility to convert OpenAPI v3 specifications to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
