@@ -13,6 +13,7 @@ import type {
 import {
     JSONSchema,
     ParserContext,
+    ParsedReference,
 
     getTypeFromSchema,
     getTypeFromProperties,
@@ -134,6 +135,17 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
 
         res[paramType] = ts.createTypeReferenceNode(name, undefined);
     }
+}
+
+export function parseReference(ref: ParsedReference, context: ParserContext): void {
+    const type = getTypeFromSchema(ref.schema, context);
+    context.aliases.push(
+        core.createTypeOrInterfaceDeclaration({
+            modifiers: [core.modifier.export],
+            name: ref.name,
+            type
+        })
+    );
 }
 
 //#endregion

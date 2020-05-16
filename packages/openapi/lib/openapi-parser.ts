@@ -7,8 +7,6 @@ import type {
 
 import {
     ParserOptions,
-
-    createImportDeclarations,
     createContext
 } from "@spec2ts/jsonschema/lib/core-parser";
 
@@ -16,6 +14,7 @@ import {
     ParseOpenApiResult,
 
     parsePathItem,
+    parseReference,
     createOpenApiResult,
     addToOpenApiResult
 } from "./core-parser";
@@ -38,6 +37,10 @@ export async function parseOpenApiFile(file: string, options: ParseOpenApiOption
 }
 
 export async function parseOpenApi(spec: OpenAPIObject, options: ParseOpenApiOptions = {}): Promise<ParseOpenApiResult> {
+    if (!options.parseReference) {
+        options.parseReference = parseReference;
+    }
+
     const context = await createContext(spec, options);
     const result: ParseOpenApiResult = createOpenApiResult();
 
@@ -45,9 +48,6 @@ export async function parseOpenApi(spec: OpenAPIObject, options: ParseOpenApiOpt
         parsePathItem(path, spec.paths[path], context, result);
     });
 
-    const imports = createImportDeclarations(context.refs);
-
-    addToOpenApiResult(result, "import", imports);
     addToOpenApiResult(result, "models", context.aliases);
 
     return result;
