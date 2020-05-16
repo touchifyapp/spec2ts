@@ -30,18 +30,22 @@ export interface ParserOptions {
     cwd?: string;
     avoidAny?: boolean;
     enableDate?: boolean;
+    parseReference?: (ref: ParsedReference, context: ParserContext) => void;
 }
 
 export interface ParserContext {
     schema: JSONSchema;
     $refs: $RefParser.$Refs;
     refs: Record<string, ParsedReference>;
+    imports: ts.ImportDeclaration[];
     aliases: Array<ts.TypeAliasDeclaration | ts.InterfaceDeclaration>;
     options: ParserOptions;
     names: Record<string, number>;
 }
 
 export interface ParsedReference {
+    $ref: string;
+    name: string;
     schema: JSONSchema;
     node: ts.TypeReferenceNode;
     isRemote: boolean;
@@ -211,25 +215,43 @@ export function parseReference(obj: JSONReference, context: ParserContext): Pars
 
         const name = getSchemaName(schema, $ref);
         ref = context.refs[$ref] = {
+            $ref,
+            name,
             schema,
             node: ts.createTypeReferenceNode(name, undefined),
             isRemote: $ref.startsWith("http"),
             isLocal: $ref.startsWith("#/")
         };
 
-        if (ref.isRemote || ref.isLocal) {
-            const type = getTypeFromSchema(schema, context);
-            context.aliases.push(
-                core.createTypeOrInterfaceDeclaration({
-                    modifiers: [core.modifier.export],
-                    name,
-                    type
-                })
-            );
-        }
+        const doParseReference = context.options.parseReference || defaultParseReference;
+        doParseReference(ref, context);
     }
 
     return ref;
+}
+
+function defaultParseReference(ref: ParsedReference, context: ParserContext): void {
+    if (ref.isRemote || ref.isLocal) {
+        const type = getTypeFromSchema(ref.schema, context);
+        context.aliases.push(
+            core.createTypeOrInterfaceDeclaration({
+                modifiers: [core.modifier.export],
+                name: ref.name,
+                type
+            })
+        );
+    }
+    else {
+        const importPath = getImportFromRef(ref.$ref);
+        if (!importPath) return;
+
+        context.imports.push(
+            core.createNamedImportDeclaration({
+                moduleSpecifier: importPath,
+                bindings: [getSchemaName(ref.schema, ref.$ref)]
+            })
+        );
+    }
 }
 
 export function getReferenceType(obj: JSONReference, context: ParserContext): ts.TypeReferenceNode {
@@ -261,29 +283,11 @@ export async function createContext(schema: object, options: ParserOptions): Pro
         $refs: await $RefParser.resolve(cwd, schema, {}),
         schema,
         refs: {},
+        imports: [],
         aliases: [],
         options,
         names: {}
     };
-}
-
-export function createImportDeclarations(refs: Record<string, ParsedReference>): ts.Statement[] {
-    return Object.keys(refs).reduce<ts.Statement[]>((res, path) => {
-        const ref = refs[path];
-        if (ref.isRemote || ref.isLocal) return res;
-
-        const importPath = getImportFromRef(path);
-        if (!importPath) return res;
-
-        res.push(
-            core.createNamedImportDeclaration({
-                moduleSpecifier: importPath,
-                bindings: [getSchemaName(ref.schema, path)]
-            })
-        );
-
-        return res;
-    }, []);
 }
 
 export function getSchemaName(schema: JSONSchema, path?: string): string {
@@ -327,7 +331,7 @@ function getImportFromRef(ref: string): string | undefined {
     const [importPath] = ref.split("#");
     if (!importPath) return;
 
-    return importPath.replace(/\.(json)|(ya?ml)$/, "");
+    return importPath.replace(/(\.json)|(\.ya?ml)$/, "");
 }
 
 //#endregion

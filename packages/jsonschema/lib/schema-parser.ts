@@ -9,7 +9,6 @@ import {
     ParserOptions,
 
     getTypeFromSchema,
-    createImportDeclarations,
 
     getSchemaName,
     createContext,
@@ -38,7 +37,7 @@ export async function parseSchema(schema: JSONSchema, options: ParseSchemaOption
     const res: ts.Statement[] = [];
 
     res.push(
-        ...createImportDeclarations(context.refs),
+        ...context.imports,
         ...context.aliases
     );
 
