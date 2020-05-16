@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.1.1...@spec2ts/openapi@1.1.2) (2020-05-16)
+
+
+### Bug Fixes
+
+* **openapi:** fix avoid imports ([be6cf64](https://github.com/touchifyapp/spec2ts/commit/be6cf64e84588ee8773c2756fed0e24ea9d18ae1))
+
+
+
+
+
 ## [1.1.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.1.0...@spec2ts/openapi@1.1.1) (2020-04-27)
 
 

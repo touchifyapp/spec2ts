@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.0.0...@spec2ts/jsonschema@1.1.0) (2020-05-16)
+
+
+### Features
+
+* **jsonschema:** add parseReference option ([1b8f637](https://github.com/touchifyapp/spec2ts/commit/1b8f637725bc3e4a4499656d5dbd213ddaecd860))
+
+
+
+
+
 # 1.0.0 (2020-04-24)
 
 
