@@ -1,17 +1,24 @@
 import * as ts from "typescript";
 
-export type KeywordTypeName = "any" | "number" | "object" | "string" | "boolean" | "unknown" | "undefined" | "null";
+export type KeywordTypeName = "any" | "number" | "object" | "string" | "boolean" | "bigint" | "symbol" | "this" | "void" | "unknown" | "undefined" | "null" | "never";
 
 export const questionToken = ts.createToken(ts.SyntaxKind.QuestionToken);
+export const questionDotToken = ts.createToken(ts.SyntaxKind.QuestionDotToken);
 
-export const keywordType: Record<string, ts.KeywordTypeNode> = {
+export const keywordType: Record<KeywordTypeName, ts.KeywordTypeNode> = {
     any: ts.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword),
     number: ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword),
     object: ts.createKeywordTypeNode(ts.SyntaxKind.ObjectKeyword),
     string: ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
     boolean: ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword),
+    bigint: ts.createKeywordTypeNode(ts.SyntaxKind.BigIntKeyword),
+    symbol: ts.createKeywordTypeNode(ts.SyntaxKind.SymbolKeyword),
+    this: ts.createKeywordTypeNode(ts.SyntaxKind.ThisKeyword),
+    void: ts.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword),
+    unknown: ts.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword),
     undefined: ts.createKeywordTypeNode(ts.SyntaxKind.UndefinedKeyword),
-    null: ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
+    null: ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword),
+    never: ts.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword)
 };
 
 export const modifier: Record<string, ts.Modifier> = {
@@ -36,31 +43,7 @@ export function createQuestionToken(token?: boolean | ts.QuestionToken): ts.Ques
 }
 
 export function createKeywordType(type: KeywordTypeName): ts.KeywordTypeNode {
-    switch (type) {
-        case "any":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword);
-
-        case "number":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword);
-
-        case "object":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.ObjectKeyword);
-
-        case "string":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword);
-
-        case "boolean":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword);
-
-        case "unknown":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
-
-        case "undefined":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.UndefinedKeyword);
-
-        case "null":
-            return ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword);
-    }
+    return keywordType[type];
 }
 
 export function appendNodes<T extends ts.Node>(
@@ -72,4 +55,26 @@ export function appendNodes<T extends ts.Node>(
 
 export function block(...statements: ts.Statement[]): ts.Block {
     return ts.createBlock(statements, true);
+}
+
+export function isKeywordTypeName(type: string): type is KeywordTypeName {
+    return type in keywordType;
+}
+
+export function isKeywordTypeNode(node?: ts.Node): node is ts.KeywordTypeNode {
+    if (!node) return false;
+
+    return node.kind === ts.SyntaxKind.AnyKeyword ||
+        node.kind === ts.SyntaxKind.UnknownKeyword ||
+        node.kind === ts.SyntaxKind.NumberKeyword ||
+        node.kind === ts.SyntaxKind.BigIntKeyword ||
+        node.kind === ts.SyntaxKind.ObjectKeyword ||
+        node.kind === ts.SyntaxKind.BooleanKeyword ||
+        node.kind === ts.SyntaxKind.StringKeyword ||
+        node.kind === ts.SyntaxKind.SymbolKeyword ||
+        node.kind === ts.SyntaxKind.ThisKeyword ||
+        node.kind === ts.SyntaxKind.VoidKeyword ||
+        node.kind === ts.SyntaxKind.UndefinedKeyword ||
+        node.kind === ts.SyntaxKind.NullKeyword ||
+        node.kind === ts.SyntaxKind.NeverKeyword;
 }

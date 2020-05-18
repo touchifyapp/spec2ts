@@ -60,7 +60,7 @@ export interface ParsedReference {
  * Creates a type node from a given schema.
  * Delegates to getBaseTypeFromSchema internally and optionally adds a union with null.
  */
-export function getTypeFromSchema(schema: JSONSchema, context: ParserContext): ts.TypeNode {
+export function getTypeFromSchema(schema: JSONSchema | JSONReference | undefined, context: ParserContext): ts.TypeNode {
     const type = getBaseTypeFromSchema(schema, context);
 
     return isNullable(schema) ?
@@ -196,7 +196,7 @@ function getTypeFromStandardTypes(type: JSONSchemaTypeName | JSONSchema4TypeName
     }
 
     // string, boolean, null, number
-    if (type in core.keywordType) return core.keywordType[type];
+    if (core.isKeywordTypeName(type)) return core.keywordType[type];
     if (type === "integer") return core.keywordType.number;
 
     return getAnyType(context);
@@ -319,7 +319,7 @@ export function getAnyType(context: ParserContext): ts.KeywordTypeNode {
         core.keywordType.any;
 }
 
-export function isNullable(schema: JSONSchema & { nullable?: boolean }): boolean {
+export function isNullable(schema?: JSONSchema & { nullable?: boolean }): boolean {
     return !!(schema && schema.nullable);
 }
 
