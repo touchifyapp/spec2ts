@@ -1,3 +1,6 @@
+import * as path from "path";
+import { promises as fs } from "fs";
+
 import {
     Argv
 } from "yargs";
@@ -16,6 +19,12 @@ export interface BuildClientFromOpenApiOptions extends OApiGeneratorOptions {
     input: string | string[];
     output?: string;
     banner?: string;
+
+    packageName?: boolean;
+    packageVersion?: string;
+    packageAuthor?: string;
+    packageLicense?: string;
+    packagePrivate?: boolean;
 }
 
 export const usage = "$0 <input..>";
@@ -60,6 +69,27 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             describe: "Use a custom fetch implementation"
         })
 
+        .option("packageName", {
+            type: "string",
+            describe: "Generate a package.json with given name"
+        })
+        .option("packageVersion", {
+            type: "string",
+            describe: "Sets the version of the package.json"
+        })
+        .option("packageAuthor", {
+            type: "string",
+            describe: "Sets the author of the package.json"
+        })
+        .option("packageLicense", {
+            type: "string",
+            describe: "Sets the license of the package.json"
+        })
+        .option("packagePrivate", {
+            type: "boolean",
+            describe: "Sets the package.json private"
+        })
+
         .option("banner", {
             type: "string",
             alias: "b",
@@ -83,6 +113,10 @@ export async function handler(options: BuildClientFromOpenApiOptions): Promise<v
             "\n\n" +
             content
         );
+
+        if (options.packageName) {
+            await generatePackage(output, options);
+        }
     }
 }
 
@@ -94,4 +128,35 @@ function defaultBanner(): string {
  */
 
 /* eslint-disable */`;
+}
+
+async function generatePackage(output: string, options: BuildClientFromOpenApiOptions): Promise<void> {
+    const outputDir = path.dirname(output);
+
+    const pkg: Record<string, any> = {
+        name: options.packageName,
+        version: options.packageVersion || "1.0.0",
+        description: "OpenAPI v3 client for " + options.packageName,
+        author: options.packageAuthor || "@spec2ts/openapi-client",
+        license: options.packageLicense || "UNLICENSED",
+        main: path.relative(outputDir, output),
+        files: ["*.js", "*.d.ts"],
+        scripts: {
+            build: "tsc -p ."
+        },
+        dependencies: {},
+        devDependencies: {
+            typescript: "^3.0.0"
+        }
+    };
+
+    if (options.importFetch) {
+        pkg.dependencies[options.importFetch] = "*"
+    }
+
+    if (options.packagePrivate) {
+        pkg.private = options.packagePrivate;
+    }
+
+    await fs.writeFile(path.join(outputDir, "package.json"), JSON.stringify(pkg, null, 2), "utf8");
 }
