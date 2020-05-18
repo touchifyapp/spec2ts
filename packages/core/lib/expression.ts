@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 
-import { getName } from "./common";
+import { getName, appendNodes } from "./common";
 import { createPropertyAssignment } from "./declaration";
 
 export function toExpression(ex: ts.Expression | string): ts.Expression;
@@ -155,6 +155,31 @@ export function changePropertyValue(
         p.initializer = value;
     } else {
         throw new Error(`No such property: ${property}`);
+    }
+}
+
+export function upsertPropertyValue(
+    o: ts.ObjectLiteralExpression,
+    property: string,
+    value: ts.Expression
+): void {
+    const p = o.properties.find(
+        p => ts.isPropertyAssignment(p) && getName(p.name) === property
+    );
+
+    if (p) {
+        if (ts.isPropertyAssignment(p)) {
+            p.initializer = value;
+        }
+        else {
+            throw new Error(`No such property: ${property}`);
+        }
+    }
+    else {
+        o.properties = appendNodes(
+            o.properties,
+            ts.createPropertyAssignment(property, value)
+        );
     }
 }
 

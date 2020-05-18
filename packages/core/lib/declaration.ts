@@ -285,6 +285,31 @@ export function createNamedImportDeclaration({
     );
 }
 
+export function createDefaultImportDeclaration({
+    decorators,
+    modifiers,
+    name,
+    isTypeOnly,
+    moduleSpecifier
+}: {
+    decorators?: ts.Decorator[];
+    modifiers?: ts.Modifier[];
+    name: ts.Identifier | string;
+    isTypeOnly?: boolean;
+    moduleSpecifier: string | ts.Expression;
+}): ts.ImportDeclaration {
+    return ts.createImportDeclaration(
+        decorators,
+        modifiers,
+        ts.createImportClause(
+            toIdentifier(name),
+            undefined,
+            isTypeOnly
+        ),
+        toLiteral(moduleSpecifier),
+    );
+}
+
 export function createTypeOrInterfaceDeclaration({
     modifiers,
     decorators,
