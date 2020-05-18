@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/core",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Core module for @spec2ts modules, includes codegen helpers and common parsing methods",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",

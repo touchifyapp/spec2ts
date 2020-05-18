@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.1.0...@spec2ts/jsonschema@1.2.0) (2020-05-18)
+
+
+### Features
+
+* **core:** improve type generation ([7abd848](https://github.com/touchifyapp/spec2ts/commit/7abd84800ce27d81a7868d4ec0a67f28bf26b355))
+
+
+
+
+
 # [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.0.0...@spec2ts/jsonschema@1.1.0) (2020-05-16)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/cli@1.0.3...@spec2ts/cli@1.1.0) (2020-05-18)
+
+
+### Features
+
+* **cli:** add openapi-client cli ([7c9814c](https://github.com/touchifyapp/spec2ts/commit/7c9814c9ce0be84c14b1c6c8d86834fea301d005))
+
+
+
+
+
 ## [1.0.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/cli@1.0.2...@spec2ts/cli@1.0.3) (2020-05-16)
 
 **Note:** Version bump only for package @spec2ts/cli

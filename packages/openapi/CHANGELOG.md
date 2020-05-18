@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.1.2...@spec2ts/openapi@1.1.3) (2020-05-18)
+
+
+### Bug Fixes
+
+* **openapi:** fix missing await on mkdirp ([ba2ae64](https://github.com/touchifyapp/spec2ts/commit/ba2ae64805626b706f25f4caadec4bfb96a1055e))
+
+
+
+
+
 ## [1.1.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.1.1...@spec2ts/openapi@1.1.2) (2020-05-16)
 
 

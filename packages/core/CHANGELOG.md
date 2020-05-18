@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@1.0.1...@spec2ts/core@1.1.0) (2020-05-18)
+
+
+### Features
+
+* **core:** add new methods : ([f4dfc6d](https://github.com/touchifyapp/spec2ts/commit/f4dfc6d98848cc95512b38c1aea5c9fb016e275a))
+* **core:** improve type generation ([7abd848](https://github.com/touchifyapp/spec2ts/commit/7abd84800ce27d81a7868d4ec0a67f28bf26b355))
+
+
+
+
+
 ## [1.0.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@1.0.0...@spec2ts/core@1.0.1) (2020-05-16)
 
 **Note:** Version bump only for package @spec2ts/core
