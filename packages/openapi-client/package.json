@@ -1,0 +1,71 @@
+{
+    "name": "@spec2ts/openapi-client",
+    "version": "0.0.0",
+    "description": "Utility to convert OpenAPI v3 specifications to Typescript HTTP client using TypeScript native compiler",
+    "author": "Touchify <dev@touchify.co>",
+    "license": "MIT",
+    "main": "index.js",
+    "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/touchifyapp/spec2ts"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "bin": {
+        "oapi2tsclient": "./bin/oapi2tsclient.js"
+    },
+    "files": [
+        "*.js",
+        "*.d.ts",
+        "bin/**/*.js",
+        "cli/**/*.js",
+        "cli/**/*.d.ts",
+        "lib/**/*.js",
+        "lib/**/*.d.ts"
+    ],
+    "scripts": {
+        "build": "npm run clean && npm run lint && npm run build:ts",
+        "build:ts": "tsc -p .",
+        "test": "npm run clean && npm run lint && npm run test:jest",
+        "test:jest": "jest -c ../../jest.config.js --rootDir .",
+        "test:coverage": "npm run test -- -- --coverage",
+        "lint": "npm run lint:ts",
+        "lint:ts": "eslint --ext .ts *.ts {bin,cli,lib}/**/*.ts",
+        "clean": "npm run clean:ts",
+        "clean:ts": "rimraf *.{js,d.ts} {bin,cli,lib}/**/*.{js,d.ts}",
+        "prepublishOnly": "npm test && npm run build"
+    },
+    "dependencies": {
+        "@spec2ts/core": "^1.0.1",
+        "@spec2ts/jsonschema": "^1.1.0",
+        "@spec2ts/openapi": "^1.1.2",
+        "openapi3-ts": "^1.3.0",
+        "yargs": "^15.3.1"
+    },
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "jest": "^25.4.0",
+        "rimraf": "^3.0.2",
+        "typescript": "^3.0.0"
+    },
+    "keywords": [
+        "openapi",
+        "specification",
+        "openapi3",
+        "spec",
+        "typescript",
+        "client",
+        "http",
+        "rest",
+        "compile",
+        "compiler",
+        "ast",
+        "transpile",
+        "interface",
+        "typing",
+        "spec2ts",
+        "share"
+    ]
+}
