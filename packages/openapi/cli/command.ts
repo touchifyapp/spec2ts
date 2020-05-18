@@ -71,7 +71,7 @@ export async function handler(options: BuildTsFromOpenApiOptions): Promise<void>
         const content = printer.printNodes(ast.all);
 
         const output = cli.getOutputPath(file, options);
-        cli.mkdirp(output);
+        await cli.mkdirp(output);
 
         await cli.writeFile(
             output,
