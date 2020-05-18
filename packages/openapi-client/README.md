@@ -42,6 +42,11 @@ Options:
                                                                        [boolean]
   --importFetch     Use a custom fetch implementation
                       [choices: "node-fetch", "cross-fetch", "isomorphic-fetch"]
+  --packageName     Generate a package.json with given name             [string]
+  --packageVersion  Sets the version of the package.json                [string]
+  --packageAuthor   Sets the author of the package.json                 [string]
+  --packageLicense  Sets the license of the package.json                [string]
+  --packagePrivate  Sets the package.json private                      [boolean]
   --banner, -b      Comment prepended to the top of each generated file [string]
 ```
 

@@ -23,7 +23,8 @@
         "cli/**/*.js",
         "cli/**/*.d.ts",
         "lib/**/*.js",
-        "lib/**/*.d.ts"
+        "lib/**/*.d.ts",
+        "lib/templates/*.ts"
     ],
     "scripts": {
         "build": "npm run clean && npm run lint && npm run build:ts",

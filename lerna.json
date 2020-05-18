@@ -4,7 +4,7 @@
     "version": {
       "allowBranch": "master",
       "conventionalCommits": true,
-      "message": "chore(release): publish %s",
+      "message": "chore(release): publish packages",
       "ignoreChanges": [
         "**/*.md",
         "**/LICENSE",

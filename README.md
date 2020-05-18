@@ -17,6 +17,7 @@
 - `@spec2ts/core`: Helpers methods to generate TypeScript code.
 - `@spec2ts/jsonschema`: Utility to generate types from JSON schemas. [More details](https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema/README.md).
 - `@spec2ts/openapi`: Utility to generate types from Open API v3 specifications. [More details](https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi/README.md).
+- `@spec2ts/openapi-client`: Utility to generate HTTP Client from Open API v3 specifications. [More details](https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi-client/README.md).
 - `@spec2ts/cli`: CLI wrapper to generate types from Open API v3 specifications and JSON schemas. [More details](https://github.com/touchifyapp/spec2ts/blob/master/packages/cli/README.md).
 
 ## Installation
@@ -34,6 +35,9 @@ spec2ts jsonschema -o path/to/output path/to/my/*.schema.json
 
 # Generate TypeScript types from Open API specification
 spec2ts openapi -o path/to/output path/to/my/specification.yml
+
+# Generate TypeScript HTTP Client from Open API specification
+spec2ts openapi-client -o path/to/output.ts path/to/my/specification.yml
 ```
 
 You can find more details in the `@spec2ts` [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema/README.md).
@@ -60,6 +64,18 @@ import { parseOpenApiFile } from "@spec2ts/openapi";
 
 async function generateSpec(path: string): Promise<string> {
     const result = await parseOpenApiFile(path);
+    return printer.printNodes(result);
+}
+```
+
+#### Generate TypeScript Client types from OpenAPI Specifications
+
+```typescript
+import { printer } from "@spec2ts/core";
+import { generateClientFile } from "@spec2ts/openapi-client";
+
+async function generateClient(path: string): Promise<string> {
+    const result = await generateClientFile(path);
     return printer.printNodes(result);
 }
 ```
