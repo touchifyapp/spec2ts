@@ -36,7 +36,8 @@
     },
     "dependencies": {
         "@spec2ts/jsonschema": "^1.1.0",
-        "@spec2ts/openapi": "^1.1.2"
+        "@spec2ts/openapi": "^1.1.2",
+        "@spec2ts/openapi-client": "^0.0.0"
     },
     "devDependencies": {
         "eslint": "^6.8.0",
@@ -54,6 +55,9 @@
         "typescript",
         "compile",
         "compiler",
+        "client",
+        "http",
+        "rest",
         "ast",
         "transpile",
         "interface",
