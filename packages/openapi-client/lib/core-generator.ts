@@ -257,6 +257,10 @@ function getFormatter({ style, explode }: ParameterObject): Formatter {
     if (style === "pipeDelimited") return "pipe";
     if (style === "deepObject") return "deep";
 
+    if (style === "form") {
+        return explode === false ? "form" : "explode";
+    }
+
     return explode ? "explode" : "form";
 }
 
