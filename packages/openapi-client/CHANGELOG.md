@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.2.1...@spec2ts/openapi-client@1.2.2) (2020-05-24)
+
+
+### Bug Fixes
+
+* **openapi-client:** fix missing @types/node with custom fetch ([a9696ef](https://github.com/touchifyapp/spec2ts/commit/a9696ef7222d1961bfb657d53082cafd89b7cc2e))
+
+
+
+
+
 ## [1.2.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.2.0...@spec2ts/openapi-client@1.2.1) (2020-05-24)
 
 
