@@ -161,6 +161,7 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
     if (options.importFetch) {
         pkg.dependencies[options.importFetch] = options.importFetchVersion || "*";
         pkg.dependencies["form-data"] = "*";
+        pkg.devDependencies["@types/node"] = "*";
     }
 
     if (options.packagePrivate) {
