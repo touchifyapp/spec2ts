@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.2.0...@spec2ts/openapi-client@1.2.1) (2020-05-24)
+
+
+### Bug Fixes
+
+* **openapi-client:** fix default build script ([e9c9733](https://github.com/touchifyapp/spec2ts/commit/e9c973303f484e4be314ecab41480decd1f5c26d))
+
+
+
+
+
 # [1.2.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.1.2...@spec2ts/openapi-client@1.2.0) (2020-05-24)
 
 
