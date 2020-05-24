@@ -247,10 +247,21 @@ describe("openapi-parser", () => {
             const importFetch = file.statements[0] as ts.ImportDeclaration;
             expect(importFetch).toHaveProperty("kind", ts.SyntaxKind.ImportDeclaration);
             expect(importFetch).toHaveProperty("importClause.name.text", "fetch");
+            expect(importFetch).toHaveProperty("moduleSpecifier.text", "node-fetch");
 
             const servers = core.findFirstVariableDeclaration(file.statements, "defaults");
             expect(servers).toHaveProperty(["initializer", "properties", 1, "name", "text"], "fetch");
             expect(servers).toHaveProperty(["initializer", "properties", 1, "initializer", "text"], "fetch");
+        });
+
+        test("should import custom form-data if importFetch option is passed", async () => {
+            const schema = loadSpec("petstore.yml");
+            const file = await generateClient(schema, { importFetch: "node-fetch" });
+
+            const importFormData = file.statements[1] as ts.ImportDeclaration;
+            expect(importFormData).toHaveProperty("kind", ts.SyntaxKind.ImportDeclaration);
+            expect(importFormData).toHaveProperty("importClause.namedBindings.name.text", "FormData");
+            expect(importFormData).toHaveProperty("moduleSpecifier.text", "form-data");
         });
 
     });

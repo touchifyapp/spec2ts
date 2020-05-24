@@ -232,11 +232,7 @@ export const http = {
 
     headers(headers: Headers): Record<string, string> {
         const res: Record<string, string> = {};
-
-        for (const [key, value] of headers.entries()) {
-            res[key] = value;
-        }
-
+        headers.forEach((value, key) => res[key] = value);
         return res;
     }
 };

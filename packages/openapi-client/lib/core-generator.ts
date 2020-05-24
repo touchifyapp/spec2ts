@@ -60,7 +60,12 @@ export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorCont
         file.statements = ts.createNodeArray([
             core.createDefaultImportDeclaration({
                 moduleSpecifier: context.options.importFetch,
-                name: "fetch"
+                name: "fetch",
+                bindings: ["RequestInit", "Headers"]
+            }),
+            core.createNamespaceImportDeclaration({
+                moduleSpecifier: "form-data",
+                name: "FormData"
             }),
             ...file.statements
         ]);

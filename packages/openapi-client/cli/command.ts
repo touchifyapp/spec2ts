@@ -20,6 +20,8 @@ export interface BuildClientFromOpenApiOptions extends OApiGeneratorOptions {
     output?: string;
     banner?: string;
 
+    importFetchVersion?: string;
+
     packageName?: boolean;
     packageVersion?: string;
     packageAuthor?: string;
@@ -69,6 +71,10 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             describe: "Use a custom fetch implementation"
         })
 
+        .option("importFetchVersion", {
+            type: "string",
+            describe: "Use a custom fetch implementation version"
+        })
         .option("packageName", {
             type: "string",
             describe: "Generate a package.json with given name"
@@ -132,6 +138,7 @@ function defaultBanner(): string {
 
 async function generatePackage(output: string, options: BuildClientFromOpenApiOptions): Promise<void> {
     const outputDir = path.dirname(output);
+    const main = path.relative(outputDir, output);
 
     const pkg: Record<string, any> = {
         name: options.packageName,
@@ -139,10 +146,11 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
         description: "OpenAPI v3 client for " + options.packageName,
         author: options.packageAuthor || "@spec2ts/openapi-client",
         license: options.packageLicense || "UNLICENSED",
-        main: path.relative(outputDir, output),
+        main: main.replace(/\.ts$/, ".js"),
         files: ["*.js", "*.d.ts"],
         scripts: {
-            build: "tsc -p ."
+            build: `tsc ${main} --strict --target ES2018 --module umd`,
+            prepublishOnly: "npm run build"
         },
         dependencies: {},
         devDependencies: {
@@ -151,7 +159,8 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
     };
 
     if (options.importFetch) {
-        pkg.dependencies[options.importFetch] = "*"
+        pkg.dependencies[options.importFetch] = options.importFetchVersion || "*";
+        pkg.dependencies["form-data"] = "*";
     }
 
     if (options.packagePrivate) {
