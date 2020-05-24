@@ -70,9 +70,19 @@ export async function handler(options: BuildTsFromSchemaOptions): Promise<void> 
 
         await cli.writeFile(
             output,
-            options.banner ?
-                options.banner + "\n\n" + content :
-                content
+            (options.banner || defaultBanner()) +
+            "\n\n" +
+            content
         );
     }
+}
+
+function defaultBanner(): string {
+    return `/**
+ * DO NOT MODIFY
+ * Generated using @spec2ts/jsonschema.
+ * See https://www.npmjs.com/package/@spec2ts/jsonschema
+ */
+
+/* eslint-disable */`;
 }

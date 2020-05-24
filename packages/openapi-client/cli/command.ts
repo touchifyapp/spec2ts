@@ -115,7 +115,7 @@ export async function handler(options: BuildClientFromOpenApiOptions): Promise<v
 
         await cli.writeFile(
             output,
-            options.banner || defaultBanner() +
+            (options.banner || defaultBanner()) +
             "\n\n" +
             content
         );
