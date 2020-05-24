@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.2.0...@spec2ts/jsonschema@1.3.0) (2020-05-24)
+
+
+### Features
+
+* **cli:** add default banner ([b0945e0](https://github.com/touchifyapp/spec2ts/commit/b0945e08b2c1da4dc494dca1890d491768a13e60))
+
+
+
+
+
 # [1.2.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.1.0...@spec2ts/jsonschema@1.2.0) (2020-05-18)
 
 

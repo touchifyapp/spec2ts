@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@1.1.0...@spec2ts/core@1.2.0) (2020-05-24)
+
+
+### Features
+
+* **core:** add new imports utils ([f8329b8](https://github.com/touchifyapp/spec2ts/commit/f8329b8772ea5b7dcfde5ec28830a921223eb8bf))
+
+
+
+
+
 # [1.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@1.0.1...@spec2ts/core@1.1.0) (2020-05-18)
 
 

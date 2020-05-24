@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.1.2...@spec2ts/openapi-client@1.2.0) (2020-05-24)
+
+
+### Bug Fixes
+
+* **openapi-client:** improve custom fetch implementation support ([cf7a434](https://github.com/touchifyapp/spec2ts/commit/cf7a434327dda5c7ee959f8084f251d42fbe00b3))
+
+
+### Features
+
+* **cli:** add default banner ([b0945e0](https://github.com/touchifyapp/spec2ts/commit/b0945e08b2c1da4dc494dca1890d491768a13e60))
+
+
+
+
+
 ## [1.1.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.1.1...@spec2ts/openapi-client@1.1.2) (2020-05-22)
 
 
