@@ -149,7 +149,7 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
         main: main.replace(/\.ts$/, ".js"),
         files: ["*.js", "*.d.ts"],
         scripts: {
-            build: `tsc ${main} --strict --target ES2018 --module umd`,
+            build: `tsc ${main} --strict --target ES2018 --module umd --moduleResolution node`,
             prepublishOnly: "npm run build"
         },
         dependencies: {},
