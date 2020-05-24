@@ -289,6 +289,43 @@ export function createDefaultImportDeclaration({
     decorators,
     modifiers,
     name,
+    bindings,
+    isTypeOnly,
+    moduleSpecifier
+}: {
+    decorators?: ts.Decorator[];
+    modifiers?: ts.Modifier[];
+    name: ts.Identifier | string;
+    bindings?: Array<ts.Identifier | string | { name: ts.Identifier | string; propertyName: ts.Identifier | string }>;
+    isTypeOnly?: boolean;
+    moduleSpecifier: string | ts.Expression;
+}): ts.ImportDeclaration {
+    return ts.createImportDeclaration(
+        decorators,
+        modifiers,
+        ts.createImportClause(
+            toIdentifier(name),
+            bindings ?
+                ts.createNamedImports(
+                    bindings.map(b => {
+                        if (typeof b === "string" || isIdentifier(b)) {
+                            return ts.createImportSpecifier(undefined, toIdentifier(b));
+                        }
+
+                        return ts.createImportSpecifier(toIdentifier(b.propertyName), toIdentifier(b.name));
+                    })
+                ) :
+                undefined,
+            isTypeOnly
+        ),
+        toLiteral(moduleSpecifier),
+    );
+}
+
+export function createNamespaceImportDeclaration({
+    decorators,
+    modifiers,
+    name,
     isTypeOnly,
     moduleSpecifier
 }: {
@@ -302,8 +339,8 @@ export function createDefaultImportDeclaration({
         decorators,
         modifiers,
         ts.createImportClause(
-            toIdentifier(name),
             undefined,
+            ts.createNamespaceImport(toIdentifier(name)),
             isTypeOnly
         ),
         toLiteral(moduleSpecifier),
