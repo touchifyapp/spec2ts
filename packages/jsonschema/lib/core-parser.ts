@@ -71,7 +71,7 @@ export function getTypeFromSchema(schema: JSONSchema | JSONReference | undefined
 /** This is the very core of the Schema to TS conversion - it takes a schema and returns the appropriate type. */
 export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undefined, context: ParserContext): ts.TypeNode {
     if (!schema) {
-        return core.keywordType.any;
+        return getAnyType(context);
     }
 
     if (isReference(schema)) {
@@ -169,6 +169,16 @@ export function getTypeFromProperties(
     return ts.createTypeLiteralNode(members);
 }
 
+/** Creates types from definitions. */
+export function parseDefinitions(schema: JSONSchema | JSONReference | undefined, context: ParserContext): void {
+    if (!schema || isReference(schema) || !schema.definitions) {
+        return;
+    }
+
+    return Object.keys(schema.definitions)
+        .forEach(refName => parseReference({ $ref: `#/definitions/${refName}` }, context));
+}
+
 /** Extract types from a Type Definition array. */
 function getTypeFromDefinitions(definitions: JSONSchemaDefinition[], context: ParserContext): ts.TypeNode[] {
     return definitions.map(s => getTypeFromDefinition(s, context));
@@ -243,14 +253,9 @@ function defaultParseReference(ref: ParsedReference, context: ParserContext): vo
     }
     else {
         const importPath = getImportFromRef(ref.$ref);
-        if (!importPath) return;
-
-        context.imports.push(
-            core.createNamedImportDeclaration({
-                moduleSpecifier: importPath,
-                bindings: [getSchemaName(ref.schema, ref.$ref)]
-            })
-        );
+        if (importPath) {
+            addOrUpdateImport(importPath, ref, context);
+        }
     }
 }
 
@@ -327,11 +332,41 @@ export function pascalCase(name: string): string {
     return name.match(/[a-z]+/gi)?.map((word) => word.charAt(0).toUpperCase() + word.substr(1)).join("") ?? "";
 }
 
+function addOrUpdateImport(importPath: string, ref: ParsedReference, context: ParserContext): void {
+    const importNamedBinding = getSchemaName(ref.schema, ref.$ref);
+    const importDeclaration = context.imports.find(i => core.getString(i.moduleSpecifier) === importPath);
+
+    if (importDeclaration && importDeclaration.importClause?.namedBindings && ts.isNamedImports(importDeclaration.importClause.namedBindings)) {
+        const elements = importDeclaration.importClause.namedBindings.elements;
+        const hasName = elements.some(e => e.name.text === importNamedBinding);
+        if (hasName) return;
+
+        importDeclaration.importClause.namedBindings.elements = ts.createNodeArray([
+            ...elements,
+            ts.createImportSpecifier(undefined, core.toIdentifier(importNamedBinding))
+        ]);
+    }
+    else {
+        context.imports.push(
+            core.createNamedImportDeclaration({
+                moduleSpecifier: importPath,
+                bindings: [importNamedBinding]
+            })
+        );
+    }
+}
+
 function getImportFromRef(ref: string): string | undefined {
-    const [importPath] = ref.split("#");
+    let [importPath] = ref.split("#");
     if (!importPath) return;
 
-    return importPath.replace(/(\.json)|(\.ya?ml)$/, "");
+    importPath = importPath.replace(/(\.json)|(\.ya?ml)$/, "");
+
+    if (!importPath.startsWith("./")) {
+        importPath = "./" + importPath;
+    }
+
+    return importPath;
 }
 
 //#endregion

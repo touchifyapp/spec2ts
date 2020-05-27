@@ -86,6 +86,54 @@ describe("schema-parser", () => {
             expect(declas[1]).toHaveProperty("name.text", "AddressesSchema");
         });
 
+        test("should include types from definitions if only definitions in file", async () => {
+            const schema = loadSchema("definitions.schema.json");
+            const res = await parseSchema(schema, { name: "DefinitionsSchema", cwd: getAssetsPath() });
+
+            const arr = ts.createNodeArray(res);
+            const interfaces = cg.filterNodes<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
+
+            expect(interfaces).toHaveLength(1);
+            expect(interfaces[0]).toHaveProperty("name.text", "Obj");
+
+            const types = cg.filterNodes<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration);
+
+            expect(types).toHaveLength(2);
+            expect(types[0]).toHaveProperty("name.text", "Int");
+            expect(types[1]).toHaveProperty("name.text", "Str");
+        });
+
+        test("should not need name if only definitions in file", async () => {
+            const schema = loadSchema("definitions.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const arr = ts.createNodeArray(res);
+            expect(arr).toHaveLength(3);
+        });
+
+        test("should append ./ to moduleSpecifier for relative references", async () => {
+            const schema = loadSchema("importdefs.schema.json");
+            const res = await parseSchema(schema, { name: "ImportDefs", cwd: getAssetsPath() });
+
+            const arr = ts.createNodeArray(res);
+            const imports = cg.filterNodes<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
+
+            expect(imports[0]).toHaveProperty("moduleSpecifier.text", "./definitions.schema");
+        });
+
+        test("should merge multiple imports to same module", async () => {
+            const schema = loadSchema("importdefs.schema.json");
+            const res = await parseSchema(schema, { name: "ImportDefs", cwd: getAssetsPath() });
+
+            const arr = ts.createNodeArray(res);
+            const imports = cg.filterNodes<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
+
+            expect(imports).toHaveLength(1);
+            expect(imports[0]).toHaveProperty(["importClause", "namedBindings", "elements", 0, "name", "text"], "Int");
+            expect(imports[0]).toHaveProperty(["importClause", "namedBindings", "elements", 1, "name", "text"], "Str");
+            expect(imports[0]).toHaveProperty(["importClause", "namedBindings", "elements", 2, "name", "text"], "Obj");
+        });
+
         test("should extend from references if it's an interface and allOf is used", async () => {
             const schema = loadSchema("extends.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });

@@ -36,6 +36,16 @@ export function getName(name: ts.Node): string | ts.__String {
     return "";
 }
 
+export function getString(expr: ts.Expression): string {
+    if (ts.isIdentifier(expr)) {
+        return expr.escapedText.toString();
+    }
+    if (ts.isLiteralExpression(expr)) {
+        return expr.text;
+    }
+    return "";
+}
+
 export function createQuestionToken(token?: boolean | ts.QuestionToken): ts.QuestionToken | undefined {
     if (!token) return undefined;
     if (token === true) return questionToken;

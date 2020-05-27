@@ -1,0 +1,16 @@
+{
+    "$id": "http://example.com/schemas/importdefs.schema.json",
+    "type": "object",
+    "title": "MyObj",
+    "properties": {
+        "int": {
+            "$ref": "definitions.schema.json#/definitions/int"
+        },
+        "str": {
+            "$ref": "definitions.schema.json#/definitions/str"
+        },
+        "obj": {
+            "$ref": "definitions.schema.json#/definitions/obj"
+        }
+    }
+}

@@ -9,6 +9,7 @@ import {
     ParserOptions,
 
     getTypeFromSchema,
+    parseDefinitions,
 
     getSchemaName,
     createContext,
@@ -34,12 +35,19 @@ export async function parseSchema(schema: JSONSchema, options: ParseSchemaOption
     const context = await createContext(schema, options);
     const type = getTypeFromSchema(context.schema, context);
 
+    parseDefinitions(context.schema, context);
+
     const res: ts.Statement[] = [];
 
     res.push(
         ...context.imports,
         ...context.aliases
     );
+
+    // Ignore schema type if schema is only composed of definitions
+    if ((type === core.keywordType.any || type === core.keywordType.unknown) && !context.schema.type && context.schema.definitions) {
+        return res;
+    }
 
     let decla = core.createTypeOrInterfaceDeclaration({
         modifiers: [core.modifier.export],
