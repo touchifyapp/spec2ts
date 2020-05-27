@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.3.0...@spec2ts/jsonschema@1.3.1) (2020-05-27)
+
+
+### Bug Fixes
+
+* **jsonschema:** improve external references parsing ([23f3868](https://github.com/touchifyapp/spec2ts/commit/23f3868980a78ad880237dfdff829e7b3e5a4d6e)), closes [#1](https://github.com/touchifyapp/spec2ts/issues/1)
+
+
+
+
+
 # [1.3.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.2.0...@spec2ts/jsonschema@1.3.0) (2020-05-24)
 
 

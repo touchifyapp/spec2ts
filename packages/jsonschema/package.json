@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/jsonschema",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
@@ -39,7 +39,7 @@
     },
     "dependencies": {
         "@apidevtools/json-schema-ref-parser": "^8.0.0",
-        "@spec2ts/core": "^1.2.0",
+        "@spec2ts/core": "^1.2.1",
         "yargs": "^15.3.1"
     },
     "devDependencies": {
