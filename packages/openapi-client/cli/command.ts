@@ -21,12 +21,15 @@ export interface BuildClientFromOpenApiOptions extends OApiGeneratorOptions {
     banner?: string;
 
     importFetchVersion?: string;
+    importFormDataVersion?: string;
 
     packageName?: boolean;
     packageVersion?: string;
     packageAuthor?: string;
     packageLicense?: string;
     packagePrivate?: boolean;
+    packageBuildTarget?: string;
+    packageBuildModule?: string;
 }
 
 export const usage = "$0 <input..>";
@@ -75,25 +78,39 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             type: "string",
             describe: "Use a custom fetch implementation version"
         })
+        .option("importFormDataVersion", {
+            type: "string",
+            describe: "Use a custom form-data implementation version"
+        })
+
+
         .option("packageName", {
             type: "string",
             describe: "Generate a package.json with given name"
         })
         .option("packageVersion", {
             type: "string",
-            describe: "Sets the version of the package.json"
+            describe: "Set the version of the package.json"
         })
         .option("packageAuthor", {
             type: "string",
-            describe: "Sets the author of the package.json"
+            describe: "Set the author of the package.json"
         })
         .option("packageLicense", {
             type: "string",
-            describe: "Sets the license of the package.json"
+            describe: "Set the license of the package.json"
         })
         .option("packagePrivate", {
             type: "boolean",
-            describe: "Sets the package.json private"
+            describe: "Set the package.json private"
+        })
+        .option("packageBuildTarget", {
+            type: "string",
+            describe: "Set the TypeScript build target"
+        })
+        .option("packageBuildModule", {
+            type: "string",
+            describe: "Set the TypeScript build module"
         })
 
         .option("banner", {
@@ -149,7 +166,7 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
         main: main.replace(/\.ts$/, ".js"),
         files: ["*.js", "*.d.ts"],
         scripts: {
-            build: `tsc ${main} --strict --target ES2018 --module umd --moduleResolution node`,
+            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "UMD"} --moduleResolution node`,
             prepublishOnly: "npm run build"
         },
         dependencies: {},
@@ -160,7 +177,7 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
 
     if (options.importFetch) {
         pkg.dependencies[options.importFetch] = options.importFetchVersion || "*";
-        pkg.dependencies["form-data"] = "*";
+        pkg.dependencies["form-data"] = options.importFormDataVersion || "*";
         pkg.devDependencies["@types/node"] = "*";
     }
 
