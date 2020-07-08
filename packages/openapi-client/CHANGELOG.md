@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.3.0...@spec2ts/openapi-client@1.4.0) (2020-07-08)
+
+
+### Features
+
+* **openapi-client:** allow to separtes types from client ([6c0e246](https://github.com/touchifyapp/spec2ts/commit/6c0e2462642217229c439d9002db90d6b2517166))
+
+
+
+
+
 # [1.3.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.2.3...@spec2ts/openapi-client@1.3.0) (2020-06-01)
 
 
