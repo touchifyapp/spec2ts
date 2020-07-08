@@ -43,6 +43,7 @@ export type ContentTypeMode = "json" | "form" | "multipart";
 
 export interface OApiGeneratorContext extends ParserContext {
     options: OApiGeneratorOptions;
+    typesFile?: ts.SourceFile;
 }
 
 //#region Parse

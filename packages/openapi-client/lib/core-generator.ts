@@ -94,11 +94,25 @@ export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, cont
         }
     }
 
-    file.statements = core.appendNodes(
-        file.statements,
-        ...context.aliases,
-        ...functions
-    );
+    if (context.options.typesPath && context.typesFile) {
+        context.typesFile.statements = ts.createNodeArray(context.aliases);
+
+        file.statements = ts.createNodeArray([
+            core.createNamedImportDeclaration({
+                moduleSpecifier: context.options.typesPath,
+                bindings: context.aliases.map(a => a.name.text)
+            }),
+            ...file.statements,
+            ...functions
+        ]);
+    }
+    else {
+        file.statements = core.appendNodes(
+            file.statements,
+            ...context.aliases,
+            ...functions
+        );
+    }
 }
 
 function generateFunction(path: string, item: PathItemObject, method: Method, operation: OperationObject, context: ParserContext): ts.FunctionDeclaration {

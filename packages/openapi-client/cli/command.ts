@@ -1,6 +1,8 @@
 import * as path from "path";
 import { promises as fs } from "fs";
 
+import * as ts from "typescript";
+
 import {
     Argv
 } from "yargs";
@@ -23,7 +25,7 @@ export interface BuildClientFromOpenApiOptions extends OApiGeneratorOptions {
     importFetchVersion?: string;
     importFormDataVersion?: string;
 
-    packageName?: boolean;
+    packageName?: string;
     packageVersion?: string;
     packageAuthor?: string;
     packageLicense?: string;
@@ -73,6 +75,10 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             choices: ["node-fetch", "cross-fetch", "isomorphic-fetch"],
             describe: "Use a custom fetch implementation"
         })
+        .option("typesPath", {
+            type: "string",
+            describe: "Generate client types in external file relative to the output file"
+        })
 
         .option("importFetchVersion", {
             type: "string",
@@ -117,30 +123,48 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             type: "string",
             alias: "b",
             describe: "Comment prepended to the top of each generated file"
-        });
+        }) as Argv<BuildClientFromOpenApiOptions>;
 }
 
 export async function handler(options: BuildClientFromOpenApiOptions): Promise<void> {
     const files = await cli.findFiles(options.input);
 
     for (const file of files) {
-        const sourceFile = await generateClientFromFile(file, options);
-        const content = printer.printFile(sourceFile);
-
         const output = options.output || cli.getOutputPath(file, options);
         await cli.mkdirp(output);
 
-        await cli.writeFile(
-            output,
-            (options.banner || defaultBanner()) +
-            "\n\n" +
-            content
-        );
+        if (options.typesPath) {
+            if (!options.typesPath.startsWith(".")) {
+                options.typesPath = "./" + options.typesPath;
+            }
+
+            const res = await generateClientFromFile(file, options as BuildClientFromOpenApiOptions & { typesPath: string });
+            printFile(res.client, output, options);
+
+            const outputTypes = path.resolve(path.dirname(output), options.typesPath + ".ts");
+            printFile(res.types, outputTypes, options);
+        }
+        else {
+            const sourceFile = await generateClientFromFile(file, options);
+            printFile(sourceFile, output, options);
+        }
 
         if (options.packageName) {
             await generatePackage(output, options);
         }
     }
+}
+
+async function printFile(file: ts.SourceFile, output: string, options: BuildClientFromOpenApiOptions): Promise<void> {
+    const content = printer.printFile(file);
+    await cli.mkdirp(output);
+
+    await cli.writeFile(
+        output,
+        (options.banner || defaultBanner()) +
+        "\n\n" +
+        content
+    );
 }
 
 function defaultBanner(): string {

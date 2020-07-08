@@ -264,6 +264,53 @@ describe("openapi-parser", () => {
             expect(importFormData).toHaveProperty("moduleSpecifier.text", "form-data");
         });
 
+        describe("with typesPath", () => {
+
+            test("should output two separated files", async () => {
+                const schema = loadSpec("petstore.yml");
+                const res = await generateClient(schema, { typesPath: "./types" });
+
+                expect(res).toHaveProperty("client");
+                expect(res).toHaveProperty("types");
+            });
+
+            test("should generate types in separated file", async () => {
+                const schema = loadSpec("petstore.yml");
+                const { types } = await generateClient(schema, { typesPath: "./types" });
+
+                const pet = core.findNode<ts.InterfaceDeclaration>(
+                    types.statements,
+                    ts.SyntaxKind.InterfaceDeclaration,
+                    node => node.name.text === "Pet"
+                );
+
+                expect(pet).toHaveProperty(["name", "text"], "Pet");
+
+                expect(pet).toHaveProperty(["members", 0, "name", "text"], "id");
+                expect(pet).toHaveProperty(["members", 0, "type", "kind"], ts.SyntaxKind.NumberKeyword);
+
+                expect(pet).toHaveProperty(["members", 1, "name", "text"], "name");
+                expect(pet).toHaveProperty(["members", 1, "type", "kind"], ts.SyntaxKind.StringKeyword);
+
+                expect(pet).toHaveProperty(["members", 2, "name", "text"], "tag");
+                expect(pet).toHaveProperty(["members", 2, "type", "kind"], ts.SyntaxKind.StringKeyword);
+            });
+
+            test("should import types from typesPath", async () => {
+                const schema = loadSpec("petstore.yml");
+                const { client } = await generateClient(schema, { typesPath: "./types" });
+
+                const importTypes = core.findNode<ts.ImportDeclaration>(
+                    client.statements,
+                    ts.SyntaxKind.ImportDeclaration
+                );
+
+                expect(importTypes).toHaveProperty(["importClause", "namedBindings", "elements", 0, "name", "escapedText"], "Pet");
+                expect(importTypes).toHaveProperty("moduleSpecifier.text", "./types");
+            });
+
+        });
+
     });
 
 });
