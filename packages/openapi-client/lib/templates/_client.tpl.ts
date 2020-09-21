@@ -46,7 +46,7 @@ export const _ = {
     /** Creates a tag-function to encode template strings with the given encoders. */
     encode(encoders: Encoders, delimiter = ","): TagFunction {
         return (strings: TemplateStringsArray, ...values: any[]) => {
-            return strings.reduce((prev, s, i) => `${prev}${s}${q(values[i] || "", i)}`, "");
+            return strings.reduce((prev, s, i) => `${prev}${s}${q(values[i] ?? "", i)}`, "");
         };
 
         function q(v: any, i: number): string {
