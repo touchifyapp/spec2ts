@@ -35,8 +35,8 @@ type MultipartRequestOptions = RequestOptions & {
 /** Utilities functions */
 export const _ = {
     // Encode param names and values as URIComponent
-    encodeReserved: [encodeURIComponent, encodeURIComponent],
-    allowReserved: [encodeURIComponent, encodeURI],
+    encodeReserved: [encodeURI, encodeURIComponent],
+    allowReserved: [encodeURI, encodeURI],
 
     /** Deeply remove all properties with undefined values. */
     stripUndefined<T>(obj?: T): T | undefined {
@@ -88,7 +88,7 @@ export const _ = {
 export const QS = {
     /** Join params using an ampersand and prepends a questionmark if not empty. */
     query(...params: string[]): string {
-        const s = params.join("&");
+        const s = params.filter(p => !!p).join("&");
         return s && `?${s}`;
     },
 
@@ -105,9 +105,10 @@ export const QS = {
             Object.entries(obj)
                 .filter(([, v]) => v !== undefined)
                 .map(([prop, v]) => {
-                    const index = Array.isArray(obj) ? "" : prop;
+                    const isValueObject = typeof v === "object";
+                    const index = Array.isArray(obj) && !isValueObject ? "" : prop;
                     const key = prefix ? qk`${prefix}[${index}]` : prop;
-                    if (typeof v === "object") {
+                    if (isValueObject) {
                         return visit(v, key);
                     }
                     return qv`${key}=${v}`;
