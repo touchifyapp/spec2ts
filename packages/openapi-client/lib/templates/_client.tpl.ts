@@ -42,6 +42,12 @@ export const _ = {
     stripUndefined<T>(obj?: T): T | undefined {
         return obj && JSON.parse(JSON.stringify(obj));
     },
+    
+    isEmpty(v: unknown): boolean {
+        return typeof v === "object" && !!v ?
+            Object.keys(v).length === 0 && v.constructor === Object :
+            v === undefined;
+    },
 
     /** Creates a tag-function to encode template strings with the given encoders. */
     encode(encoders: Encoders, delimiter = ","): TagFunction {
@@ -70,7 +76,7 @@ export const _ = {
     delimited(delimiter = ","): (params: Record<string, any>, encoders?: Encoders) => string {
         return (params: Record<string, any>, encoders = _.encodeReserved) =>
             Object.entries(params)
-                .filter(([, value]) => value !== undefined)
+                .filter(([, value]) => !_.isEmpty(value))
                 .map(([name, value]) => _.encode(encoders, delimiter)`${name}=${value}`)
                 .join("&");
     },
@@ -103,7 +109,7 @@ export const QS = {
         // https://github.com/expressjs/body-parser/issues/289
         const visit = (obj: any, prefix = ""): string =>
             Object.entries(obj)
-                .filter(([, v]) => v !== undefined)
+                .filter(([, v]) => !_.isEmpty(v))
                 .map(([prop, v]) => {
                     const isValueObject = typeof v === "object";
                     const index = Array.isArray(obj) && !isValueObject ? "" : prop;
