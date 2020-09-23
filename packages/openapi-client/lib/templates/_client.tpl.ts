@@ -35,18 +35,24 @@ type MultipartRequestOptions = RequestOptions & {
 /** Utilities functions */
 export const _ = {
     // Encode param names and values as URIComponent
-    encodeReserved: [encodeURIComponent, encodeURIComponent],
-    allowReserved: [encodeURIComponent, encodeURI],
+    encodeReserved: [encodeURI, encodeURIComponent],
+    allowReserved: [encodeURI, encodeURI],
 
     /** Deeply remove all properties with undefined values. */
     stripUndefined<T>(obj?: T): T | undefined {
         return obj && JSON.parse(JSON.stringify(obj));
     },
+    
+    isEmpty(v: unknown): boolean {
+        return typeof v === "object" && !!v ?
+            Object.keys(v).length === 0 && v.constructor === Object :
+            v === undefined;
+    },
 
     /** Creates a tag-function to encode template strings with the given encoders. */
     encode(encoders: Encoders, delimiter = ","): TagFunction {
         return (strings: TemplateStringsArray, ...values: any[]) => {
-            return strings.reduce((prev, s, i) => `${prev}${s}${q(values[i] || "", i)}`, "");
+            return strings.reduce((prev, s, i) => `${prev}${s}${q(values[i] ?? "", i)}`, "");
         };
 
         function q(v: any, i: number): string {
@@ -70,7 +76,7 @@ export const _ = {
     delimited(delimiter = ","): (params: Record<string, any>, encoders?: Encoders) => string {
         return (params: Record<string, any>, encoders = _.encodeReserved) =>
             Object.entries(params)
-                .filter(([, value]) => value !== undefined)
+                .filter(([, value]) => !_.isEmpty(value))
                 .map(([name, value]) => _.encode(encoders, delimiter)`${name}=${value}`)
                 .join("&");
     },
@@ -88,7 +94,7 @@ export const _ = {
 export const QS = {
     /** Join params using an ampersand and prepends a questionmark if not empty. */
     query(...params: string[]): string {
-        const s = params.join("&");
+        const s = params.filter(p => !!p).join("&");
         return s && `?${s}`;
     },
 
@@ -103,11 +109,12 @@ export const QS = {
         // https://github.com/expressjs/body-parser/issues/289
         const visit = (obj: any, prefix = ""): string =>
             Object.entries(obj)
-                .filter(([, v]) => v !== undefined)
+                .filter(([, v]) => !_.isEmpty(v))
                 .map(([prop, v]) => {
-                    const index = Array.isArray(obj) ? "" : prop;
+                    const isValueObject = typeof v === "object";
+                    const index = Array.isArray(obj) && !isValueObject ? "" : prop;
                     const key = prefix ? qk`${prefix}[${index}]` : prop;
-                    if (typeof v === "object") {
+                    if (isValueObject) {
                         return visit(v, key);
                     }
                     return qv`${key}=${v}`;
