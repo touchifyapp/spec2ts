@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "str": {
+            "const": "value"
+        },
+        "num": {
+            "const": 0
+        },
+        "bool": {
+            "const": false
+        }
+    }
+}

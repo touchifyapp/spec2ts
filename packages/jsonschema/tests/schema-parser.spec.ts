@@ -170,6 +170,30 @@ describe("schema-parser", () => {
             expect(decla).toHaveProperty(["members", 0, "type", "typeName", "escapedText"], "Date");
         });
 
+        test("should parse const as literal type", async () => {
+            const schema = loadSchema("const.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const arr = ts.createNodeArray(res);
+            const types = cg.filterNodes<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration);
+
+            expect(types).toHaveLength(3);
+
+            expect(types[0]).toHaveProperty("name.text", "Str");
+            expect(types[0]).toHaveProperty("type.kind", ts.SyntaxKind.LiteralType);
+            expect(types[0]).toHaveProperty("type.literal.kind", ts.SyntaxKind.StringLiteral);
+            expect(types[0]).toHaveProperty("type.literal.text", "value");
+
+            expect(types[1]).toHaveProperty("name.text", "Num");
+            expect(types[1]).toHaveProperty("type.kind", ts.SyntaxKind.LiteralType);
+            expect(types[1]).toHaveProperty("type.literal.kind", ts.SyntaxKind.NumericLiteral);
+            expect(types[1]).toHaveProperty("type.literal.text", "0");
+
+            expect(types[2]).toHaveProperty("name.text", "Bool");
+            expect(types[2]).toHaveProperty("type.kind", ts.SyntaxKind.LiteralType);
+            expect(types[2]).toHaveProperty("type.literal.kind", ts.SyntaxKind.FalseKeyword);
+            expect(types[2]).not.toHaveProperty("type.literal.text");
+        });
     });
 
     describe(".parseSchemaFile()", () => {

@@ -113,6 +113,22 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
         );
     }
 
+    // (could be boolean -> strong checking required)
+    if (typeof schema.const !== "undefined") { // const -> literal type
+        return ts.createLiteralTypeNode((s => {
+            switch (typeof s) {
+                case "string":
+                    return ts.createStringLiteral(s);
+                case "number":
+                    return ts.createNumericLiteral(s.toString());
+                case "boolean":
+                    return s ? ts.createTrue() : ts.createFalse();
+                default:
+                    return ts.createLiteral(String(s));
+            }
+        })(schema.const));
+    }
+
     if (schema.enum) { // enum -> union of literal types
         return ts.createUnionTypeNode(
             (schema.enum as Array<string | number | boolean | null>).map(s =>
