@@ -104,11 +104,13 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
         return ts.createArrayTypeNode(getTypeFromSchema(schema.items, context));
     }
 
-    if (schema.properties || schema.additionalProperties) { // properties -> literal type
+    // properties -> literal type
+    if (schema.properties || schema.additionalProperties || schema.patternProperties) {
         return getTypeFromProperties(
             schema.properties || {},
             schema.required || [],
             schema.additionalProperties,
+            schema.patternProperties,
             context
         );
     }
@@ -145,6 +147,7 @@ export function getTypeFromProperties(
     props: Record<string, JSONSchemaDefinition | JSONReference>,
     required: string[] | null | undefined,
     additionalProperties: boolean | JSONSchema | JSONReference | null | undefined,
+    patternProperties: boolean | JSONSchema | JSONReference | null | undefined,
     context: ParserContext
 ): ts.TypeNode {
     const members: ts.TypeElement[] = Object.keys(props).map(name => {
@@ -157,13 +160,35 @@ export function getTypeFromProperties(
         });
     });
 
+    // NOTE: both additionalProperties & patternProperties have to be the value
+    // of the key [index: string], so we have to build up a union type of all possible values.
+    //
+    // NOTE: it might be worth pulling some of this out into a helper since it's getting kinda long.
+    const indexTypes = []
+
     if (additionalProperties) {
         const type =
             additionalProperties === true
                 ? core.keywordType.any
                 : getTypeFromSchema(additionalProperties, context);
 
+        indexTypes.push(type)
+    }
+
+    if (patternProperties) {
+        Object.values(patternProperties).forEach(patVal => {
+            const type = getTypeFromSchema(patVal, context)
+            indexTypes.push(type)
+        })
+    }
+
+    // NOTE: We have two cases here because I haven't yet checked whether you can have a union of 1 type.
+    if (indexTypes.length === 1) {
+        const type = indexTypes[0]
         members.push(core.createIndexSignature(type));
+    } else if (indexTypes.length > 1) {
+        const unionType = ts.createUnionTypeNode(indexTypes)
+        members.push(core.createIndexSignature(unionType));
     }
 
     return ts.createTypeLiteralNode(members);
