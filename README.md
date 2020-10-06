@@ -1,6 +1,6 @@
 # spec2ts
 
-[![Build Status](https://travis-ci.org/touchifyapp/spec2ts.svg?branch=master)](https://travis-ci.org/touchifyapp/spec2ts)
+![CI](https://github.com/touchifyapp/spec2ts/workflows/CI/badge.svg)
 
 `spec2ts` is an utility to create TypeScript types from JSON schemas and OpenAPI v3 specifications. Unlike other code generators `spec2ts` does not use templates to generate code but uses TypeScript's built-in API to generate and pretty-print an abstract syntax tree (AST).
 
