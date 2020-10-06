@@ -1,0 +1,58 @@
+openapi: 3.0.3
+
+info:
+  title: chicken
+  version: 0.0.0
+
+paths:
+  /get:
+    post:
+      operationId: getOneThing
+      requestBody:
+        $ref: '#/components/requestBodies/GetOneThingRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/GetOneThingResponse'
+
+components:
+  schemas:
+    ThingKey:
+      type: object
+      properties:
+        userId:
+          type: integer
+        thingId:
+          type: integer
+      required:
+        - userId
+        - thingId
+
+    ThingData:
+      type: object
+      properties:
+        lastSeen:
+          type: string
+          format: date-time
+        value:
+          type: integer
+          
+    Thing:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ThingKey'
+        - $ref: '#/components/schemas/ThingData'
+
+  requestBodies:
+    GetOneThingRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ThingKey'
+
+  responses:
+    GetOneThingResponse:
+      description: one thing
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Thing'

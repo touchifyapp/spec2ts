@@ -91,6 +91,17 @@ describe("openapi-parser", () => {
             expect(models[0]).toHaveProperty("name.text", "NewPet");
         });
 
+        test("should parse response reference", async () => {
+            const schema = loadSpec("response-ref.yml");
+            const { models } = await parseOpenApi(schema);
+
+            expect(models[0]).toHaveProperty("name.text", "ThingKey");
+            expect(models[1]).toHaveProperty("name.text", "ThingData");
+            expect(models[2]).toHaveProperty("name.text", "Thing");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "escapedText"], "ThingKey");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "escapedText"], "ThingData");
+        });
+
     });
 
 });

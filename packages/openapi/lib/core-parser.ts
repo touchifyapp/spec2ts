@@ -1,13 +1,14 @@
 import * as ts from "typescript";
 import * as core from "@spec2ts/core";
 
-import type {
+import {
     SchemaObject,
     ReferenceObject,
     PathItemObject,
     OperationObject,
     ParameterObject,
-    ContentObject
+    ContentObject,
+    ResponseObject
 } from "openapi3-ts";
 
 import {
@@ -77,7 +78,8 @@ export function parseOperation(path: string, verb: string, operation: OperationO
     if (operation.responses) {
         const responses = resolveReference(operation.responses, context);
         Object.keys(responses).forEach(status => {
-            const response = responses[status]
+            const response = resolveReference<ResponseObject>(responses[status], context);
+
             const decla = getContentDeclaration(getResponseName(name, status, context), response.content, context);
             if (decla) { addToOpenApiResult(result, "responses", decla); }
         });
@@ -152,9 +154,11 @@ export function parseReference(ref: ParsedReference, context: ParserContext): vo
 
 //#region Utils
 
-export function getContentDeclaration(name: string, content: ReferenceObject | ContentObject, context: OApiParserContext): ts.Statement | undefined {
-    content = resolveReference(content, context);
+export function getContentDeclaration(name: string, content: ReferenceObject | ContentObject | undefined, context: OApiParserContext): ts.Statement | undefined {
+    if (!content) return;
 
+    content = resolveReference(content, context);
+    
     const schema = getSchemaFromContent(content);
     if (!schema) return;
 
