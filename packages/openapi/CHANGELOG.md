@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.2.1...@spec2ts/openapi@1.2.2) (2020-10-06)
+
+
+### Bug Fixes
+
+* **openapi:** resolve response reference ([29e7ee5](https://github.com/touchifyapp/spec2ts/commit/29e7ee51a18049e2335eda08ceb68460b22de055)), closes [#7](https://github.com/touchifyapp/spec2ts/issues/7)
+
+
+
+
+
 ## [1.2.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.2.0...@spec2ts/openapi@1.2.1) (2020-05-27)
 
 **Note:** Version bump only for package @spec2ts/openapi

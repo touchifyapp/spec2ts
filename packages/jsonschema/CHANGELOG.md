@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.3.1...@spec2ts/jsonschema@1.4.0) (2020-10-06)
+
+
+### Features
+
+* **jsonschema:** add const parsing ([d0db5f1](https://github.com/touchifyapp/spec2ts/commit/d0db5f1dac8a020a99407a942c3a39abc3a89a48)), closes [#3](https://github.com/touchifyapp/spec2ts/issues/3)
+
+
+
+
+
 ## [1.3.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.3.0...@spec2ts/jsonschema@1.3.1) (2020-05-27)
 
 
