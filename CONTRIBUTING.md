@@ -85,7 +85,7 @@ It's also a good idea to hook up your editor to an eslint plugin.
 To fix lint errors from the command line: 
 
 ```sh
-$ npm run lint -- --fix 
+$ npm run lint:fix
 ```
 
 ### (TODO) Local CLI Testing 
