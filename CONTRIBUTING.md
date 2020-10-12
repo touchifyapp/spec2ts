@@ -120,4 +120,4 @@ Any new feature must be accompanied by:
 - valid tests covering the feature 
 
 ## License 
-By contributing to Jest, you agree that your contributions will be licensed under its MIT license. 
+By contributing to spec2ts, you agree that your contributions will be licensed under its MIT license. 
