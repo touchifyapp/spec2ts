@@ -88,22 +88,19 @@ To fix lint errors from the command line:
 $ npm run lint:fix
 ```
 
-### (TODO) Local CLI Testing 
+### Local CLI Testing 
 
-Lerna handles dependencies between packages through symlinks so local packages are up to date regarding one another. 
-To test out a development build of spec2ts or any other cli, use `npm link`. Exemple for @spec2ts/cli: 
+Lerna handles dependencies between packages through symlinks so local packages are kept up to date regarding one another. 
+To test out a development build of spec2ts or any other subcommand, simply execute the spec2ts cli using `node`. 
+
+Exemple for @spec2ts/openapi specifying output location with `-o <output>` option: 
 ```sh
-$ cd packages/cli 
-$ npm link 
-```
+$ lerna run build
+$ cd packages/cli
+$ node ./bin/spec2ts.js openapi ../openapi/tests/assets/petstore.yml -o .
 
-This will set your global command to the local version. 
- 
-Note: If the local repo that you are testing in _already_ depends on @spec2ts/cli, you'll need to link your local clone of @spec2ts/cli _into_ the target repo: 
-
-```sh
-# in the target repo 
-$ npm link @spec2ts/cli 
+# without build using ts-node, prefix with npx or install globally
+$ ts-node ./bin/spec2ts.ts openapi ../openapi/tests/assets/petstore.yml -o .
 ```
 
 ## Issue 
