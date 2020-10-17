@@ -36,3 +36,14 @@ export function findFirstVariableDeclarationName(n: ts.VariableStatement): strin
     const name = ts.getNameOfDeclaration(n.declarationList.declarations[0]);
     return name && getName(name);
 }
+
+export function findVariableDeclarationName(variable: ts.VariableStatement, name: string): ts.VariableDeclaration | null {
+    for (const decla of variable.declarationList.declarations) {
+        const declaName = ts.getNameOfDeclaration(decla);
+        if (declaName && getName(declaName) === name) {
+            return decla;
+        }
+    }
+
+    return null;
+}

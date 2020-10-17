@@ -402,3 +402,13 @@ export function createTypeOrInterfaceDeclaration({
         type
     });
 }
+
+export function updateVariableDeclarationInitializer(declaration: ts.VariableDeclaration, initializer: ts.Expression): ts.VariableDeclaration {
+    return ts.factory.updateVariableDeclaration(
+        declaration,
+        declaration.name,
+        declaration.exclamationToken,
+        declaration.type,
+        initializer
+    );
+}

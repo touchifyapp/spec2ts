@@ -63,6 +63,17 @@ export function appendNodes<T extends ts.Node>(
     return ts.factory.createNodeArray([...array, ...nodes]);
 }
 
+export function replaceNode<T extends ts.Node>(array: ts.NodeArray<T>, oldNode: T, newNode: T): ts.NodeArray<T> {
+    const i = array.indexOf(oldNode);
+    if (i === -1) return array;
+
+    return ts.factory.createNodeArray([
+        ...array.slice(0, i),
+        newNode,
+        ...array.slice(i + 1)
+    ]);
+}
+
 export function block(...statements: ts.Statement[]): ts.Block {
     return ts.factory.createBlock(statements, true);
 }

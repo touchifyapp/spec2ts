@@ -45,12 +45,12 @@ export function isValidIdentifier(str: string): boolean {
     return (
         !!node &&
         node.kind === ts.SyntaxKind.Identifier &&
-        !("originalKeywordKind" in node)
+        !(node as Record<string, any>)["originalKeywordKind"]
     );
 }
 
-export function isIdentifier(n: object): n is ts.Identifier {
-    return ts.isIdentifier(n as any);
+export function isIdentifier(n: any): n is ts.Identifier {
+    return ts.isIdentifier(n);
 }
 
 export function createCall(
@@ -150,41 +150,53 @@ export function changePropertyValue(
     o: ts.ObjectLiteralExpression,
     property: string,
     value: ts.Expression
-): void {
-    const p = o.properties.find(
+): ts.ObjectLiteralExpression {
+    const i = o.properties.findIndex(
         p => ts.isPropertyAssignment(p) && getName(p.name) === property
     );
 
-    if (p && ts.isPropertyAssignment(p)) {
-        ts.factory.updatePropertyAssignment(p, p.name, value);
-    } else {
+    if (i === -1) {
         throw new Error(`No such property: ${property}`);
     }
+
+    const p = o.properties[i];
+    if (!ts.isPropertyAssignment(p)) {
+        throw new Error(`Invalid node: ${property}`);
+    }
+
+    return ts.factory.updateObjectLiteralExpression(o, [
+        ...o.properties.slice(0, i),
+        ts.factory.updatePropertyAssignment(p, p.name, value),
+        ...o.properties.slice(i + 1)
+    ]);
 }
 
 export function upsertPropertyValue(
     o: ts.ObjectLiteralExpression,
     property: string,
     value: ts.Expression
-): void {
-    const p = o.properties.find(
+): ts.ObjectLiteralExpression {
+    const i = o.properties.findIndex(
         p => ts.isPropertyAssignment(p) && getName(p.name) === property
     );
 
-    if (p) {
-        if (ts.isPropertyAssignment(p)) {
-            ts.factory.updatePropertyAssignment(p, p.name, value);
-        }
-        else {
-            throw new Error(`No such property: ${property}`);
-        }
-    }
-    else {
-        ts.factory.updateObjectLiteralExpression(o, appendNodes(
+    if (i === -1) {
+        return ts.factory.updateObjectLiteralExpression(o, appendNodes(
             o.properties,
             ts.factory.createPropertyAssignment(property, value)
         ));
     }
+
+    const p = o.properties[i];
+    if (!ts.isPropertyAssignment(p)) {
+        throw new Error(`Invalid node: ${property}`);
+    }
+
+    return ts.factory.updateObjectLiteralExpression(o, [
+        ...o.properties.slice(0, i),
+        ts.factory.updatePropertyAssignment(p, p.name, value),
+        ...o.properties.slice(i + 1)
+    ]);
 }
 
 export function addComment<T extends ts.Node>(node: T, comment?: string): T {
