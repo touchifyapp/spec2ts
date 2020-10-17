@@ -76,6 +76,13 @@ async function generateSpec(path: string): Promise<string> {
   - [x] Import local references
   - [x] Embed external references
 
+## Compatibility Matrix
+
+| TypeScript version | spec2ts version |
+|--------------------|-----------------|
+| v3.x.x             | v1              | 
+| v4.x.x             | v2              | 
+
 ## License
 
 This project is under MIT License. See the [LICENSE](LICENSE) file for the full license text.
