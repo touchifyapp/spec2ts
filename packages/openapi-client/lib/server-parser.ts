@@ -14,7 +14,7 @@ export function parseServers(servers: ServerObject[]): ts.ObjectLiteralExpressio
 }
 
 export function defaultBaseUrl(servers: ServerObject[]): ts.StringLiteral {
-    return ts.createStringLiteral(defaultUrl(servers[0]));
+    return ts.factory.createStringLiteral(defaultUrl(servers[0]));
 }
 
 function serverName(server: ServerObject, index: number): string {
@@ -26,7 +26,7 @@ function serverName(server: ServerObject, index: number): string {
 function generateServerExpression(server: ServerObject): ts.Expression {
     return server.variables ?
         createServerFunction(server.url, server.variables) :
-        ts.createStringLiteral(server.url);
+        ts.factory.createStringLiteral(server.url);
 }
 
 function createServerFunction(template: string, vars: Record<string, ServerVariableObject>): ts.ArrowFunction {
@@ -41,13 +41,13 @@ function createServerFunction(template: string, vars: Record<string, ServerVaria
                 })
             ),
             {
-                type: ts.createTypeLiteralNode(
+                type: ts.factory.createTypeLiteralNode(
                     Object.entries(vars || {}).map(([name, value]) => {
                         return core.createPropertySignature({
                             name,
                             type: value.enum ?
-                                ts.createUnionTypeNode(createUnion(value.enum)) :
-                                ts.createUnionTypeNode([
+                                ts.factory.createUnionTypeNode(createUnion(value.enum)) :
+                                ts.factory.createUnionTypeNode([
                                     core.keywordType.string,
                                     core.keywordType.number,
                                     core.keywordType.boolean,
@@ -64,7 +64,7 @@ function createServerFunction(template: string, vars: Record<string, ServerVaria
 
 
 function createUnion(strs: Array<string | boolean | number>): ts.LiteralTypeNode[] {
-    return strs.map((e) => ts.createLiteralTypeNode(createLiteral(e)));
+    return strs.map((e) => ts.factory.createLiteralTypeNode(createLiteral(e)));
 }
 
 function createTemplate(url: string): ts.TemplateLiteral {
@@ -74,24 +74,24 @@ function createTemplate(url: string): ts.TemplateLiteral {
 
     for (let i = 1; i < len; i += 2) {
         spans.push(
-            ts.createTemplateSpan(
-                ts.createIdentifier(tokens[i]),
-                (i === len - 2 ? ts.createTemplateTail : ts.createTemplateMiddle)(tokens[i + 1])
+            ts.factory.createTemplateSpan(
+                ts.factory.createIdentifier(tokens[i]),
+                (i === len - 2 ? ts.factory.createTemplateTail : ts.factory.createTemplateMiddle)(tokens[i + 1])
             )
         );
     }
 
-    return ts.createTemplateExpression(ts.createTemplateHead(tokens[0]), spans);
+    return ts.factory.createTemplateExpression(ts.factory.createTemplateHead(tokens[0]), spans);
 }
 
 function createLiteral(v: string | boolean | number): ts.StringLiteral | ts.BooleanLiteral | ts.NumericLiteral {
     switch (typeof v) {
         case "string":
-            return ts.createStringLiteral(v);
+            return ts.factory.createStringLiteral(v);
         case "boolean":
-            return v ? ts.createTrue() : ts.createFalse();
+            return v ? ts.factory.createTrue() : ts.factory.createFalse();
         case "number":
-            return ts.createNumericLiteral(String(v));
+            return ts.factory.createNumericLiteral(String(v));
     }
 }
 

@@ -51,15 +51,15 @@ export async function generateClient(spec: OpenAPIObject, options: OApiGenerator
     }
 
     const context = await createContext(spec, options) as OApiGeneratorContext;
-    const file = await core.createSourceFileFromFile(__dirname + "/templates/_client.tpl.ts");
+    let file = await core.createSourceFileFromFile(__dirname + "/templates/_client.tpl.ts");
 
     if (context.options.typesPath) {
         context.typesFile = ts.createSourceFile("types.ts", "", ts.ScriptTarget.Latest, false, ts.ScriptKind.TS);
     }
 
-    generateServers(file, spec);
-    generateDefaults(file, context);
-    generateFunctions(file, spec, context);
+    file = generateServers(file, spec);
+    file = generateDefaults(file, context);
+    file = generateFunctions(file, spec, context);
 
     if (context.options.typesPath) {
         return {

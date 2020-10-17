@@ -68,6 +68,13 @@ Options:
 - **JSON Schema:** See `@spec2ts/jsonschema`'s [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema/README.md).
 - **Open API Specification:** See `@spec2ts/openapi`'s [documentation](https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi/README.md).
 
+## Compatibility Matrix
+
+| TypeScript version | spec2ts version |
+|--------------------|-----------------|
+| v3.x.x             | v1              | 
+| v4.x.x             | v2              | 
+
 ## License
 
 This project is under MIT License. See the [LICENSE](LICENSE) file for the full license text.

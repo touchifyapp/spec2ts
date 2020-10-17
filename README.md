@@ -80,6 +80,13 @@ async function generateClient(path: string): Promise<string> {
 }
 ```
 
+## Compatibility Matrix
+
+| TypeScript version | spec2ts version |
+|--------------------|-----------------|
+| v3.x.x             | v1              | 
+| v4.x.x             | v2              | 
+
 ## License
 
 This project is under MIT License. See the [LICENSE](LICENSE) file for the full license text.
