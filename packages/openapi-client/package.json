@@ -33,7 +33,8 @@
         "test:jest": "jest -c ../../jest.config.js --rootDir .",
         "test:coverage": "npm run test -- -- --coverage",
         "lint": "npm run lint:ts",
-        "lint:ts": "eslint --ext .ts *.ts {bin,cli,lib}/**/*.ts",
+        "lint:ts": "eslint \"*.ts\" \"{bin,cli,lib}/**/*.ts\"",
+        "lint:fix": "npm run lint -- -- --fix",
         "clean": "npm run clean:ts",
         "clean:ts": "rimraf *.{js,d.ts} {bin,cli,lib}/**/*.{js,d.ts}",
         "prepublishOnly": "npm test && npm run build"
