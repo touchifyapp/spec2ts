@@ -135,7 +135,7 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
             })
         );
 
-        res[paramType] = ts.createTypeReferenceNode(name, undefined);
+        res[paramType] = ts.factory.createTypeReferenceNode(name, undefined);
     }
 }
 
@@ -158,7 +158,7 @@ export function getContentDeclaration(name: string, content: ReferenceObject | C
     if (!content) return;
 
     content = resolveReference(content, context);
-    
+
     const schema = getSchemaFromContent(content);
     if (!schema) return;
 
@@ -188,7 +188,7 @@ export function getParamType(data: ParameterObject[], baseType: ts.TypeReference
 
     const type = getTypeFromProperties(props as Record<string, JSONSchema>, required, false, context);
     if (baseType) {
-        return ts.createIntersectionTypeNode([baseType, type]);
+        return ts.factory.createIntersectionTypeNode([baseType, type]);
     }
 
     return type;
