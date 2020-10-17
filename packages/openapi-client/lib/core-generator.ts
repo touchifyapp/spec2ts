@@ -41,7 +41,7 @@ export function generateServers(file: ts.SourceFile, { servers }: OpenAPIObject)
         throw new Error("Invalid template: missing servers or defaults const");
     }
 
-    serversConst.initializer = parseServers(servers);
+    ts.factory.updateVariableDeclaration(serversConst, serversConst.name, serversConst.exclamationToken, serversConst.type, parseServers(servers));
 
     core.changePropertyValue(
         (defaultsConst.initializer as ts.ObjectLiteralExpression) || ts.createObjectLiteral(),
@@ -57,18 +57,20 @@ export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorCont
             throw new Error("Invalid template: missing defaults const");
         }
 
-        file.statements = ts.createNodeArray([
+        core.prependSourceFileStatements(
+            file,
+
             core.createDefaultImportDeclaration({
                 moduleSpecifier: context.options.importFetch,
                 name: "fetch",
                 bindings: ["RequestInit", "Headers"]
             }),
+
             core.createNamespaceImportDeclaration({
                 moduleSpecifier: "form-data",
                 name: "FormData"
-            }),
-            ...file.statements
-        ]);
+            })
+        );
 
         core.upsertPropertyValue(
             (defaultsConst.initializer as ts.ObjectLiteralExpression) || ts.createObjectLiteral(),
@@ -95,9 +97,9 @@ export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, cont
     }
 
     if (context.options.typesPath && context.typesFile) {
-        context.typesFile.statements = ts.createNodeArray(context.aliases);
+        core.updateSourceFileStatements(context.typesFile, context.aliases);
 
-        file.statements = ts.createNodeArray([
+        core.updateSourceFileStatements(file, [
             core.createNamedImportDeclaration({
                 moduleSpecifier: context.options.typesPath,
                 bindings: context.aliases.map(a => a.name.text)
@@ -107,8 +109,8 @@ export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, cont
         ]);
     }
     else {
-        file.statements = core.appendNodes(
-            file.statements,
+        core.appendSourceFileStatements(
+            file,
             ...context.aliases,
             ...functions
         );

@@ -334,7 +334,7 @@ export function getSchemaName(schema: JSONSchema, path?: string): string {
     );
 }
 
-export function getAnyType(context: ParserContext): ts.KeywordTypeNode {
+export function getAnyType(context: ParserContext): ts.TypeNode {
     return context.options.avoidAny ?
         core.keywordType.unknown :
         core.keywordType.any;
@@ -357,10 +357,10 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
         const hasName = elements.some(e => e.name.text === importNamedBinding);
         if (hasName) return;
 
-        importDeclaration.importClause.namedBindings.elements = ts.createNodeArray([
+        ts.factory.updateNamedImports(importDeclaration.importClause.namedBindings, ts.createNodeArray([
             ...elements,
             ts.createImportSpecifier(undefined, core.toIdentifier(importNamedBinding))
-        ]);
+        ]));
     }
     else {
         context.imports.push(
