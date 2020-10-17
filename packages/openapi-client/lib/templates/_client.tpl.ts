@@ -25,7 +25,7 @@ type FetchRequestOptions = RequestOptions & {
 };
 
 type JsonRequestOptions = RequestOptions & {
-    body: object;
+    body: Record<string, unknown>;
 };
 
 type MultipartRequestOptions = RequestOptions & {
@@ -42,7 +42,7 @@ export const _ = {
     stripUndefined<T>(obj?: T): T | undefined {
         return obj && JSON.parse(JSON.stringify(obj));
     },
-    
+
     isEmpty(v: unknown): boolean {
         return typeof v === "object" && !!v ?
             Object.keys(v).length === 0 && v.constructor === Object :
@@ -248,7 +248,7 @@ export class HttpError extends Error {
     status: number;
     statusText: string;
     headers: Record<string, string>;
-    data?: object;
+    data?: Record<string, unknown>;
 
     constructor(status: number, statusText: string, url: string, headers: Headers, text?: string) {
         super(`${url} - ${statusText} (${status})`);

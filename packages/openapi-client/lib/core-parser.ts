@@ -86,7 +86,7 @@ function parseArgs(result: ParsedOperation, item: PathItemObject, operation: Ope
 
     result.args.push(
         core.createParameter("options", {
-            type: ts.createTypeReferenceNode("RequestOptions", undefined),
+            type: ts.factory.createTypeReferenceNode("RequestOptions", undefined),
             questionToken: true,
         })
     );
@@ -134,8 +134,8 @@ function parseParameters(result: ParsedOperation, item: PathItemObject, operatio
                 objectBindingParams.map(({ name }) => ({ name: argNames[name] }))
             ),
             {
-                initializer: objectBindingParams.some(p => p.required) ? undefined : ts.createObjectLiteral(),
-                type: ts.createTypeLiteralNode(
+                initializer: objectBindingParams.some(p => p.required) ? undefined : ts.factory.createObjectLiteralExpression(),
+                type: ts.factory.createTypeLiteralNode(
                     objectBindingParams.map((p) =>
                         core.createPropertySignature({
                             name: argNames[p.name],
@@ -215,7 +215,7 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
 
             if (isOK) {
                 types.push(
-                    ts.createTypeReferenceNode(name, undefined)
+                    ts.factory.createTypeReferenceNode(name, undefined)
                 );
             }
         }
@@ -225,7 +225,7 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
         return types[0];
     }
 
-    return ts.createUnionTypeNode(types);
+    return ts.factory.createUnionTypeNode(types);
 }
 
 function isJSONResponse(responses: ResponsesObject, context: OApiGeneratorContext): boolean {
