@@ -2,7 +2,7 @@
   "version": "independent",
   "command": {
     "version": {
-      "allowBranch": "master",
+      "allowBranch": ["master", "@release/*"],
       "conventionalCommits": true,
       "message": "chore(release): publish packages",
       "ignoreChanges": [
