@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.2.2...@spec2ts/openapi@2.0.0-alpha.0) (2020-10-17)
+
+
+### Features
+
+* **global:** upgrade typescript 4 ([#16](https://github.com/touchifyapp/spec2ts/issues/16)) ([f1c4121](https://github.com/touchifyapp/spec2ts/commit/f1c4121dfae1d48a643adabbeb96989718ab4ad7))
+
+
+### BREAKING CHANGES
+
+* **global:** use typescript v4
+* **global:** updates are now immutable
+
+
+
+
+
 ## [1.2.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.2.1...@spec2ts/openapi@1.2.2) (2020-10-06)
 
 
