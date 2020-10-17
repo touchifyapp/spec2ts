@@ -19,7 +19,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("person.schema.json");
             const res = await parseSchema(schema);
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(decla).toBeDefined();
@@ -29,7 +29,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("person.schema.json");
             const res = await parseSchema(schema);
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(decla).toHaveProperty("name.text", schema.title);
@@ -39,7 +39,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("arrays.schema.json");
             const res = await parseSchema(schema);
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration, n => n.name.text === "ArraysSchema");
 
             expect(decla).toHaveProperty("name.text", "ArraysSchema");
@@ -56,7 +56,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("persons.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration);
 
             expect(decla).toBeDefined();
@@ -66,7 +66,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("persons.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
 
             expect(decla).toBeDefined();
@@ -78,7 +78,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("addresses.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const declas = cg.filterNodes<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(declas).toHaveLength(2);
@@ -90,7 +90,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("definitions.schema.json");
             const res = await parseSchema(schema, { name: "DefinitionsSchema", cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const interfaces = cg.filterNodes<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(interfaces).toHaveLength(1);
@@ -107,7 +107,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("definitions.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             expect(arr).toHaveLength(3);
         });
 
@@ -115,7 +115,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("importdefs.schema.json");
             const res = await parseSchema(schema, { name: "ImportDefs", cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const imports = cg.filterNodes<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
 
             expect(imports[0]).toHaveProperty("moduleSpecifier.text", "./definitions.schema");
@@ -125,7 +125,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("importdefs.schema.json");
             const res = await parseSchema(schema, { name: "ImportDefs", cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const imports = cg.filterNodes<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
 
             expect(imports).toHaveLength(1);
@@ -138,7 +138,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("extends.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(decla).toBeDefined();
@@ -152,7 +152,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("union.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration);
 
             expect(decla).toBeDefined();
@@ -164,7 +164,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("formats.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath(), enableDate: true });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(decla).toHaveProperty(["members", 0, "type", "typeName", "escapedText"], "Date");
@@ -174,7 +174,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("const.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const types = cg.filterNodes<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration);
 
             expect(types).toHaveLength(3);
@@ -219,7 +219,7 @@ describe("schema-parser", () => {
         test("should accept json schema", async () => {
             const res = await parseSchemaFile(getAssetsPath("person.schema.json"));
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(decla).toHaveProperty("name.text", "Person");
@@ -228,7 +228,7 @@ describe("schema-parser", () => {
         test("should accept yaml schema", async () => {
             const res = await parseSchemaFile(getAssetsPath("person.schema.yml"));
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(decla).toHaveProperty("name.text", "Person");

@@ -31,54 +31,74 @@ export type Formatter = "space" | "pipe" | "deep" | "explode" | "form";
 
 //#region Public
 
-export function generateServers(file: ts.SourceFile, { servers }: OpenAPIObject): void {
+export function generateServers(file: ts.SourceFile, { servers }: OpenAPIObject): ts.SourceFile {
     servers = servers || [];
 
-    const serversConst = core.findFirstVariableDeclaration(file.statements, "servers");
-    const defaultsConst = core.findFirstVariableDeclaration(file.statements, "defaults");
+    const serversConst = core.findFirstVariableStatement(file.statements, "servers");
+    const defaultsConst = core.findFirstVariableStatement(file.statements, "defaults");
 
     if (!serversConst || !defaultsConst) {
         throw new Error("Invalid template: missing servers or defaults const");
     }
 
-    serversConst.initializer = parseServers(servers);
-
-    core.changePropertyValue(
-        (defaultsConst.initializer as ts.ObjectLiteralExpression) || ts.createObjectLiteral(),
-        "baseUrl",
-        defaultBaseUrl(servers)
+    file = core.replaceSourceFileStatement(
+        file,
+        serversConst,
+        core.updateVariableStatementValue(serversConst, "servers", parseServers(servers))
     );
+
+    file = core.replaceSourceFileStatement(
+        file,
+        defaultsConst,
+        core.updateVariableStatementPropertyValue(
+            defaultsConst,
+            "defaults",
+            "baseUrl",
+            defaultBaseUrl(servers)
+        )
+    );
+
+    return file;
 }
 
-export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorContext): void {
+export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorContext): ts.SourceFile {
     if (context.options.importFetch) {
-        const defaultsConst = core.findFirstVariableDeclaration(file.statements, "defaults");
+        const defaultsConst = core.findFirstVariableStatement(file.statements, "defaults");
         if (!defaultsConst) {
             throw new Error("Invalid template: missing defaults const");
         }
 
-        file.statements = ts.createNodeArray([
+        file = core.prependSourceFileStatements(
+            file,
+
             core.createDefaultImportDeclaration({
                 moduleSpecifier: context.options.importFetch,
                 name: "fetch",
                 bindings: ["RequestInit", "Headers"]
             }),
+
             core.createNamespaceImportDeclaration({
                 moduleSpecifier: "form-data",
                 name: "FormData"
-            }),
-            ...file.statements
-        ]);
+            })
+        );
 
-        core.upsertPropertyValue(
-            (defaultsConst.initializer as ts.ObjectLiteralExpression) || ts.createObjectLiteral(),
-            "fetch", core.toExpression("fetch")
+        file = core.replaceSourceFileStatement(
+            file,
+            defaultsConst,
+            core.updateVariableStatementPropertyValue(
+                defaultsConst,
+                "defaults",
+                "fetch",
+                core.toExpression("fetch")
+            )
         );
     }
 
+    return file;
 }
 
-export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, context: OApiGeneratorContext): void {
+export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, context: OApiGeneratorContext): ts.SourceFile {
     const functions: ts.FunctionDeclaration[] = [];
 
     for (const path in spec.paths) {
@@ -95,9 +115,9 @@ export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, cont
     }
 
     if (context.options.typesPath && context.typesFile) {
-        context.typesFile.statements = ts.createNodeArray(context.aliases);
+        context.typesFile = core.updateSourceFileStatements(context.typesFile, context.aliases);
 
-        file.statements = ts.createNodeArray([
+        file = core.updateSourceFileStatements(file, [
             core.createNamedImportDeclaration({
                 moduleSpecifier: context.options.typesPath,
                 bindings: context.aliases.map(a => a.name.text)
@@ -107,12 +127,14 @@ export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, cont
         ]);
     }
     else {
-        file.statements = core.appendNodes(
-            file.statements,
+        file = core.appendSourceFileStatements(
+            file,
             ...context.aliases,
             ...functions
         );
     }
+
+    return file;
 }
 
 function generateFunction(path: string, item: PathItemObject, method: Method, operation: OperationObject, context: ParserContext): ts.FunctionDeclaration {
@@ -133,38 +155,38 @@ function generateFunction(path: string, item: PathItemObject, method: Method, op
     const url = generateUrl(path, qs);
 
     const init: ts.ObjectLiteralElementLike[] = [
-        ts.createSpreadAssignment(ts.createIdentifier("options")),
+        ts.factory.createSpreadAssignment(ts.factory.createIdentifier("options")),
     ];
 
     if (method !== "GET") {
         init.push(
-            ts.createPropertyAssignment("method", ts.createStringLiteral(method))
+            ts.factory.createPropertyAssignment("method", ts.factory.createStringLiteral(method))
         );
     }
 
     if (bodyVar) {
         init.push(
-            core.createPropertyAssignment("body", ts.createIdentifier(bodyVar))
+            core.createPropertyAssignment("body", ts.factory.createIdentifier(bodyVar))
         );
     }
 
     if (header.length) {
         init.push(
-            ts.createPropertyAssignment(
+            ts.factory.createPropertyAssignment(
                 "headers",
-                ts.createObjectLiteral(
+                ts.factory.createObjectLiteralExpression(
                     [
-                        ts.createSpreadAssignment(
-                            ts.createPropertyAccessChain(
-                                ts.createIdentifier("options"),
+                        ts.factory.createSpreadAssignment(
+                            ts.factory.createPropertyAccessChain(
+                                ts.factory.createIdentifier("options"),
                                 core.questionDotToken,
-                                ts.createIdentifier("headers")
+                                ts.factory.createIdentifier("headers")
                             )
                         ),
                         ...header.map(({ name }) =>
                             core.createPropertyAssignment(
                                 name,
-                                ts.createIdentifier(paramsVars[name])
+                                ts.factory.createIdentifier(paramsVars[name])
                             )
                         ),
                     ],
@@ -177,7 +199,7 @@ function generateFunction(path: string, item: PathItemObject, method: Method, op
     const fetchArgs: ts.Expression[] = [url];
 
     if (init.length) {
-        const initObj = ts.createObjectLiteral(init, true);
+        const initObj = ts.factory.createObjectLiteralExpression(init, true);
         fetchArgs.push(bodyMode ? callFunction("http", bodyMode, [initObj]) : initObj);
     }
 
@@ -186,14 +208,14 @@ function generateFunction(path: string, item: PathItemObject, method: Method, op
             name,
             {
                 modifiers: [core.modifier.export, core.modifier.async],
-                type: ts.createTypeReferenceNode("Promise", [
-                    ts.createTypeReferenceNode("ApiResponse", [response])
+                type: ts.factory.createTypeReferenceNode("Promise", [
+                    ts.factory.createTypeReferenceNode("ApiResponse", [response])
                 ])
             },
             args,
             core.block(
-                ts.createReturn(
-                    ts.createAwait(
+                ts.factory.createReturnStatement(
+                    ts.factory.createAwaitExpression(
                         callFunction(
                             "http",
                             responseJSON ? "fetchJson" :
@@ -235,7 +257,7 @@ function generateUrl(path: string, qs?: ts.CallExpression): ts.Expression {
         /(.*?)\{(.+?)\}(.*?)(?=\{|$)/g,
         (_, head, name, literal) => {
             const expression = camelCase(name);
-            spans.push({ expression: ts.createIdentifier(expression), literal });
+            spans.push({ expression: ts.factory.createIdentifier(expression), literal });
             return head;
         }
     );
@@ -254,7 +276,7 @@ function generateUrl(path: string, qs?: ts.CallExpression): ts.Expression {
 
 function callFunction(ns: string, name: string, args: ts.Expression[]): ts.CallExpression {
     return core.createCall(
-        ts.createPropertyAccess(ts.createIdentifier(ns), name),
+        ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(ns), name),
         { args }
     );
 }
