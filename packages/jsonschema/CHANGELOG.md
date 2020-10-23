@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-alpha.0...@spec2ts/jsonschema@2.0.0-alpha.1) (2020-10-23)
+
+
+### Bug Fixes
+
+* **jsonschema:** incluce numbers in pascalCase ([e49f46a](https://github.com/touchifyapp/spec2ts/commit/e49f46af744de243afbbe852755d69351c506e16))
+
+
+
+
+
 # [2.0.0-alpha.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.4.0...@spec2ts/jsonschema@2.0.0-alpha.0) (2020-10-17)
 
 
