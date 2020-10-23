@@ -376,7 +376,7 @@ export function isNullable(schema?: JSONSchema & { nullable?: boolean }): boolea
 }
 
 export function pascalCase(name: string): string {
-    return name.match(/[a-z]+/gi)?.map((word) => word.charAt(0).toUpperCase() + word.substr(1)).join("") ?? "";
+    return name.match(/[a-z0-9]+/gi)?.map((word) => word.charAt(0).toUpperCase() + word.substr(1)).join("") ?? "";
 }
 
 function addOrUpdateImport(importPath: string, ref: ParsedReference, context: ParserContext): void {
