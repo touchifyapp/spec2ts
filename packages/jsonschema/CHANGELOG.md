@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.4.0...@spec2ts/jsonschema@1.4.1) (2020-10-26)
+
+
+### Bug Fixes
+
+* **jsonschema,openapi:** nested references not resolved ([9825a40](https://github.com/touchifyapp/spec2ts/commit/9825a405630c101e7a70452ce3a18e02ccad9ce8)), closes [#15](https://github.com/touchifyapp/spec2ts/issues/15)
+
+
+
+
+
 # [1.4.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.3.1...@spec2ts/jsonschema@1.4.0) (2020-10-06)
 
 
