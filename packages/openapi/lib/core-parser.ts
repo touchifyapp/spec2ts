@@ -19,6 +19,7 @@ import {
     getTypeFromSchema,
     getTypeFromProperties,
 
+    createRefContext,
     resolveReference,
     pascalCase
 } from "@spec2ts/jsonschema/lib/core-parser";
@@ -140,7 +141,7 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
 }
 
 export function parseReference(ref: ParsedReference, context: ParserContext): void {
-    const type = getTypeFromSchema(ref.schema, context);
+    const type = getTypeFromSchema(ref.schema, createRefContext(ref, context));
     context.aliases.push(
         core.createTypeOrInterfaceDeclaration({
             modifiers: [core.modifier.export],

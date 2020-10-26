@@ -1,0 +1,10 @@
+components:
+  schemas:
+    ThingData:
+      type: object
+      properties:
+        lastSeen:
+          type: string
+          format: date-time
+        value:
+          type: integer

@@ -1,0 +1,39 @@
+openapi: 3.0.3
+
+info:
+  title: chicken
+  version: 0.0.0
+
+paths:
+  /get:
+    post:
+      operationId: getOneThing
+      requestBody:
+        $ref: "#/components/requestBodies/GetOneThingRequest"
+      responses:
+        200:
+          $ref: "#/components/responses/GetOneThingResponse"
+        202:
+          $ref: "#/components/responses/GetThingDataResponse"
+
+components:
+  requestBodies:
+    GetOneThingRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "nested/nested-schemas-1.yml#/components/schemas/ThingKey"
+
+  responses:
+    GetOneThingResponse:
+      description: one thing
+      content:
+        application/json:
+          schema:
+            $ref: "nested/nested-schemas-1.yml#/components/schemas/Thing"
+    GetThingDataResponse:
+      description: thing data
+      content:
+        application/json:
+          schema:
+            $ref: "nested/nested-schemas-2.yml#/components/schemas/ThingData"

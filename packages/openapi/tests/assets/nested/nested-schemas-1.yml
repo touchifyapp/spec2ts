@@ -1,0 +1,18 @@
+components:
+  schemas:
+    ThingKey:
+      type: object
+      properties:
+        userId:
+          type: integer
+        thingId:
+          type: integer
+      required:
+        - userId
+        - thingId
+          
+    Thing:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ThingKey"
+        - $ref: "nested-schemas-2.yml#/components/schemas/ThingData"
