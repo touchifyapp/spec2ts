@@ -106,12 +106,13 @@ describe("openapi-parser", () => {
             const schema = loadSpec("nested-api.yml");
             const { models } = await parseOpenApi(schema, { cwd: getAssetsPath() });
 
-            expect(models).toHaveLength(3);
+            expect(models).toHaveLength(4);
             expect(models[0]).toHaveProperty("name.text", "ThingKey");
             expect(models[1]).toHaveProperty("name.text", "ThingData");
             expect(models[2]).toHaveProperty("name.text", "Thing");
             expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "escapedText"], "ThingKey");
             expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "escapedText"], "ThingData");
+            expect(models[3]).toHaveProperty("name.text", "ThingNested");
         });
 
     });

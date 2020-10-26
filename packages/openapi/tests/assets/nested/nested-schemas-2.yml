@@ -8,3 +8,8 @@ components:
           format: date-time
         value:
           type: integer
+    ThingNested:
+      type: object
+      properties:
+        nested:
+          $ref: "#/components/schemas/ThingData"

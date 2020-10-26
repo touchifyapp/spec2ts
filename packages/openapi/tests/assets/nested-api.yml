@@ -13,8 +13,14 @@ paths:
       responses:
         200:
           $ref: "#/components/responses/GetOneThingResponse"
-        202:
+        201:
           $ref: "#/components/responses/GetThingDataResponse"
+        202:
+          description: thing nested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThingNested"
 
 components:
   requestBodies:
@@ -37,3 +43,7 @@ components:
         application/json:
           schema:
             $ref: "nested/nested-schemas-2.yml#/components/schemas/ThingData"
+
+  schemas:
+    ThingNested:
+      $ref: "nested/nested-schemas-2.yml#/components/schemas/ThingNested"

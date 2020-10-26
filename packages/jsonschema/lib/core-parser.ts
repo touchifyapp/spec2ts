@@ -55,6 +55,11 @@ export interface ParsedReference {
     path?: string;
 }
 
+export interface ReferenceDetails<T> {
+    path: string;
+    schema: T;
+}
+
 //#endregion
 
 //#region Core
@@ -240,17 +245,17 @@ export function parseReference(obj: JSONReference, context: ParserContext): Pars
 
     let ref = context.refs[$ref];
     if (!ref) {
-        const schema = resolveReference<JSONSchema>({ $ref }, context);
+        const { schema, path } = resolveReferenceDetails<JSONSchema>({ $ref }, context);
 
         const name = getSchemaName(schema, $ref);
         ref = context.refs[$ref] = {
             $ref,
             name,
             schema,
+            path,
             node: ts.createTypeReferenceNode(name, undefined),
             isRemote: $ref.startsWith("http"),
-            isLocal: $ref.startsWith("#/"),
-            path: getRefPath($ref)
+            isLocal: $ref.startsWith("#/")
         };
 
         const doParseReference = context.options.parseReference || defaultParseReference;
@@ -290,6 +295,16 @@ export function resolveReference<T>(obj: T | JSONReference, context: ParserConte
     }
 
     return context.$refs.get(obj.$ref) as unknown as T;
+}
+
+export function resolveReferenceDetails<T>(obj: JSONReference, context: ParserContext): ReferenceDetails<T> {
+    const pointer = (context.$refs as any)._resolve(obj.$ref, "");
+    const cwd = context.options.cwd || process.cwd();
+
+    return {
+        path: path.relative(cwd, pointer.$ref.path),
+        schema: pointer.value
+    };
 }
 
 export function isReference(obj: unknown): obj is JSONReference {
@@ -408,13 +423,6 @@ function applyRefPrefix(ref: string, context: ParserContext): string {
     if (ref.startsWith("#")) return context.refPrefix + ref;
 
     return path.join(path.dirname(context.refPrefix), ref);
-}
-
-function getRefPath(ref: string): string | undefined {
-    const index = ref.indexOf("#");
-
-    if (index === 0) return;
-    return ref.slice(0, index);
 }
 
 //#endregion
