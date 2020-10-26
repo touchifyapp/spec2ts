@@ -1,6 +1,6 @@
 import { parseOpenApi } from "../lib/openapi-parser";
 
-import { loadSpec } from "./helpers";
+import { getAssetsPath, loadSpec } from "./helpers";
 
 describe("openapi-parser", () => {
 
@@ -95,6 +95,18 @@ describe("openapi-parser", () => {
             const schema = loadSpec("response-ref.yml");
             const { models } = await parseOpenApi(schema);
 
+            expect(models[0]).toHaveProperty("name.text", "ThingKey");
+            expect(models[1]).toHaveProperty("name.text", "ThingData");
+            expect(models[2]).toHaveProperty("name.text", "Thing");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "escapedText"], "ThingKey");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "escapedText"], "ThingData");
+        });
+
+        test("should properly resolve nested references", async () => {
+            const schema = loadSpec("nested-api.yml");
+            const { models } = await parseOpenApi(schema, { cwd: getAssetsPath() });
+
+            expect(models).toHaveLength(3);
             expect(models[0]).toHaveProperty("name.text", "ThingKey");
             expect(models[1]).toHaveProperty("name.text", "ThingData");
             expect(models[2]).toHaveProperty("name.text", "Thing");

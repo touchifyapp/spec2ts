@@ -1,5 +1,7 @@
 {
+    "$id": "https://example.com/addresses.schema.json",
     "$schema": "http://json-schema.org/draft-06/schema#",
+    "title": "Addresses",
     "definitions": {
         "address": {
             "type": "object",

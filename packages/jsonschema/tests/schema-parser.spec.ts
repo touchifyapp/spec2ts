@@ -46,7 +46,7 @@ describe("schema-parser", () => {
         });
 
         test("should rejects if name could not be defined and no name is passed", async () => {
-            const schema = loadSchema("addresses.schema.json");
+            const schema = loadSchema("noname.schema.json");
 
             await expect(parseSchema(schema))
                 .rejects.toBeInstanceOf(Error);
@@ -76,14 +76,14 @@ describe("schema-parser", () => {
 
         test("should include types from definitions", async () => {
             const schema = loadSchema("addresses.schema.json");
-            const res = await parseSchema(schema, { name: "AddressesSchema", cwd: getAssetsPath() });
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
             const arr = ts.createNodeArray(res);
             const declas = cg.filterNodes<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(declas).toHaveLength(2);
             expect(declas[0]).toHaveProperty("name.text", "Address");
-            expect(declas[1]).toHaveProperty("name.text", "AddressesSchema");
+            expect(declas[1]).toHaveProperty("name.text", "Addresses");
         });
 
         test("should include types from definitions if only definitions in file", async () => {
@@ -194,6 +194,24 @@ describe("schema-parser", () => {
             expect(types[2]).toHaveProperty("type.literal.kind", ts.SyntaxKind.FalseKeyword);
             expect(types[2]).not.toHaveProperty("type.literal.text");
         });
+
+        test("should resolve nested references from their own context", async () => {
+            const schema = loadSchema("nested.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const arr = ts.createNodeArray(res);
+            const importDecla = cg.findNode<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
+
+            expect(importDecla).toBeDefined();
+            expect(importDecla).toHaveProperty(["importClause", "namedBindings", "elements", 0, "name", "text"], "Addresses");
+            expect(importDecla).toHaveProperty("moduleSpecifier.text", "./addresses.schema");
+
+            const typeDecla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
+
+            expect(typeDecla).toHaveProperty(["members", 0, "type", "typeName", "escapedText"], "Addresses");
+
+        });
+
     });
 
     describe(".parseSchemaFile()", () => {

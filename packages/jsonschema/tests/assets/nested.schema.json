@@ -1,0 +1,10 @@
+{
+    "$id": "http://example.com/schemas/importdefs.schema.json",
+    "type": "object",
+    "title": "MyObj",
+    "properties": {
+        "obj": {
+            "$ref": "addresses.schema.json#"
+        }
+    }
+}

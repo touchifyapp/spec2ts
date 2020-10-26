@@ -1,3 +1,4 @@
+import * as path from "path";
 import * as ts from "typescript";
 
 import * as $RefParser from "@apidevtools/json-schema-ref-parser";
@@ -41,6 +42,7 @@ export interface ParserContext {
     aliases: Array<ts.TypeAliasDeclaration | ts.InterfaceDeclaration>;
     options: ParserOptions;
     names: Record<string, number>;
+    refPrefix?: string;
 }
 
 export interface ParsedReference {
@@ -50,6 +52,7 @@ export interface ParsedReference {
     node: ts.TypeReferenceNode;
     isRemote: boolean;
     isLocal: boolean;
+    path?: string;
 }
 
 //#endregion
@@ -233,11 +236,11 @@ function getTypeFromStandardTypes(type: JSONSchemaTypeName | JSONSchema4TypeName
 //#region Reference
 
 export function parseReference(obj: JSONReference, context: ParserContext): ParsedReference {
-    const { $ref } = obj;
-    let ref = context.refs[$ref];
+    const $ref = applyRefPrefix(obj.$ref, context);
 
+    let ref = context.refs[$ref];
     if (!ref) {
-        const schema = resolveReference<JSONSchema>(obj, context);
+        const schema = resolveReference<JSONSchema>({ $ref }, context);
 
         const name = getSchemaName(schema, $ref);
         ref = context.refs[$ref] = {
@@ -246,7 +249,8 @@ export function parseReference(obj: JSONReference, context: ParserContext): Pars
             schema,
             node: ts.createTypeReferenceNode(name, undefined),
             isRemote: $ref.startsWith("http"),
-            isLocal: $ref.startsWith("#/")
+            isLocal: $ref.startsWith("#/"),
+            path: getRefPath($ref)
         };
 
         const doParseReference = context.options.parseReference || defaultParseReference;
@@ -258,7 +262,7 @@ export function parseReference(obj: JSONReference, context: ParserContext): Pars
 
 function defaultParseReference(ref: ParsedReference, context: ParserContext): void {
     if (ref.isRemote || ref.isLocal) {
-        const type = getTypeFromSchema(ref.schema, context);
+        const type = getTypeFromSchema(ref.schema, createRefContext(ref, context));
         context.aliases.push(
             core.createTypeOrInterfaceDeclaration({
                 modifiers: [core.modifier.export],
@@ -288,20 +292,23 @@ export function resolveReference<T>(obj: T | JSONReference, context: ParserConte
     return context.$refs.get(obj.$ref) as unknown as T;
 }
 
-export function isReference(obj: any): obj is JSONReference {
-    return obj && "$ref" in obj;
+export function isReference(obj: unknown): obj is JSONReference {
+    return typeof obj === "object" && !!obj && "$ref" in obj;
 }
 
 //#endregion
 
 //#region Utils
 
-export async function createContext(schema: object, options: ParserOptions): Promise<ParserContext> {
-    let cwd = options.cwd || process.cwd();
-    if (!cwd.endsWith("/")) cwd = cwd + "/";
+export async function createContext(schema: $RefParser.JSONSchema, options: ParserOptions): Promise<ParserContext> {
+    const sanitize = (cwd: string): string =>
+        cwd.endsWith("/") ? cwd : cwd + "/";
+
+    const cwd = sanitize(options.cwd || process.cwd());
+    const $refs = await $RefParser.resolve(cwd, schema, {});
 
     return {
-        $refs: await $RefParser.resolve(cwd, schema, {}),
+        $refs,
         schema,
         refs: {},
         imports: [],
@@ -309,6 +316,15 @@ export async function createContext(schema: object, options: ParserOptions): Pro
         options,
         names: {}
     };
+}
+
+export function createRefContext(ref: ParsedReference, context: ParserContext): ParserContext {
+    if (!ref.path) return context;
+
+    const refPrefix = !context.refPrefix ? ref.path :
+        path.join(path.dirname(context.refPrefix), ref.path);
+
+    return { ...context, refPrefix };
 }
 
 export function getSchemaName(schema: JSONSchema, path?: string): string {
@@ -334,7 +350,7 @@ export function getSchemaName(schema: JSONSchema, path?: string): string {
     );
 }
 
-export function getAnyType(context: ParserContext): ts.KeywordTypeNode {
+export function getAnyType(context: ParserContext): ts.TypeNode {
     return context.options.avoidAny ?
         core.keywordType.unknown :
         core.keywordType.any;
@@ -383,6 +399,22 @@ function getImportFromRef(ref: string): string | undefined {
     }
 
     return importPath;
+}
+
+function applyRefPrefix(ref: string, context: ParserContext): string {
+    if (!context.refPrefix) return ref;
+    if (ref.startsWith("http")) return ref;
+
+    if (ref.startsWith("#")) return context.refPrefix + ref;
+
+    return path.join(path.dirname(context.refPrefix), ref);
+}
+
+function getRefPath(ref: string): string | undefined {
+    const index = ref.indexOf("#");
+
+    if (index === 0) return;
+    return ref.slice(0, index);
 }
 
 //#endregion
