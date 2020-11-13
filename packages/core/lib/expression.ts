@@ -49,8 +49,8 @@ export function isValidIdentifier(str: string): boolean {
     );
 }
 
-export function isIdentifier(n: any): n is ts.Identifier {
-    return ts.isIdentifier(n);
+export function isIdentifier(n: unknown | null | undefined): n is ts.Identifier {
+    return !!n && ts.isIdentifier(n as ts.Node);
 }
 
 export function createCall(
