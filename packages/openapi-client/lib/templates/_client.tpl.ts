@@ -25,11 +25,15 @@ type FetchRequestOptions = RequestOptions & {
 };
 
 type JsonRequestOptions = RequestOptions & {
-    body: Record<string, unknown>;
+    body: unknown;
+};
+
+type FormRequestOptions<T extends Record<string, unknown>> = RequestOptions & {
+    body: T;
 };
 
 type MultipartRequestOptions = RequestOptions & {
-    body: Record<string, string | Blob | undefined | any>;
+    body: Record<string, any>; // string | Blob
 };
 
 /** Utilities functions */
@@ -215,7 +219,7 @@ export const http = {
         };
     },
 
-    form({ body, headers, ...req }: JsonRequestOptions): FetchRequestOptions {
+    form<T extends Record<string, unknown>>({ body, headers, ...req }: FormRequestOptions<T>): FetchRequestOptions {
         return {
             ...req,
             body: QS.form(body),
