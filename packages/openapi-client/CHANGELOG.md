@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.0...@spec2ts/openapi-client@2.0.0-beta.1) (2020-11-16)
+
+
+### Bug Fixes
+
+* **openapi-client:** improve types for TypeScript v4 ([7927e7b](https://github.com/touchifyapp/spec2ts/commit/7927e7ba48f5abf03f0a51972213f9034cf5f09d))
+
+
+
+
+
 # [2.0.0-beta.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@1.4.3...@spec2ts/openapi-client@2.0.0-beta.0) (2020-11-13)
 
 
