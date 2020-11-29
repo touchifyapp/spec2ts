@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.1...@spec2ts/jsonschema@2.0.0-beta.2) (2020-11-29)
+
+
+### Bug Fixes
+
+* **jsonschema:** bad yargs options for enableDate ([4a17520](https://github.com/touchifyapp/spec2ts/commit/4a17520cbc95c18354860750da1e3344dd66865f))
+
+
+
+
+
 # [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.0...@spec2ts/jsonschema@2.0.0-beta.1) (2020-11-29)
 
 

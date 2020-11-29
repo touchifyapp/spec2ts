@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.1...@spec2ts/openapi@2.0.0-beta.2) (2020-11-29)
+
+
+### Bug Fixes
+
+* **openapi:** bad yargs options for enableDate ([84e7ec9](https://github.com/touchifyapp/spec2ts/commit/84e7ec9977d910b71e0e6e20b5eacc113b89d24b))
+
+
+
+
+
 # [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.0...@spec2ts/openapi@2.0.0-beta.1) (2020-11-29)
 
 
