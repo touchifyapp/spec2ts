@@ -30,7 +30,7 @@ export type JSONReference = { $ref: string };
 export interface ParserOptions {
     cwd?: string;
     avoidAny?: boolean;
-    enableDate?: boolean;
+    enableDate?: boolean | "strict" | "lax";
     parseReference?: (ref: ParsedReference, context: ParserContext) => void;
 }
 
@@ -154,7 +154,15 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
     }
 
     if (context.options.enableDate && (schema.format === "date" || schema.format === "date-time")) {
-        return ts.factory.createTypeReferenceNode("Date", []);
+        if (context.options.enableDate === true || context.options.enableDate === "strict") {
+            return ts.factory.createTypeReferenceNode("Date");
+        }
+        else {
+            return ts.factory.createUnionTypeNode([
+                core.keywordType.string,
+                ts.factory.createTypeReferenceNode("Date")
+            ]);
+        }
     }
 
     if (schema.type) {

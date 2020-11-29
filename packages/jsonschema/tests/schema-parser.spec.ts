@@ -170,6 +170,30 @@ describe("schema-parser", () => {
             expect(decla).toHaveProperty(["members", 0, "type", "typeName", "escapedText"], "Date");
         });
 
+        test("should use Date instead of string in enableDate option is set to 'strict'", async () => {
+            const schema = loadSchema("formats.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath(), enableDate: "strict" });
+
+            const arr = ts.factory.createNodeArray(res);
+            const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
+
+            expect(decla).toHaveProperty(["members", 0, "type", "typeName", "escapedText"], "Date");
+        });
+
+        test("should use string | Date instead of string in enableDate option is set to 'lax'", async () => {
+            const schema = loadSchema("formats.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath(), enableDate: "lax" });
+
+            const arr = ts.factory.createNodeArray(res);
+            const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
+
+            expect(decla).toHaveProperty(["members", 0, "type", "kind"], ts.SyntaxKind.UnionType);
+            expect(decla).toHaveProperty(["members", 0, "type", "types", "length"], 2);
+
+            expect(decla).toHaveProperty(["members", 0, "type", "types", 0], cg.keywordType.string);
+            expect(decla).toHaveProperty(["members", 0, "type", "types", 1, "typeName", "escapedText"], "Date");
+        });
+
         test("should parse const as literal type", async () => {
             const schema = loadSchema("const.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
