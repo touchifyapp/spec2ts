@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.0...@spec2ts/jsonschema@2.0.0-beta.1) (2020-11-29)
+
+
+### Features
+
+* **jsonschema:** add lax style dates (string | Date) ([e6475aa](https://github.com/touchifyapp/spec2ts/commit/e6475aa84d0330457c91e2d0e32911ce66135cec))
+
+
+
+
+
 # [2.0.0-beta.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@1.4.2...@spec2ts/jsonschema@2.0.0-beta.0) (2020-11-13)
 
 

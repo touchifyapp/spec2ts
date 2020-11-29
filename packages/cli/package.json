@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/cli",
-    "version": "2.0.0-beta.1",
+    "version": "2.0.0-beta.2",
     "description": "Utility to convert specifications (Open API, JSON Schemas) to TypeScript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
@@ -36,9 +36,9 @@
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
-        "@spec2ts/jsonschema": "^2.0.0-beta.0",
-        "@spec2ts/openapi": "^2.0.0-beta.0",
-        "@spec2ts/openapi-client": "^2.0.0-beta.1"
+        "@spec2ts/jsonschema": "^2.0.0-beta.1",
+        "@spec2ts/openapi": "^2.0.0-beta.1",
+        "@spec2ts/openapi-client": "^2.0.0-beta.2"
     },
     "devDependencies": {
         "eslint": "^7.11.0",

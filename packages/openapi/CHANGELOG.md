@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.0...@spec2ts/openapi@2.0.0-beta.1) (2020-11-29)
+
+
+### Features
+
+* **openapi:** add support for new lax date style ([4d7eb0b](https://github.com/touchifyapp/spec2ts/commit/4d7eb0baad32e83c7f9cbf4feeec01cd34ec3be3))
+
+
+
+
+
 # [2.0.0-beta.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@1.2.4...@spec2ts/openapi@2.0.0-beta.0) (2020-11-13)
 
 
