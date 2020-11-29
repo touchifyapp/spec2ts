@@ -62,10 +62,11 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             type: "boolean",
             describe: "Avoid the `any` type and use `unknown` instead"
         })
-        // .option("enableDate", {
-        //     type: "boolean",
-        //     describe: "Build `Date` for format `date` and `date-time`"
-        // })
+        .option("enableDate", {
+            choices: ["strict", "lax"] as const,
+            default: "strict" as const,
+            describe: "Build `Date` for format `date` and `date-time`"
+        })
 
         .option("inlineRequired", {
             type: "boolean",
