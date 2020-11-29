@@ -47,8 +47,7 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
             describe: "Avoid the `any` type and use `unknown` instead"
         })
         .option("enableDate", {
-            choices: ["strict", "lax"] as const,
-            default: "strict" as const,
+            choices: [true, "strict", "lax"] as const,
             describe: "Build `Date` for format `date` and `date-time`"
         })
 
