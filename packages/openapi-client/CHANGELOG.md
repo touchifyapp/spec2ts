@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.4](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.3...@spec2ts/openapi-client@2.0.0-beta.4) (2020-12-14)
+
+
+### Bug Fixes
+
+* **openapi-client:** type issue in TS 4.1 ([09da142](https://github.com/touchifyapp/spec2ts/commit/09da1423ce16e1a8ccee81ba0ad160f5f6313a67))
+
+
+
+
+
 # [2.0.0-beta.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.2...@spec2ts/openapi-client@2.0.0-beta.3) (2020-11-29)
 
 
