@@ -43,7 +43,7 @@ export const _ = {
     allowReserved: [encodeURI, encodeURI],
 
     /** Deeply remove all properties with undefined values. */
-    stripUndefined<T>(obj?: T): T | undefined {
+    stripUndefined<T extends Record<string, U | undefined>, U>(obj?: T): Record<string, U> | undefined {
         return obj && JSON.parse(JSON.stringify(obj));
     },
 
