@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.5](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.4...@spec2ts/openapi-client@2.0.0-beta.5) (2020-12-21)
+
+
+### Bug Fixes
+
+* **openapi-client:** allow $ and _ in camelCase ([08c244e](https://github.com/touchifyapp/spec2ts/commit/08c244eb6e2c0a6f3ab833faa5159483ca1adda7))
+
+
+
+
+
 # [2.0.0-beta.4](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.3...@spec2ts/openapi-client@2.0.0-beta.4) (2020-12-14)
 
 
