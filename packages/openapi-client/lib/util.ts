@@ -1,5 +1,5 @@
 export function camelCase(str: string): string {
-    const regex = /[A-Z\xC0-\xD6\xD8-\xDE]?[a-z\xDF-\xF6\xF8-\xFF]+|[A-Z\xC0-\xD6\xD8-\xDE]+(?![a-z\xDF-\xF6\xF8-\xFF])|\d+/g;
+    const regex = /[A-Z\xC0-\xD6\xD8-\xDE_$]?[a-z\xDF-\xF6\xF8-\xFF_$]+|[A-Z\xC0-\xD6\xD8-\xDE_$]+(?![a-z\xDF-\xF6\xF8-\xFF_$])|\d+/g;
     const words = str.match(regex);
     if (!words) return "";
 
