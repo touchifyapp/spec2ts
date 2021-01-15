@@ -115,6 +115,13 @@ describe("openapi-parser", () => {
             expect(models[3]).toHaveProperty("name.text", "ThingNested");
         });
 
+        test("should properly resolve nested references part 2: the revengeance", async () => {
+            const fileName = "nested-api-1.yml";
+            const schema = loadSpec(fileName);
+            const { models } = await parseOpenApi(schema, { cwd: getAssetsPath() });
+            expect(models).toHaveLength(4);
+        })
+
     });
 
 });
