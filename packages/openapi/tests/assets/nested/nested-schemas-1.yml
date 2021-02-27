@@ -15,4 +15,4 @@ components:
       type: object
       allOf:
         - $ref: "#/components/schemas/ThingKey"
-        - $ref: "nested-schemas-2.yml#/components/schemas/ThingData"
+        - $ref: "nested-schemas-2.yml#/definitions/ThingData"

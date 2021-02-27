@@ -56,6 +56,7 @@ export interface ParsedReference {
 }
 
 export interface ReferenceDetails<T> {
+    id: string;
     path: string;
     schema: T;
 }
@@ -250,13 +251,12 @@ function getTypeFromStandardTypes(type: JSONSchemaTypeName | JSONSchema4TypeName
 
 export function parseReference(obj: JSONReference, context: ParserContext): ParsedReference {
     const $ref = applyRefPrefix(obj.$ref, context);
+    const { id, schema, path } = resolveReferenceDetails<JSONSchema>({ $ref }, context);
 
-    let ref = context.refs[$ref];
+    let ref = context.refs[id];
     if (!ref) {
-        const { schema, path } = resolveReferenceDetails<JSONSchema>({ $ref }, context);
-
         const name = getSchemaName(schema, $ref);
-        ref = context.refs[$ref] = {
+        ref = context.refs[id] = {
             $ref,
             name,
             schema,
@@ -310,6 +310,7 @@ export function resolveReferenceDetails<T>(obj: JSONReference, context: ParserCo
     const cwd = context.options.cwd || process.cwd();
 
     return {
+        id: pointer.path,
         path: path.relative(cwd, pointer.$ref.path),
         schema: pointer.value
     };

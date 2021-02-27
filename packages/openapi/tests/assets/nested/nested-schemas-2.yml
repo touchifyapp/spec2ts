@@ -1,15 +1,14 @@
-components:
-  schemas:
-    ThingData:
-      type: object
-      properties:
-        lastSeen:
-          type: string
-          format: date-time
-        value:
-          type: integer
-    ThingNested:
-      type: object
-      properties:
-        nested:
-          $ref: "#/components/schemas/ThingData"
+definitions:
+  ThingData:
+    type: object
+    properties:
+      lastSeen:
+        type: string
+        format: date-time
+      value:
+        type: integer
+  ThingNested:
+    type: object
+    properties:
+      nested:
+        $ref: "#/definitions/ThingData"

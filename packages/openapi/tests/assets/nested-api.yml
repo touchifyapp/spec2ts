@@ -28,7 +28,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "nested/nested-schemas-1.yml#/components/schemas/ThingKey"
+            $ref: "#/components/schemas/ThingKey"
 
   responses:
     GetOneThingResponse:
@@ -36,14 +36,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: "nested/nested-schemas-1.yml#/components/schemas/Thing"
+            $ref: "#/components/schemas/Thing"
     GetThingDataResponse:
       description: thing data
       content:
         application/json:
           schema:
-            $ref: "nested/nested-schemas-2.yml#/components/schemas/ThingData"
+            $ref: "nested/nested-schemas-2.yml#/definitions/ThingData"
 
   schemas:
+    Thing:
+      $ref: "nested/nested-schemas-1.yml#/components/schemas/Thing"
+    ThingKey:
+      $ref: "nested/nested-schemas-1.yml#/components/schemas/ThingKey"
     ThingNested:
-      $ref: "nested/nested-schemas-2.yml#/components/schemas/ThingNested"
+      $ref: "nested/nested-schemas-2.yml#/definitions/ThingNested"
