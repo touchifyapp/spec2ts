@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.2...@spec2ts/openapi@2.0.0-beta.3) (2021-02-27)
+
+
+### Bug Fixes
+
+* **jsonschema:** avoid external references duplication ([9508d9e](https://github.com/touchifyapp/spec2ts/commit/9508d9eee0ae19523d03a2874bad73808ec5bf71))
+
+
+
+
+
 # [2.0.0-beta.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.1...@spec2ts/openapi@2.0.0-beta.2) (2020-11-29)
 
 
