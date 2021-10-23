@@ -15,6 +15,7 @@ import {
 export interface BuildTsFromOpenApiOptions extends ParseOpenApiOptions {
     input: string | string[];
     output?: string;
+    ext?: string;
     banner?: string;
 }
 
@@ -36,6 +37,13 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
             alias: "o",
             describe: "Output directory for generated types"
         })
+        .option("ext", {
+            type: "string",
+            alias: "e",
+            describe: "Output extension for generated types",
+            choices: [".d.ts", ".ts"]
+        })
+
         .option("cwd", {
             type: "string",
             alias: "c",

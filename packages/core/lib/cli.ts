@@ -14,7 +14,7 @@ export async function mkdirp(file: string): Promise<void> {
     await fs.mkdir(path.dirname(file), { recursive: true });
 }
 
-export function getOutputPath(src: string, { output }: { output?: string }): string {
+export function getOutputPath(src: string, { output, ext }: { output?: string, ext?: string }): string {
     if (output) {
         return path.join(
             output,
@@ -28,7 +28,7 @@ export function getOutputPath(src: string, { output }: { output?: string }): str
 
     return path.join(
         path.dirname(src),
-        getOutputFileName(src)
+        getOutputFileName(src, ext)
     );
 }
 
