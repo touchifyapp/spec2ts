@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0-beta.0...@spec2ts/core@2.0.0-beta.1) (2021-10-23)
+
+
+### Features
+
+* allow --ext option to specify output extension ([4c70ca1](https://github.com/touchifyapp/spec2ts/commit/4c70ca13f3fc12ce1fd16c0430c7f90f90b0ed64))
+
+
+
+
+
 # [2.0.0-beta.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@1.2.2...@spec2ts/core@2.0.0-beta.0) (2020-11-13)
 
 

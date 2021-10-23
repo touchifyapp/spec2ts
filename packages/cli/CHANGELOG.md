@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.7](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/cli@2.0.0-beta.6...@spec2ts/cli@2.0.0-beta.7) (2021-10-23)
+
+**Note:** Version bump only for package @spec2ts/cli
+
+
+
+
+
 # [2.0.0-beta.6](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/cli@2.0.0-beta.5...@spec2ts/cli@2.0.0-beta.6) (2021-02-27)
 
 **Note:** Version bump only for package @spec2ts/cli
