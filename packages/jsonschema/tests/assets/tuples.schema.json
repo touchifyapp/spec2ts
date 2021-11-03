@@ -1,0 +1,30 @@
+{
+    "$id": "https://example.com/tuple.schema.json",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "description": "Tuple entities",
+    "definitions": {
+        "strict-tuple": {
+            "items": false,
+            "prefixItems": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "$ref": "./addresses.schema.json#/definitions/address" }
+            ]
+        },
+        "lax-type-tuple": {
+            "items": { "$ref": "./addresses.schema.json#/definitions/address" },
+            "prefixItems": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "$ref": "./addresses.schema.json#/definitions/address" }
+            ]
+        },
+        "lax-any-tuple": {
+            "prefixItems": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "$ref": "./addresses.schema.json#/definitions/address" }
+            ]
+        }
+    }
+}

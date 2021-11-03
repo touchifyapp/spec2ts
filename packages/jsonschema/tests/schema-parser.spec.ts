@@ -160,6 +160,44 @@ describe("schema-parser", () => {
             expect(decla).toHaveProperty("type.types.length", 4);
         });
 
+        test("should create a strict tuple if prefixItems is used with items: false", async () => {
+            const schema = loadSchema("tuples.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const arr = ts.factory.createNodeArray(res);
+            const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration, e => e.name.text === "StrictTuple");
+
+            expect(decla).toBeDefined();
+            expect(decla).toHaveProperty("type.kind", ts.SyntaxKind.TupleType);
+            expect(decla).toHaveProperty("type.elements.length", 3);
+        });
+
+        test("should create a lax tuple if prefixItems is used with no items", async () => {
+            const schema = loadSchema("tuples.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const arr = ts.factory.createNodeArray(res);
+            const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration, e => e.name.text === "LaxAnyTuple");
+
+            expect(decla).toBeDefined();
+            expect(decla).toHaveProperty("type.kind", ts.SyntaxKind.TupleType);
+            expect(decla).toHaveProperty("type.elements.length", 4);
+            expect(decla).toHaveProperty("type.elements.3.kind", ts.SyntaxKind.RestType);
+        });
+
+        test("should create a lax tuple with custom type if prefixItems is used with items: schema", async () => {
+            const schema = loadSchema("tuples.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const arr = ts.factory.createNodeArray(res);
+            const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration, e => e.name.text === "LaxTypeTuple");
+
+            expect(decla).toBeDefined();
+            expect(decla).toHaveProperty("type.kind", ts.SyntaxKind.TupleType);
+            expect(decla).toHaveProperty("type.elements.length", 4);
+            expect(decla).toHaveProperty("type.elements.3.kind", ts.SyntaxKind.RestType);
+        });
+
         test("should use Date instead of string in enableDate option is provided", async () => {
             const schema = loadSchema("formats.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath(), enableDate: true });

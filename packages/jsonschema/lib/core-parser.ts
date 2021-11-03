@@ -9,22 +9,19 @@ import type {
     JSONSchema6,
     JSONSchema6TypeName,
     JSONSchema7,
-    JSONSchema7TypeName
+    JSONSchema7TypeName,
 } from "json-schema";
 
 import * as core from "@spec2ts/core";
 
 //#region Types
 
-export {
-    JSONSchema4,
-    JSONSchema6,
-    JSONSchema7
-};
+export { JSONSchema4, JSONSchema6, JSONSchema7 };
 
 export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;
 export type JSONSchemaTypeName = JSONSchema4TypeName | JSONSchema6TypeName | JSONSchema7TypeName;
 export type JSONSchemaDefinition = JSONSchema | boolean;
+export type JSONSchemaTuple = JSONSchema & { prefixItems: JSONSchemaDefinition[] };
 export type JSONReference = { $ref: string };
 
 export interface ParserOptions {
@@ -72,13 +69,14 @@ export interface ReferenceDetails<T> {
 export function getTypeFromSchema(schema: JSONSchema | JSONReference | undefined, context: ParserContext): ts.TypeNode {
     const type = getBaseTypeFromSchema(schema, context);
 
-    return isNullable(schema) ?
-        ts.factory.createUnionTypeNode([type, core.keywordType.null]) :
-        type;
+    return isNullable(schema) ? ts.factory.createUnionTypeNode([type, core.keywordType.null]) : type;
 }
 
 /** This is the very core of the Schema to TS conversion - it takes a schema and returns the appropriate type. */
-export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undefined, context: ParserContext): ts.TypeNode {
+export function getBaseTypeFromSchema(
+    schema: JSONSchema | JSONReference | undefined,
+    context: ParserContext
+): ts.TypeNode {
     if (!schema) {
         return getAnyType(context);
     }
@@ -87,19 +85,40 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
         return getReferenceType(schema, context);
     }
 
-    if (schema.oneOf) { // oneOf -> union
+    if (schema.oneOf) {
+        // oneOf -> union
         return ts.factory.createUnionTypeNode(getTypeFromDefinitions(schema.oneOf, context));
     }
 
-    if (schema.anyOf) { // anyOf -> union
+    if (schema.anyOf) {
+        // anyOf -> union
         return ts.factory.createUnionTypeNode(getTypeFromDefinitions(schema.anyOf, context));
     }
 
-    if (schema.allOf) {  // allOf -> intersection
+    if (schema.allOf) {
+        // allOf -> intersection
         return ts.factory.createIntersectionTypeNode(getTypeFromDefinitions(schema.allOf, context));
     }
 
-    if (schema.items) { // items -> array
+    if ((schema as JSONSchemaTuple).prefixItems) {
+        // prefixItems -> tuple
+        const types = getTypeFromDefinitions((schema as JSONSchemaTuple).prefixItems, context);
+
+        if (schema.items ?? true) {
+            types.push(
+                ts.factory.createRestTypeNode(
+                    getBaseTypeFromSchema({ items: schema.items ?? true } as JSONSchema, context)
+                )
+            );
+        }
+
+        return ts.factory.createTupleTypeNode(
+            types
+        );
+    }
+
+    if (schema.items) {
+        // items -> array
         if (Array.isArray(schema.items)) {
             return ts.factory.createArrayTypeNode(
                 ts.factory.createUnionTypeNode(getTypeFromDefinitions(schema.items, context))
@@ -113,38 +132,45 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
         return ts.factory.createArrayTypeNode(getTypeFromSchema(schema.items, context));
     }
 
-    if (schema.properties || schema.additionalProperties) { // properties -> literal type
+    if (schema.properties || schema.additionalProperties) {
+        // properties -> literal type
         return getTypeFromProperties(
             schema.properties || {},
-            schema.required || [],
+            (schema.required as string[] | undefined) || [],
             schema.additionalProperties,
             context
         );
     }
 
     // (could be boolean -> strong checking required)
-    if (typeof schema.const !== "undefined") { // const -> literal type
-        return ts.factory.createLiteralTypeNode((s => {
-            switch (typeof s) {
-                case "string":
-                    return ts.factory.createStringLiteral(s);
-                case "number":
-                    return ts.factory.createNumericLiteral(s.toString());
-                case "boolean":
-                    return s ? ts.factory.createTrue() : ts.factory.createFalse();
-                default:
-                    return ts.factory.createStringLiteral(String(s));
-            }
-        })(schema.const));
+    if (typeof schema.const !== "undefined") {
+        // const -> literal type
+        return ts.factory.createLiteralTypeNode(
+            ((s) => {
+                switch (typeof s) {
+                    case "string":
+                        return ts.factory.createStringLiteral(s);
+                    case "number":
+                        return ts.factory.createNumericLiteral(s.toString());
+                    case "boolean":
+                        return s ? ts.factory.createTrue() : ts.factory.createFalse();
+                    default:
+                        return ts.factory.createStringLiteral(String(s));
+                }
+            })(schema.const)
+        );
     }
 
-    if (schema.enum) { // enum -> union of literal types
+    if (schema.enum) {
+        // enum -> union of literal types
         return ts.factory.createUnionTypeNode(
-            (schema.enum as Array<string | number | boolean | null>).map(s =>
+            (schema.enum as Array<string | number | boolean | null>).map((s) =>
                 ts.factory.createLiteralTypeNode(
-                    typeof s === "string" ? ts.factory.createStringLiteral(s) :
-                        typeof s === "number" ? ts.factory.createNumericLiteral(s.toString()) :
-                            ts.factory.createStringLiteral(String(s))
+                    typeof s === "string"
+                        ? ts.factory.createStringLiteral(s)
+                        : typeof s === "number"
+                        ? ts.factory.createNumericLiteral(s.toString())
+                        : ts.factory.createStringLiteral(String(s))
                 )
             )
         );
@@ -157,11 +183,10 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
     if (context.options.enableDate && (schema.format === "date" || schema.format === "date-time")) {
         if (context.options.enableDate === true || context.options.enableDate === "strict") {
             return ts.factory.createTypeReferenceNode("Date");
-        }
-        else {
+        } else {
             return ts.factory.createUnionTypeNode([
                 core.keywordType.string,
-                ts.factory.createTypeReferenceNode("Date")
+                ts.factory.createTypeReferenceNode("Date"),
             ]);
         }
     }
@@ -180,21 +205,19 @@ export function getTypeFromProperties(
     additionalProperties: boolean | JSONSchema | JSONReference | null | undefined,
     context: ParserContext
 ): ts.TypeNode {
-    const members: ts.TypeElement[] = Object.keys(props).map(name => {
+    const members: ts.TypeElement[] = Object.keys(props).map((name) => {
         const schema = props[name];
         const isRequired = required && required.includes(name);
         return core.createPropertySignature({
             questionToken: !isRequired,
             name,
-            type: getTypeFromDefinition(schema, context)
+            type: getTypeFromDefinition(schema, context),
         });
     });
 
     if (additionalProperties) {
         const type =
-            additionalProperties === true
-                ? core.keywordType.any
-                : getTypeFromSchema(additionalProperties, context);
+            additionalProperties === true ? core.keywordType.any : getTypeFromSchema(additionalProperties, context);
 
         members.push(core.createIndexSignature(type));
     }
@@ -208,13 +231,14 @@ export function parseDefinitions(schema: JSONSchema | JSONReference | undefined,
         return;
     }
 
-    return Object.keys(schema.definitions)
-        .forEach(refName => parseReference({ $ref: `#/definitions/${refName}` }, context));
+    return Object.keys(schema.definitions).forEach((refName) =>
+        parseReference({ $ref: `#/definitions/${refName}` }, context)
+    );
 }
 
 /** Extract types from a Type Definition array. */
 function getTypeFromDefinitions(definitions: JSONSchemaDefinition[], context: ParserContext): ts.TypeNode[] {
-    return definitions.map(s => getTypeFromDefinition(s, context));
+    return definitions.map((s) => getTypeFromDefinition(s, context));
 }
 
 /** Get a type from a schema definition. */
@@ -227,15 +251,16 @@ function getTypeFromDefinition(schema: JSONSchemaDefinition, context: ParserCont
 }
 
 /** Get a type from standard types (eg: string, number, boolean...). */
-function getTypeFromStandardTypes(type: JSONSchemaTypeName | JSONSchema4TypeName[], context: ParserContext): ts.TypeNode {
+function getTypeFromStandardTypes(
+    type: JSONSchemaTypeName | JSONSchema4TypeName[],
+    context: ParserContext
+): ts.TypeNode {
     if (!type) {
         return getAnyType(context);
     }
 
     if (Array.isArray(type)) {
-        return ts.factory.createUnionTypeNode(
-            type.map(t => getTypeFromStandardTypes(t, context))
-        );
+        return ts.factory.createUnionTypeNode(type.map((t) => getTypeFromStandardTypes(t, context)));
     }
 
     // string, boolean, null, number
@@ -263,7 +288,7 @@ export function parseReference(obj: JSONReference, context: ParserContext): Pars
             path,
             node: ts.factory.createTypeReferenceNode(name, undefined),
             isRemote: $ref.startsWith("http"),
-            isLocal: $ref.startsWith("#/")
+            isLocal: $ref.startsWith("#/"),
         };
 
         const doParseReference = context.options.parseReference || defaultParseReference;
@@ -280,11 +305,10 @@ function defaultParseReference(ref: ParsedReference, context: ParserContext): vo
             core.createTypeOrInterfaceDeclaration({
                 modifiers: [core.modifier.export],
                 name: ref.name,
-                type
+                type,
             })
         );
-    }
-    else {
+    } else {
         const importPath = getImportFromRef(ref.$ref);
         if (importPath) {
             addOrUpdateImport(importPath, ref, context);
@@ -312,7 +336,7 @@ export function resolveReferenceDetails<T>(obj: JSONReference, context: ParserCo
     return {
         id: pointer.path,
         path: path.relative(cwd, pointer.$ref.path),
-        schema: pointer.value
+        schema: pointer.value,
     };
 }
 
@@ -325,8 +349,7 @@ export function isReference(obj: unknown): obj is JSONReference {
 //#region Utils
 
 export async function createContext(schema: $RefParser.JSONSchema, options: ParserOptions): Promise<ParserContext> {
-    const sanitize = (cwd: string): string =>
-        cwd.endsWith("/") ? cwd : cwd + "/";
+    const sanitize = (cwd: string): string => (cwd.endsWith("/") ? cwd : cwd + "/");
 
     const cwd = sanitize(options.cwd || process.cwd());
     const $refs = await $RefParser.resolve(cwd, schema, {});
@@ -338,15 +361,14 @@ export async function createContext(schema: $RefParser.JSONSchema, options: Pars
         imports: [],
         aliases: [],
         options,
-        names: {}
+        names: {},
     };
 }
 
 export function createRefContext(ref: ParsedReference, context: ParserContext): ParserContext {
     if (!ref.path) return context;
 
-    const refPrefix = !context.refPrefix ? ref.path :
-        path.join(path.dirname(context.refPrefix), ref.path);
+    const refPrefix = !context.refPrefix ? ref.path : path.join(path.dirname(context.refPrefix), ref.path);
 
     return { ...context, refPrefix };
 }
@@ -357,10 +379,7 @@ export function getSchemaName(schema: JSONSchema, path?: string): string {
     }
 
     if (schema.$id) {
-        return pascalCase(
-            schema.$id.replace(/.+\//, "")
-                .replace(/\.(json)|(ya?ml)$/, "")
-        );
+        return pascalCase(schema.$id.replace(/.+\//, "").replace(/\.(json)|(ya?ml)$/, ""));
     }
 
     if (!path) {
@@ -368,16 +387,15 @@ export function getSchemaName(schema: JSONSchema, path?: string): string {
     }
 
     return pascalCase(
-        path.replace(/.+\//, "")
+        path
+            .replace(/.+\//, "")
             .replace(/\.(json)|(ya?ml)$/, "")
             .replace(/#$/, "")
     );
 }
 
 export function getAnyType(context: ParserContext): ts.TypeNode {
-    return context.options.avoidAny ?
-        core.keywordType.unknown :
-        core.keywordType.any;
+    return context.options.avoidAny ? core.keywordType.unknown : core.keywordType.any;
 }
 
 export function isNullable(schema?: JSONSchema & { nullable?: boolean }): boolean {
@@ -385,16 +403,25 @@ export function isNullable(schema?: JSONSchema & { nullable?: boolean }): boolea
 }
 
 export function pascalCase(name: string): string {
-    return name.match(/[a-z0-9]+/gi)?.map((word) => word.charAt(0).toUpperCase() + word.substr(1)).join("") ?? "";
+    return (
+        name
+            .match(/[a-z0-9]+/gi)
+            ?.map((word) => word.charAt(0).toUpperCase() + word.substr(1))
+            .join("") ?? ""
+    );
 }
 
 function addOrUpdateImport(importPath: string, ref: ParsedReference, context: ParserContext): void {
     const importNamedBinding = getSchemaName(ref.schema, ref.$ref);
-    const importDeclaration = context.imports.find(i => core.getString(i.moduleSpecifier) === importPath);
+    const importDeclaration = context.imports.find((i) => core.getString(i.moduleSpecifier) === importPath);
 
-    if (importDeclaration && importDeclaration.importClause?.namedBindings && ts.isNamedImports(importDeclaration.importClause.namedBindings)) {
+    if (
+        importDeclaration &&
+        importDeclaration.importClause?.namedBindings &&
+        ts.isNamedImports(importDeclaration.importClause.namedBindings)
+    ) {
         const elements = importDeclaration.importClause.namedBindings.elements;
-        const hasName = elements.some(e => e.name.text === importNamedBinding);
+        const hasName = elements.some((e) => e.name.text === importNamedBinding);
         if (hasName) return;
 
         const newImportDeclaration = ts.factory.updateImportDeclaration(
@@ -405,21 +432,23 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
                 importDeclaration.importClause,
                 importDeclaration.importClause.isTypeOnly,
                 importDeclaration.importClause.name,
-                ts.factory.updateNamedImports(importDeclaration.importClause.namedBindings, ts.factory.createNodeArray([
-                    ...elements,
-                    ts.factory.createImportSpecifier(undefined, core.toIdentifier(importNamedBinding))
-                ]))
+                ts.factory.updateNamedImports(
+                    importDeclaration.importClause.namedBindings,
+                    ts.factory.createNodeArray([
+                        ...elements,
+                        ts.factory.createImportSpecifier(undefined, core.toIdentifier(importNamedBinding)),
+                    ])
+                )
             ),
             importDeclaration.moduleSpecifier
         );
 
         context.imports.splice(context.imports.indexOf(importDeclaration), 1, newImportDeclaration);
-    }
-    else {
+    } else {
         context.imports.push(
             core.createNamedImportDeclaration({
                 moduleSpecifier: importPath,
-                bindings: [importNamedBinding]
+                bindings: [importNamedBinding],
             })
         );
     }
