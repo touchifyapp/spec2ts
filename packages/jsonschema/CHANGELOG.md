@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.5](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.4...@spec2ts/jsonschema@2.0.0-beta.5) (2021-11-03)
+
+
+### Features
+
+* allow prefixItems to create tuples ([7fb44ca](https://github.com/touchifyapp/spec2ts/commit/7fb44ca88c14623392f1d6076b390370da9e0a69))
+
+
+
+
+
 # [2.0.0-beta.4](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.3...@spec2ts/jsonschema@2.0.0-beta.4) (2021-10-23)
 
 
