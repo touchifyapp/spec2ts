@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0-beta.1...@spec2ts/core@2.0.0-beta.2) (2022-01-27)
+
+
+### Bug Fixes
+
+* make imports works with typescript 4.5 ([78f54b8](https://github.com/touchifyapp/spec2ts/commit/78f54b81a6ccfaff42dbbe640ffbd1afbc41f8bb))
+
+
+
+
+
 # [2.0.0-beta.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0-beta.0...@spec2ts/core@2.0.0-beta.1) (2021-10-23)
 
 

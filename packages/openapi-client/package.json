@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/openapi-client",
-    "version": "2.0.0-beta.8",
+    "version": "2.0.0-beta.9",
     "description": "Utility to convert OpenAPI v3 specifications to Typescript HTTP client using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
@@ -40,9 +40,9 @@
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
-        "@spec2ts/core": "^2.0.0-beta.1",
-        "@spec2ts/jsonschema": "^2.0.0-beta.5",
-        "@spec2ts/openapi": "^2.0.0-beta.5",
+        "@spec2ts/core": "^2.0.0-beta.2",
+        "@spec2ts/jsonschema": "^2.0.0-beta.6",
+        "@spec2ts/openapi": "^2.0.0-beta.6",
         "openapi3-ts": "^1.3.0",
         "yargs": "^15.3.1"
     },
