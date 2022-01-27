@@ -258,7 +258,7 @@ export function createNamedImportDeclaration({
 }: {
     decorators?: ts.Decorator[];
     modifiers?: ts.Modifier[];
-    bindings: Array<ts.Identifier | string | { name: ts.Identifier | string; propertyName: ts.Identifier | string }>;
+    bindings: Array<ts.Identifier | string | ImportSpecifier>;
     isTypeOnly?: boolean;
     moduleSpecifier: string | ts.Expression;
 }): ts.ImportDeclaration {
@@ -269,13 +269,7 @@ export function createNamedImportDeclaration({
             isTypeOnly || false,
             undefined,
             ts.factory.createNamedImports(
-                bindings.map(b => {
-                    if (typeof b === "string" || isIdentifier(b)) {
-                        return ts.factory.createImportSpecifier(undefined, toIdentifier(b));
-                    }
-
-                    return ts.factory.createImportSpecifier(toIdentifier(b.propertyName), toIdentifier(b.name));
-                })
+                bindings.map(createImportSpecifier)
             )
         ),
         toLiteral(moduleSpecifier),
@@ -293,7 +287,7 @@ export function createDefaultImportDeclaration({
     decorators?: ts.Decorator[];
     modifiers?: ts.Modifier[];
     name: ts.Identifier | string;
-    bindings?: Array<ts.Identifier | string | { name: ts.Identifier | string; propertyName: ts.Identifier | string }>;
+    bindings?: Array<ts.Identifier | string | ImportSpecifier>;
     isTypeOnly?: boolean;
     moduleSpecifier: string | ts.Expression;
 }): ts.ImportDeclaration {
@@ -305,13 +299,7 @@ export function createDefaultImportDeclaration({
             toIdentifier(name),
             bindings ?
                 ts.factory.createNamedImports(
-                    bindings.map(b => {
-                        if (typeof b === "string" || isIdentifier(b)) {
-                            return ts.factory.createImportSpecifier(undefined, toIdentifier(b));
-                        }
-
-                        return ts.factory.createImportSpecifier(toIdentifier(b.propertyName), toIdentifier(b.name));
-                    })
+                    bindings.map(createImportSpecifier)
                 ) :
                 undefined
         ),
@@ -411,4 +399,21 @@ export function updateVariableDeclarationInitializer(declaration: ts.VariableDec
         declaration.type,
         initializer
     );
+}
+
+export type ImportSpecifier = { name: ts.Identifier | string; propertyName: ts.Identifier | string, type?: boolean; };
+function createImportSpecifier(binding: ts.Identifier | string | ImportSpecifier): ts.ImportSpecifier {
+    if (typeof binding === "string" || isIdentifier(binding)) {
+        if (ts.factory.createImportSpecifier.length === 3) {
+            return (ts.factory.createImportSpecifier as any)(false, undefined, toIdentifier(binding));
+        } else {
+            return ts.factory.createImportSpecifier(undefined, toIdentifier(binding));
+        }
+    }
+
+    if (ts.factory.createImportSpecifier.length === 3) {
+        return (ts.factory.createImportSpecifier as any)(binding.type || false, toIdentifier(binding.propertyName), toIdentifier(binding.name));
+    } else {
+        return ts.factory.createImportSpecifier(toIdentifier(binding.propertyName), toIdentifier(binding.name));
+    }
 }
