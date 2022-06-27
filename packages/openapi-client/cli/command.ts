@@ -190,12 +190,12 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
         main: main.replace(/\.ts$/, ".js"),
         files: ["*.js", "*.d.ts"],
         scripts: {
-            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "UMD"} --moduleResolution node`,
+            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "UMD"} --moduleResolution node --skipLibCheck`,
             prepublishOnly: "npm run build"
         },
         dependencies: {},
         devDependencies: {
-            typescript: "^3.0.0"
+            typescript: "^4.2.0"
         }
     };
 
