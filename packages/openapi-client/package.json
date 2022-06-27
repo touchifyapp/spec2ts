@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/openapi-client",
-    "version": "2.0.0-beta.9",
+    "version": "2.0.0-beta.10",
     "description": "Utility to convert OpenAPI v3 specifications to Typescript HTTP client using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
