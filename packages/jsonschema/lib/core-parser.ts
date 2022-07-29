@@ -112,9 +112,7 @@ export function getBaseTypeFromSchema(
             );
         }
 
-        return ts.factory.createTupleTypeNode(
-            types
-        );
+        return ts.factory.createTupleTypeNode(types);
     }
 
     if (schema.items) {
@@ -436,7 +434,13 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
                     importDeclaration.importClause.namedBindings,
                     ts.factory.createNodeArray([
                         ...elements,
-                        ts.factory.createImportSpecifier(undefined, core.toIdentifier(importNamedBinding)),
+                        ts.factory.createImportSpecifier.length === 2
+                            ? ts.factory.createImportSpecifier(undefined, core.toIdentifier(importNamedBinding))
+                            : (ts.factory.createImportSpecifier as any)(
+                                  undefined,
+                                  undefined,
+                                  core.toIdentifier(importNamedBinding)
+                              ),
                     ])
                 )
             ),
