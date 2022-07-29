@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.7](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.6...@spec2ts/jsonschema@2.0.0-beta.7) (2022-07-29)
+
+
+### Bug Fixes
+
+* **jsonschema:** adapt to new TS 4.3 API ([c28532c](https://github.com/touchifyapp/spec2ts/commit/c28532c21643eda990abf8833c2027eb0a27a6a5))
+
+
+
+
+
 # [2.0.0-beta.6](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@2.0.0-beta.5...@spec2ts/jsonschema@2.0.0-beta.6) (2022-01-27)
 
 **Note:** Version bump only for package @spec2ts/jsonschema
