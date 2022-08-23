@@ -30,6 +30,8 @@ export interface OApiGeneratorOptions extends ParserOptions {
     inlineRequired?: boolean;
     importFetch?: "node-fetch" | "cross-fetch" | "isomorphic-fetch";
     typesPath?: string;
+    baseUrl?: string;
+    prefix?: string;
 }
 
 export async function generateClientFromFile(file: string, options: OApiGeneratorOptions & { typesPath: string }): Promise<SeparatedClientResult>;
@@ -57,7 +59,7 @@ export async function generateClient(spec: OpenAPIObject, options: OApiGenerator
         context.typesFile = ts.createSourceFile("types.ts", "", ts.ScriptTarget.Latest, false, ts.ScriptKind.TS);
     }
 
-    file = generateServers(file, spec);
+    file = generateServers(file, spec, context);
     file = generateDefaults(file, context);
     file = generateFunctions(file, spec, context);
 

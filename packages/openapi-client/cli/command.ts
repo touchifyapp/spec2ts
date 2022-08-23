@@ -58,6 +58,15 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             describe: "Root directory for resolving $refs"
         })
 
+        .option("baseUrl", {
+            type: "string",
+            describe: "Base url of the server"
+        })
+        .option("prefix", {
+            type: "string",
+            describe: "Only generate paths with this prefix"
+        })
+
         .option("avoidAny", {
             type: "boolean",
             describe: "Avoid the `any` type and use `unknown` instead"

@@ -31,8 +31,10 @@ export type Formatter = "space" | "pipe" | "deep" | "explode" | "form";
 
 //#region Public
 
-export function generateServers(file: ts.SourceFile, { servers }: OpenAPIObject): ts.SourceFile {
+export function generateServers(file: ts.SourceFile, { servers }: OpenAPIObject, context: OApiGeneratorContext): ts.SourceFile {
     servers = servers || [];
+
+    if (context.options.baseUrl) servers = [{ url: context.options.baseUrl }];
 
     const serversConst = core.findFirstVariableStatement(file.statements, "servers");
     const defaultsConst = core.findFirstVariableStatement(file.statements, "defaults");
@@ -101,7 +103,11 @@ export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorCont
 export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, context: OApiGeneratorContext): ts.SourceFile {
     const functions: ts.FunctionDeclaration[] = [];
 
-    for (const path in spec.paths) {
+    const paths: typeof spec.paths = Object.entries(spec.paths)
+        .filter(([path]) => !context.options.prefix || path.startsWith(context.options.prefix))
+        .reduce((acc, [path, pathSpec]) => ({ ...acc, [path]: pathSpec }), {});
+
+    for (const path in paths) {
         const item = resolveReference<PathItemObject>(spec.paths[path], context);
 
         for (const verb in item) {
