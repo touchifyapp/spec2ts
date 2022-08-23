@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.12](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.11...@spec2ts/openapi-client@2.0.0-beta.12) (2022-08-23)
+
+
+### Features
+
+* allow url & prefix override ([9139ccb](https://github.com/touchifyapp/spec2ts/commit/9139ccbb89329972e45e8d813adfd81648a01bb7))
+
+
+
+
+
 # [2.0.0-beta.11](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.10...@spec2ts/openapi-client@2.0.0-beta.11) (2022-07-29)
 
 **Note:** Version bump only for package @spec2ts/openapi-client
