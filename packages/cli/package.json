@@ -32,7 +32,7 @@
         "lint:ts": "eslint \"bin/**/*.ts\"",
         "lint:fix": "npm run lint -- -- --fix",
         "clean": "npm run clean:ts",
-        "clean:ts": "rimraf *.{js,d.ts} bin/**/*.{js,d.ts}",
+        "clean:ts": "del *.{js,d.ts} bin/**/*.{js,d.ts}",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
@@ -41,9 +41,9 @@
         "@spec2ts/openapi-client": "^2.0.0-beta.12"
     },
     "devDependencies": {
+        "del-cli": "^5.0.0",
         "eslint": "^7.11.0",
         "jest": "^26.5.3",
-        "rimraf": "^3.0.2",
         "typescript": "^4.0.0"
     },
     "keywords": [

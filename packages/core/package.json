@@ -29,7 +29,7 @@
         "lint:ts": "eslint \"*.ts\" \"lib/**/*.ts\"",
         "lint:fix": "npm run lint -- -- --fix",
         "clean": "npm run clean:ts",
-        "clean:ts": "rimraf *.{js,d.ts} lib/**/*.{js,d.ts}",
+        "clean:ts": "del *.{js,d.ts} lib/**/*.{js,d.ts}",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
@@ -38,9 +38,9 @@
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",
+        "del-cli": "^5.0.0",
         "eslint": "^7.11.0",
-        "jest": "^26.5.3",
-        "rimraf": "^3.0.2"
+        "jest": "^26.5.3"
     },
     "keywords": [
         "spec",
