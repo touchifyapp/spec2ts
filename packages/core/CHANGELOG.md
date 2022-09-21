@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0-beta.2...@spec2ts/core@2.0.0-beta.3) (2022-09-21)
+
+**Note:** Version bump only for package @spec2ts/core
+
+
+
+
+
 # [2.0.0-beta.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0-beta.1...@spec2ts/core@2.0.0-beta.2) (2022-01-27)
 
 

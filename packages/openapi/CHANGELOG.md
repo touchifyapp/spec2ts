@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.8](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.7...@spec2ts/openapi@2.0.0-beta.8) (2022-09-21)
+
+
+### Features
+
+* **openapi:** add option to disable date parsing in querystring ([e69547f](https://github.com/touchifyapp/spec2ts/commit/e69547ffdeb87cebe18cb622eee1d46829b35ad4))
+
+
+
+
+
 # [2.0.0-beta.7](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.6...@spec2ts/openapi@2.0.0-beta.7) (2022-07-29)
 
 **Note:** Version bump only for package @spec2ts/openapi
