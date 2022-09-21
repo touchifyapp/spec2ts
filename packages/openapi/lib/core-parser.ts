@@ -87,6 +87,8 @@ export function parseOperation(path: string, verb: string, operation: OperationO
     }
 }
 
+export type ParamType = "params" | "headers" | "query" | "cookie";
+
 export function parseParameters(baseName: string, data: Array<ReferenceObject | ParameterObject>, baseParams: ParsedParams = {}, context: OApiParserContext, result: ParseOpenApiResult): ParsedParams {
     const params: ParameterObject[] = [];
     const query: ParameterObject[] = [];
@@ -122,11 +124,11 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
 
     return res;
 
-    function addParams(params: ParameterObject[], paramType: "params" | "headers" | "query" | "cookie"): void {
+    function addParams(params: ParameterObject[], paramType: ParamType): void {
         if (!params.length) return;
 
         const name = baseName + pascalCase(paramType);
-        const type = getParamType(params, baseParams[paramType], context, paramType === "headers");
+        const type = getParamType(paramType, params, baseParams[paramType], context);
 
         addToOpenApiResult(result, paramType,
             core.createTypeOrInterfaceDeclaration({
@@ -171,13 +173,13 @@ export function getContentDeclaration(name: string, content: ReferenceObject | C
     });
 }
 
-export function getParamType(data: ParameterObject[], baseType: ts.TypeReferenceNode | undefined, context: OApiParserContext, isHeader?: boolean): ts.TypeNode {
+export function getParamType(paramType: ParamType, data: ParameterObject[], baseType: ts.TypeReferenceNode | undefined, context: OApiParserContext): ts.TypeNode {
     const required: string[] = [];
 
     const props: Record<string, SchemaObject | ReferenceObject> = {};
     data.forEach(m => {
         let name = m.name;
-        if (isHeader && context.options.lowerHeaders) {
+        if (paramType === "headers" && context.options.lowerHeaders) {
             name = name.toLowerCase();
         }
 
@@ -187,7 +189,11 @@ export function getParamType(data: ParameterObject[], baseType: ts.TypeReference
         }
     });
 
-    const type = getTypeFromProperties(props as Record<string, JSONSchema>, required, false, context);
+    const ctx = paramType === "query" && typeof context.options.enableDateForQueryParams !== "undefined"
+        ? { ...context, options: { ...context.options, enableDate: context.options.enableDateForQueryParams } }
+        : context;
+
+    const type = getTypeFromProperties(props as Record<string, JSONSchema>, required, false, ctx);
     if (baseType) {
         return ts.factory.createIntersectionTypeNode([baseType, type]);
     }

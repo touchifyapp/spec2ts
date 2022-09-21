@@ -25,6 +25,7 @@ export {
 
 export interface ParseOpenApiOptions extends ParserOptions {
     lowerHeaders?: boolean;
+    enableDateForQueryParams?: boolean | "strict" | "lax";
 }
 
 export async function parseOpenApiFile(file: string, options: ParseOpenApiOptions = {}): Promise<ParseOpenApiResult> {
