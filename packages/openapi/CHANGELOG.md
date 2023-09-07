@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.8...@spec2ts/openapi@2.0.0) (2023-09-07)
+
+**Note:** Version bump only for package @spec2ts/openapi
+
+
+
+
+
 # [2.0.0-beta.8](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0-beta.7...@spec2ts/openapi@2.0.0-beta.8) (2022-09-21)
 
 
