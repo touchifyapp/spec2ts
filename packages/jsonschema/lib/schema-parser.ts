@@ -1,11 +1,12 @@
 import * as path from "path";
 import * as ts from "typescript";
 
-import * as $RefParser from "@apidevtools/json-schema-ref-parser";
+import { parse } from "@apidevtools/json-schema-ref-parser";
 
 import * as core from "@spec2ts/core";
 
 import {
+    JSONSchema,
     ParserOptions,
 
     getTypeFromSchema,
@@ -19,10 +20,8 @@ export interface ParseSchemaOptions extends ParserOptions {
     name?: string;
 }
 
-export type JSONSchema = $RefParser.JSONSchema;
-
 export async function parseSchemaFile(file: string, options: ParseSchemaOptions = {}): Promise<ts.Statement[]> {
-    const schema = await $RefParser.parse(file);
+    const schema = await parse(file);
 
     return parseSchema(schema, {
         name: getSchemaName(schema, file),

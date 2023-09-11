@@ -1,7 +1,7 @@
 import * as ts from "typescript";
 import * as core from "@spec2ts/core";
 
-import {
+import type {
     SchemaObject,
     ReferenceObject,
     PathItemObject,
@@ -9,7 +9,7 @@ import {
     ParameterObject,
     ContentObject,
     ResponseObject
-} from "openapi3-ts";
+} from "openapi3-ts/oas30";
 
 import {
     JSONSchema,
@@ -56,12 +56,9 @@ export function parsePathItem(path: string, item: PathItemObject, context: OApiP
         );
     }
 
-    Object.keys(item).forEach(verb => {
-        const method = verb.toUpperCase();
-        if (!VERBS.includes(method)) return;
-
-        parseOperation(path, verb, item[verb], baseParams, context, result);
-    });
+    Object.entries(item)
+        .filter(([verb,]) => VERBS.includes(verb.toUpperCase()))
+        .forEach(([verb, entry]) => parseOperation(path, verb, entry, baseParams, context, result));
 }
 
 export function parseOperation(path: string, verb: string, operation: OperationObject, baseParams: ParsedParams | undefined, context: OApiParserContext, result: ParseOpenApiResult): void {

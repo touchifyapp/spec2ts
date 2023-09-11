@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as ts from "typescript";
 
-import * as $RefParser from "@apidevtools/json-schema-ref-parser";
+import $RefParser from "@apidevtools/json-schema-ref-parser";
 
 import type {
     JSONSchema4,
@@ -33,7 +33,7 @@ export interface ParserOptions {
 
 export interface ParserContext {
     schema: JSONSchema;
-    $refs: $RefParser.$Refs;
+    $refs: $RefParser["$refs"];
     refs: Record<string, ParsedReference>;
     imports: ts.ImportDeclaration[];
     aliases: Array<ts.TypeAliasDeclaration | ts.InterfaceDeclaration>;
@@ -346,7 +346,7 @@ export function isReference(obj: unknown): obj is JSONReference {
 
 //#region Utils
 
-export async function createContext(schema: $RefParser.JSONSchema, options: ParserOptions): Promise<ParserContext> {
+export async function createContext(schema: JSONSchema, options: ParserOptions): Promise<ParserContext> {
     const sanitize = (cwd: string): string => (cwd.endsWith("/") ? cwd : cwd + "/");
 
     const cwd = sanitize(options.cwd || process.cwd());

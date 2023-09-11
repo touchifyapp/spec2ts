@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import * as path from "path";
-import * as glob from "glob";
+import { glob, type GlobOptions } from "glob";
 
 export function writeFile(path: string, content: string): Promise<void> {
     return fs.writeFile(
@@ -38,7 +38,7 @@ export function getOutputFileName(src: string, ext = ".d.ts"): string {
         + ext;
 }
 
-export function findFiles(pattern: string | string[], options?: glob.IOptions): Promise<string[]> {
+export function findFiles(pattern: string | string[], options?: GlobOptions): Promise<string[]> {
     if (!Array.isArray(pattern)) {
         return findFilesOne(pattern, options);
     }
@@ -47,14 +47,10 @@ export function findFiles(pattern: string | string[], options?: glob.IOptions): 
         .then((res) => ([] as string[]).concat(...res))
 }
 
-function findFilesOne(pattern: string, options: glob.IOptions = {}): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-        if (pattern.startsWith("http")) {
-            return resolve([pattern]);
-        }
+function findFilesOne(pattern: string, options: GlobOptions = {}): Promise<string[]> {
+    if (pattern.startsWith("http")) {
+        return Promise.resolve([pattern]);
+    }
 
-        glob(pattern, options, (err, matches) => {
-            err ? reject(err) : resolve(matches);
-        });
-    });
+    return glob(pattern, { ...options, withFileTypes: false });
 }

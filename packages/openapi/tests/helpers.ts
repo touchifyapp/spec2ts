@@ -1,7 +1,7 @@
 import * as path from "path";
 import { readFileSync } from "fs";
 
-import type { OpenAPIObject } from "openapi3-ts";
+import type { OpenAPIObject } from "openapi3-ts/oas30";
 
 const jsYaml = require("js-yaml");
 
@@ -21,7 +21,7 @@ function loadFile<T>(file: string): T {
     }
 
     if (file.endsWith(".yml") || file.endsWith(".yaml")) {
-        return jsYaml.safeLoad(readFileSync(path.join(__dirname, "assets", file), "utf8"));
+        return jsYaml.load(readFileSync(path.join(__dirname, "assets", file), "utf8"));
     }
 
     throw new Error("Unsupported extension: " + file);

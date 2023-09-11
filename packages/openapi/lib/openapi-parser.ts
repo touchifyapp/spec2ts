@@ -1,9 +1,9 @@
 import * as path from "path";
-import * as $RefParser from "@apidevtools/json-schema-ref-parser";
+import { parse } from "@apidevtools/json-schema-ref-parser";
 
 import type {
-    OpenAPIObject
-} from "openapi3-ts";
+    OpenAPIObject,
+} from "openapi3-ts/oas30";
 
 import {
     ParserOptions,
@@ -29,7 +29,7 @@ export interface ParseOpenApiOptions extends ParserOptions {
 }
 
 export async function parseOpenApiFile(file: string, options: ParseOpenApiOptions = {}): Promise<ParseOpenApiResult> {
-    const schema = await $RefParser.parse(file) as OpenAPIObject;
+    const schema = await parse(file) as OpenAPIObject;
 
     return parseOpenApi(schema, {
         cwd: path.resolve(path.dirname(file)) + "/",

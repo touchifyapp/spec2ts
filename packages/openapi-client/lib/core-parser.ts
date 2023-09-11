@@ -10,7 +10,7 @@ import type {
     ResponseObject,
     ResponsesObject,
     ContentObject
-} from "openapi3-ts";
+} from "openapi3-ts/oas30";
 
 import {
     ParserContext,

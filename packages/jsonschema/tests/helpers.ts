@@ -1,9 +1,10 @@
 import * as path from "path";
 import { readFileSync } from "fs";
 
-import type { JSONSchema } from "@apidevtools/json-schema-ref-parser";
+import type { $RefParser } from "@apidevtools/json-schema-ref-parser";
 
 const jsYaml = require("js-yaml");
+type JSONSchema = NonNullable<$RefParser["schema"]>;
 
 export function loadSchema(file: string): JSONSchema {
     return loadFile<JSONSchema>(file);
@@ -21,7 +22,7 @@ function loadFile<T>(file: string): T {
     }
 
     if (file.endsWith(".yml") || file.endsWith(".yaml")) {
-        return jsYaml.safeLoad(readFileSync(path.join(__dirname, "assets", file), "utf8"));
+        return jsYaml.load(readFileSync(path.join(__dirname, "assets", file), "utf8"));
     }
 
     throw new Error("Unsupported extension: " + file);

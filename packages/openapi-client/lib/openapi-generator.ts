@@ -1,11 +1,11 @@
 import * as path from "path";
 import * as ts from "typescript";
 import * as core from "@spec2ts/core";
-import * as $RefParser from "@apidevtools/json-schema-ref-parser";
+import { parse } from "@apidevtools/json-schema-ref-parser";
 
 import type {
     OpenAPIObject
-} from "openapi3-ts";
+} from "openapi3-ts/oas30";
 
 import {
     ParserOptions,
@@ -37,7 +37,7 @@ export interface OApiGeneratorOptions extends ParserOptions {
 export async function generateClientFromFile(file: string, options: OApiGeneratorOptions & { typesPath: string }): Promise<SeparatedClientResult>;
 export async function generateClientFromFile(file: string, options?: OApiGeneratorOptions): Promise<ts.SourceFile>;
 export async function generateClientFromFile(file: string, options: OApiGeneratorOptions = {}): Promise<ts.SourceFile | SeparatedClientResult> {
-    const schema = await $RefParser.parse(file) as OpenAPIObject;
+    const schema = await parse(file) as OpenAPIObject;
 
     return generateClient(schema, {
         cwd: path.resolve(path.dirname(file)) + "/",
