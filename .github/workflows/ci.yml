@@ -28,7 +28,6 @@ jobs:
     - name: Install Dependencies
       run: |
         npm ci
-        npx lerna bootstrap
 
     - name: Run tests
       run: npm run test:ci

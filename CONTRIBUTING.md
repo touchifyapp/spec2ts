@@ -9,11 +9,7 @@ To get started with the repo:
 
 ```sh
 $ git clone git@github.com:touchifyapp/spec2ts.git && cd spec2ts 
-$ npm ci 
-
-$ npx lerna bootstrap 
-# or, if lerna is globally installed 
-$ lerna bootstrap 
+$ npm ci
 ```
 
 ## Code Structure 
@@ -36,7 +32,7 @@ Commands are handled by npm scripts, and can be executed:
 
 ```sh
 $ npm run build 
-# or 
+# or using lerna, prefix with `npx` or install globally
 $ lerna run build 
 ```
 
@@ -45,7 +41,7 @@ $ lerna run build
 ```sh
 # Run all test suites 
 $ npm run test 
-# or 
+# or using lerna, prefix with `npx` or install globally
 $ lerna run test 
 
 # Run a specific suite from a file (e.g. packages/openapi/tests/openapi-parser.spec.ts from root directory) 
