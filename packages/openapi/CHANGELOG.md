@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@3.0.0...@spec2ts/openapi@3.0.1) (2023-09-12)
+
+
+### Bug Fixes
+
+* **jsonschema,openapi,openapi-client:** use ref parser as adviced ([e65a291](https://github.com/touchifyapp/spec2ts/commit/e65a2919f9d37ffdea773132dd906fca11b6240b))
+
+
+
+
+
 # [3.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@2.0.0...@spec2ts/openapi@3.0.0) (2023-09-12)
 
 
