@@ -402,7 +402,7 @@ export function updateVariableDeclarationInitializer(declaration: ts.VariableDec
 }
 
 export type ImportSpecifier = { name: ts.Identifier | string; propertyName: ts.Identifier | string, type?: boolean; };
-function createImportSpecifier(binding: ts.Identifier | string | ImportSpecifier): ts.ImportSpecifier {
+export function createImportSpecifier(binding: ts.Identifier | string | ImportSpecifier): ts.ImportSpecifier {
     if (typeof binding === "string" || isIdentifier(binding)) {
         if (ts.factory.createImportSpecifier.length === 3) {
             return (ts.factory.createImportSpecifier as any)(false, undefined, toIdentifier(binding));
