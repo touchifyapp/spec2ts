@@ -261,7 +261,7 @@ describe("schema-parser", () => {
             const schema = loadSchema("nested.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
-            const arr = ts.createNodeArray(res);
+            const arr = ts.factory.createNodeArray(res);
             const importDecla = cg.findNode<ts.ImportDeclaration>(arr, ts.SyntaxKind.ImportDeclaration);
 
             expect(importDecla).toBeDefined();

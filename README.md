@@ -86,6 +86,7 @@ async function generateClient(path: string): Promise<string> {
 |--------------------|-----------------|
 | v3.x.x             | v1              | 
 | v4.x.x             | v2              | 
+| v5.x.x             | v3              | 
 
 ## License
 

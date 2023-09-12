@@ -45,7 +45,7 @@ export function isValidIdentifier(str: string): boolean {
     return (
         !!node &&
         node.kind === ts.SyntaxKind.Identifier &&
-        !(node as Record<string, any>)["originalKeywordKind"]
+        !ts.identifierToKeywordKind(node)
     );
 }
 

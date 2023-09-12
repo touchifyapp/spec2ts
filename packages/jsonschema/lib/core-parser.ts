@@ -424,7 +424,6 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
 
         const newImportDeclaration = ts.factory.updateImportDeclaration(
             importDeclaration,
-            importDeclaration.decorators,
             importDeclaration.modifiers,
             ts.factory.updateImportClause(
                 importDeclaration.importClause,
@@ -438,7 +437,8 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
                     ])
                 )
             ),
-            importDeclaration.moduleSpecifier
+            importDeclaration.moduleSpecifier,
+            undefined
         );
 
         context.imports.splice(context.imports.indexOf(importDeclaration), 1, newImportDeclaration);
