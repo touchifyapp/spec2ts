@@ -45,8 +45,8 @@ export async function parseOpenApi(spec: OpenAPIObject, options: ParseOpenApiOpt
     const context = await createContext(spec, options);
     const result: ParseOpenApiResult = createOpenApiResult();
 
-    Object.keys(spec.paths).forEach(path => {
-        parsePathItem(path, spec.paths[path], context, result);
+    Object.entries(spec.paths).forEach(([path, item]) => {
+        parsePathItem(path, item, context, result);
     });
 
     addToOpenApiResult(result, "models", context.aliases);

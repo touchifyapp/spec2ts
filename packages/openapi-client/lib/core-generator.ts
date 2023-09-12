@@ -101,24 +101,16 @@ export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorCont
 }
 
 export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, context: OApiGeneratorContext): ts.SourceFile {
-    const functions: ts.FunctionDeclaration[] = [];
+    const paths: typeof spec.paths = Object.fromEntries(Object.entries(spec.paths)
+        .filter(([path]) => !context.options.prefix || path.startsWith(context.options.prefix)));
 
-    const paths: typeof spec.paths = Object.entries(spec.paths)
-        .filter(([path]) => !context.options.prefix || path.startsWith(context.options.prefix))
-        .reduce((acc, [path, pathSpec]) => ({ ...acc, [path]: pathSpec }), {});
+    const functions: ts.FunctionDeclaration[] = Object.entries(paths).map(([path, pathSpec]) => {
+        const item = resolveReference<PathItemObject>(pathSpec, context);
 
-    for (const path in paths) {
-        const item = resolveReference<PathItemObject>(spec.paths[path], context);
-
-        for (const verb in item) {
-            const method = verb.toUpperCase();
-            if (isMethod(method)) {
-                functions.push(
-                    generateFunction(path, item, method, item[verb], context)
-                );
-            }
-        }
-    }
+        return Object.entries(item)
+            .filter(([verb,]) => isMethod(verb.toUpperCase()))
+            .map(([verb, entry]) => generateFunction(path, item, (verb.toUpperCase() as Method), entry, context));
+    }).flat();
 
     if (context.options.typesPath && context.typesFile) {
         context.typesFile = core.updateSourceFileStatements(context.typesFile, context.aliases);

@@ -38,19 +38,19 @@ export function getOutputFileName(src: string, ext = ".d.ts"): string {
         + ext;
 }
 
-export function findFiles(pattern: string | string[], options?: GlobOptions): Promise<string[]> {
+export async function findFiles(pattern: string | string[], options?: GlobOptions): Promise<string[]> {
     if (!Array.isArray(pattern)) {
         return findFilesOne(pattern, options);
     }
 
-    return Promise.all(pattern.map(p => findFilesOne(p, options)))
-        .then((res) => ([] as string[]).concat(...res))
+    const res = await Promise.all(pattern.map(p => findFilesOne(p, options)));
+    return res.flat();
 }
 
-function findFilesOne(pattern: string, options: GlobOptions = {}): Promise<string[]> {
+async function findFilesOne(pattern: string, options: GlobOptions = {}): Promise<string[]> {
     if (pattern.startsWith("http")) {
-        return Promise.resolve([pattern]);
+        return [pattern];
     }
 
-    return glob(pattern, { ...options, withFileTypes: false });
+    return await glob(pattern, { ...options, withFileTypes: false });
 }

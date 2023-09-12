@@ -45,16 +45,13 @@ export interface OApiParserContext extends ParserContext {
 }
 
 export function parsePathItem(path: string, item: PathItemObject, context: OApiParserContext, result: ParseOpenApiResult): void {
-    let baseParams: ParsedParams | undefined;
-    if (item.parameters) {
-        baseParams = parseParameters(
-            getPathName(path, context),
-            item.parameters,
-            undefined,
-            context,
-            result
-        );
-    }
+    const baseParams = item.parameters && parseParameters(
+        getPathName(path, context),
+        item.parameters,
+        undefined,
+        context,
+        result
+    );
 
     Object.entries(item)
         .filter(([verb,]) => VERBS.includes(verb.toUpperCase()))
@@ -75,8 +72,8 @@ export function parseOperation(path: string, verb: string, operation: OperationO
 
     if (operation.responses) {
         const responses = resolveReference(operation.responses, context);
-        Object.keys(responses).forEach(status => {
-            const response = resolveReference<ResponseObject>(responses[status], context);
+        Object.entries(responses).forEach(([status, responseObj]) => {
+            const response = resolveReference<ResponseObject>(responseObj, context);
 
             const decla = getContentDeclaration(getResponseName(name, status, context), response.content, context);
             if (decla) { addToOpenApiResult(result, "responses", decla); }

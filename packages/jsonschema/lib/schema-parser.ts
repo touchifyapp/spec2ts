@@ -36,12 +36,10 @@ export async function parseSchema(schema: JSONSchema, options: ParseSchemaOption
 
     parseDefinitions(context.schema, context);
 
-    const res: ts.Statement[] = [];
-
-    res.push(
+    const res: ts.Statement[] = [
         ...context.imports,
         ...context.aliases
-    );
+    ];
 
     // Ignore schema type if schema is only composed of definitions
     if ((type === core.keywordType.any || type === core.keywordType.unknown) && !context.schema.type && context.schema.definitions) {
@@ -58,7 +56,5 @@ export async function parseSchema(schema: JSONSchema, options: ParseSchemaOption
         decla = core.addComment(decla, schema.description);
     }
 
-    res.push(decla);
-
-    return res;
+    return [...res, decla];
 }
