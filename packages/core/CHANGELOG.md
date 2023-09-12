@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0...@spec2ts/core@3.0.0) (2023-09-12)
+
+
+* feat!: migrate to typescript v5 ([84d2bb0](https://github.com/touchifyapp/spec2ts/commit/84d2bb0719f63dbff334bf8ba83b89501e18aeff))
+
+
+### Features
+
+* upgrade all dependencies ([9be17b6](https://github.com/touchifyapp/spec2ts/commit/9be17b69e2bd5d910bbaa88d4e2f161628fa4135))
+
+
+### BREAKING CHANGES
+
+* removed all decorators, use modifiers instead as specified by API v5 of Typescript compiler
+
+
+
+
+
 # [2.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@2.0.0-beta.3...@spec2ts/core@2.0.0) (2023-09-07)
 
 **Note:** Version bump only for package @spec2ts/core

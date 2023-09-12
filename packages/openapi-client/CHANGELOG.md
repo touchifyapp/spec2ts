@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0...@spec2ts/openapi-client@3.0.0) (2023-09-12)
+
+
+### Features
+
+* upgrade all dependencies ([9be17b6](https://github.com/touchifyapp/spec2ts/commit/9be17b69e2bd5d910bbaa88d4e2f161628fa4135))
+
+
+
+
+
 # [2.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@2.0.0-beta.13...@spec2ts/openapi-client@2.0.0) (2023-09-07)
 
 **Note:** Version bump only for package @spec2ts/openapi-client
