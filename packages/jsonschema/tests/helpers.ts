@@ -1,8 +1,9 @@
 import * as path from "path";
 import { readFileSync } from "fs";
 
-import type { $RefParser } from "@apidevtools/json-schema-ref-parser";
+import type $RefParser from "@apidevtools/json-schema-ref-parser";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsYaml = require("js-yaml");
 type JSONSchema = NonNullable<$RefParser["schema"]>;
 

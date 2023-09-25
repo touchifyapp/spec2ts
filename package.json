@@ -14,17 +14,11 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run clean && npm run lint && npm run build:ts",
-    "build:ts": "tsc -p .",
-    "test": "npm run clean && npm run lint && npm run test:jest",
-    "test:jest": "jest",
-    "test:coverage": "npm run test -- -- --coverage",
-    "test:ci": "npm run test -- -- --ci",
-    "lint": "npm run lint:ts",
-    "lint:ts": "eslint 'packages/*/*.ts' 'packages/*/{lib,cli,bin}/**/*.ts'",
-    "lint:fix": "npm run lint -- -- --fix",
-    "clean": "npm run clean:ts",
-    "clean:ts": "del 'packages/*/*.{js,d.ts}' 'packages/*/{lib,cli,bin}/**/*.{js,d.ts}'"
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "clean": "lerna run clean",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
@@ -35,15 +29,10 @@
     "@typescript-eslint/parser": "^6.6.0",
     "del-cli": "^5.1.0",
     "eslint": "^8.49.0",
-    "husky": "^8.0.3",
+    "husky": "^8.0.0",
     "jest": "^29.6.4",
     "lerna": "^7.2.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.2.2"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   }
 }

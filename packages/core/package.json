@@ -29,7 +29,7 @@
         "lint:ts": "eslint '*.ts' 'lib/**/*.ts'",
         "lint:fix": "npm run lint -- -- --fix",
         "clean": "npm run clean:ts",
-        "clean:ts": "del '*.{js,d.ts}' 'lib/**/*.{js,d.ts}'",
+        "clean:ts": "del '*.{js,d.ts}' '{bin,cli,lib}/**/*.{js,d.ts}'",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {

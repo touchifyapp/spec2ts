@@ -3,6 +3,7 @@ import { readFileSync } from "fs";
 
 import type { OpenAPIObject } from "openapi3-ts/oas30";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsYaml = require("js-yaml");
 
 export function loadSpec(file: string): OpenAPIObject {
