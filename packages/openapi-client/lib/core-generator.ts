@@ -6,7 +6,7 @@ import type {
     ParameterObject,
     PathItemObject,
     OperationObject
-} from "openapi3-ts/oas30";
+} from "openapi3-ts/oas31";
 
 import {
     ParserContext,
@@ -101,7 +101,7 @@ export function generateDefaults(file: ts.SourceFile, context: OApiGeneratorCont
 }
 
 export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, context: OApiGeneratorContext): ts.SourceFile {
-    const paths: typeof spec.paths = Object.fromEntries(Object.entries(spec.paths)
+    const paths: typeof spec.paths = Object.fromEntries(Object.entries(spec.paths ?? {})
         .filter(([path]) => !context.options.prefix || path.startsWith(context.options.prefix)));
 
     const functions: ts.FunctionDeclaration[] = Object.entries(paths).map(([path, pathSpec]) => {

@@ -5,7 +5,7 @@ import $RefParser from "@apidevtools/json-schema-ref-parser";
 
 import type {
     OpenAPIObject
-} from "openapi3-ts/oas30";
+} from "openapi3-ts/oas31";
 
 import {
     ParserOptions,

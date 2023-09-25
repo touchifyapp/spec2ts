@@ -8,8 +8,9 @@ import type {
     OperationObject,
     ParameterObject,
     ContentObject,
-    ResponseObject
-} from "openapi3-ts/oas30";
+    ResponseObject,
+    RequestBodyObject,
+} from "openapi3-ts/oas31";
 
 import {
     JSONSchema,
@@ -21,7 +22,7 @@ import {
 
     createRefContext,
     resolveReference,
-    pascalCase
+    pascalCase,
 } from "@spec2ts/jsonschema/lib/core-parser";
 
 import type { ParseOpenApiOptions } from "./openapi-parser";
@@ -65,7 +66,7 @@ export function parseOperation(path: string, verb: string, operation: OperationO
     }
 
     if (operation.requestBody) {
-        const requestBody = resolveReference(operation.requestBody, context);
+        const requestBody = resolveReference<RequestBodyObject>(operation.requestBody, context);
         const decla = getContentDeclaration(name + "Body", requestBody.content, context);
         if (decla) { addToOpenApiResult(result, "body", decla); }
     }
@@ -92,7 +93,7 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
     const res: ParsedParams = {}
 
     data.forEach(item => {
-        item = resolveReference(item, context);
+        item = resolveReference<ParameterObject>(item, context);
 
         switch (item.in) {
             case "path":
@@ -154,7 +155,7 @@ export function parseReference(ref: ParsedReference, context: ParserContext): vo
 export function getContentDeclaration(name: string, content: ReferenceObject | ContentObject | undefined, context: OApiParserContext): ts.Statement | undefined {
     if (!content) return;
 
-    content = resolveReference(content, context);
+    content = resolveReference<ContentObject>(content, context);
 
     const schema = getSchemaFromContent(content);
     if (!schema) return;

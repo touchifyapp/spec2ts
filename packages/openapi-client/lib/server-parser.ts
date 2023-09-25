@@ -4,7 +4,7 @@ import * as core from "@spec2ts/core";
 import type {
     ServerObject,
     ServerVariableObject
-} from "openapi3-ts/oas30";
+} from "openapi3-ts/oas31";
 
 import { camelCase } from "./util";
 

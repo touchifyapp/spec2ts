@@ -3,7 +3,7 @@ import $RefParser from "@apidevtools/json-schema-ref-parser";
 
 import type {
     OpenAPIObject,
-} from "openapi3-ts/oas30";
+} from "openapi3-ts/oas31";
 
 import {
     ParserOptions,
@@ -45,7 +45,7 @@ export async function parseOpenApi(spec: OpenAPIObject, options: ParseOpenApiOpt
     const context = await createContext(spec, options);
     const result: ParseOpenApiResult = createOpenApiResult();
 
-    Object.entries(spec.paths).forEach(([path, item]) => {
+    Object.entries(spec.paths ?? {}).forEach(([path, item]) => {
         parsePathItem(path, item, context, result);
     });
 

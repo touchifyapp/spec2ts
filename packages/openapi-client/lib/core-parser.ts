@@ -10,7 +10,7 @@ import type {
     ResponseObject,
     ResponsesObject,
     ContentObject
-} from "openapi3-ts/oas30";
+} from "openapi3-ts/oas31";
 
 import {
     ParserContext,
@@ -101,8 +101,8 @@ function parseResponses(result: ParsedOperation, path: string, method: string, o
 
 function parseParameters(result: ParsedOperation, item: PathItemObject, operation: OperationObject, context: OApiGeneratorContext): void {
     const parameters = fixDeepObjects([
-        ...resolveReferences(item.parameters, context),
-        ...resolveReferences(operation.parameters, context),
+        ...resolveReferences<ParameterObject>(item.parameters, context),
+        ...resolveReferences<ParameterObject>(operation.parameters, context),
     ]);
 
     result.query = parameters.filter((p) => p.in === "query");
@@ -150,7 +150,7 @@ function parseParameters(result: ParsedOperation, item: PathItemObject, operatio
 }
 
 function parseRequestBody(result: ParsedOperation, requestBody: RequestBodyObject | ReferenceObject, context: OApiGeneratorContext): void {
-    const body = resolveReference(requestBody, context);
+    const body = resolveReference<RequestBodyObject>(requestBody, context);
     const [schema, mode] = getSchemaFromContent(body.content);
     const type = getTypeFromSchema(schema as JSONSchema, context);
 
@@ -260,7 +260,7 @@ export function isMethod(method: string): method is Method {
 //#region Private
 
 function getTypeFromResponse(res: ResponseObject | ReferenceObject, context: OApiGeneratorContext): ts.TypeNode {
-    res = resolveReference(res, context);
+    res = resolveReference<ResponseObject>(res, context);
 
     if (!res?.content) {
         return core.keywordType.void;
