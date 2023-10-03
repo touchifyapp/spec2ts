@@ -41,14 +41,14 @@
     "dependencies": {
         "@apidevtools/json-schema-ref-parser": "^10.1.0",
         "@spec2ts/core": "^3.0.1",
-        "yargs": "^17.7.2"
+        "yargs": "^17.7.2",
+        "typescript": "^5.0.0"
     },
     "devDependencies": {
         "@types/json-schema": "^7.0.12",
         "del-cli": "^5.1.0",
         "eslint": "^8.49.0",
-        "jest": "^29.6.4",
-        "typescript": "^5.2.2"
+        "jest": "^29.6.4"
     },
     "keywords": [
         "json",
