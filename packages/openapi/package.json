@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/openapi",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "description": "Utility to convert OpenAPI v3 specifications to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
@@ -39,11 +39,11 @@
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
-        "@spec2ts/core": "^3.0.1",
-        "@spec2ts/jsonschema": "^3.0.2",
+        "@spec2ts/core": "^3.0.2",
+        "@spec2ts/jsonschema": "^3.0.3",
         "openapi3-ts": "^4.1.2",
-        "yargs": "^17.7.2",
-        "typescript": "^5.0.0"
+        "typescript": "^5.0.0",
+        "yargs": "^17.7.2"
     },
     "devDependencies": {
         "del-cli": "^5.1.0",

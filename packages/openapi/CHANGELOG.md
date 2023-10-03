@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@3.1.0...@spec2ts/openapi@3.1.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* move typescript to runtime dependencies ([6e17d21](https://github.com/touchifyapp/spec2ts/commit/6e17d21187ee6d8af226a92595d6c93df04db2ea))
+
+
+
+
+
 # [3.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi@3.0.1...@spec2ts/openapi@3.1.0) (2023-09-25)
 
 
