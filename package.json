@@ -16,6 +16,7 @@
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
+    "test:ci": "lerna --ci run test -- -- --ci",
     "lint": "lerna run lint",
     "clean": "lerna run clean",
     "prepare": "husky install"
