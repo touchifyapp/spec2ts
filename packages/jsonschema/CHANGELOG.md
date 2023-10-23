@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.4](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@3.0.3...@spec2ts/jsonschema@3.0.4) (2023-10-23)
+
+
+### Bug Fixes
+
+* circular reference in external schema ([7762c71](https://github.com/touchifyapp/spec2ts/commit/7762c712a0cdffa2d0a12852979c9f33be645207))
+
+
+
+
+
 ## [3.0.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@3.0.2...@spec2ts/jsonschema@3.0.3) (2023-10-03)
 
 

@@ -1,6 +1,6 @@
 {
     "name": "@spec2ts/jsonschema",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
