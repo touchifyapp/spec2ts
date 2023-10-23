@@ -366,7 +366,7 @@ export async function createContext(schema: JSONSchema, options: ParserOptions):
 export function createRefContext(ref: ParsedReference, context: ParserContext): ParserContext {
     if (!ref.path) return context;
 
-    const refPrefix = !context.refPrefix ? ref.path : path.join(path.dirname(context.refPrefix), ref.path);
+    const refPrefix = !context.refPrefix || context.refPrefix === ref.path ? ref.path : path.join(path.dirname(context.refPrefix), ref.path);
 
     return { ...context, refPrefix };
 }

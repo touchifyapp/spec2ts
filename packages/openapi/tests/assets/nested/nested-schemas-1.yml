@@ -7,6 +7,8 @@ components:
           type: integer
         thingId:
           type: integer
+        circular:
+          $ref: "#/components/schemas/ThingKey"
       required:
         - userId
         - thingId
