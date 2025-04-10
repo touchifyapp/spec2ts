@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.5](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@3.0.4...@spec2ts/jsonschema@3.0.5) (2025-04-10)
+
+
+### Bug Fixes
+
+* **json-schema:** allow access to defaultParseReference from context ([fb4f17e](https://github.com/touchifyapp/spec2ts/commit/fb4f17e9257ef18627e48439c46791b67d4d4197))
+
+
+
+
+
 ## [3.0.4](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@3.0.3...@spec2ts/jsonschema@3.0.4) (2023-10-23)
 
 

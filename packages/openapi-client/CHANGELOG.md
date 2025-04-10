@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@3.1.2...@spec2ts/openapi-client@3.1.3) (2025-04-10)
+
+**Note:** Version bump only for package @spec2ts/openapi-client
+
+
+
+
+
 ## [3.1.2](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@3.1.1...@spec2ts/openapi-client@3.1.2) (2023-10-23)
 
 **Note:** Version bump only for package @spec2ts/openapi-client
