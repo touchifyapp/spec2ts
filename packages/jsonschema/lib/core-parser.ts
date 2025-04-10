@@ -35,6 +35,7 @@ export interface ParserContext {
     schema: JSONSchema;
     $refs: $RefParser["$refs"];
     refs: Record<string, ParsedReference>;
+    parseReference: (ref: ParsedReference, context: ParserContext) => void;
     imports: ts.ImportDeclaration[];
     aliases: Array<ts.TypeAliasDeclaration | ts.InterfaceDeclaration>;
     options: ParserOptions;
@@ -356,6 +357,7 @@ export async function createContext(schema: JSONSchema, options: ParserOptions):
         $refs,
         schema,
         refs: {},
+        parseReference: defaultParseReference,
         imports: [],
         aliases: [],
         options,
