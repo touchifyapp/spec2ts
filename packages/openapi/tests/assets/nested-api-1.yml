@@ -1,0 +1,15 @@
+openapi: 3.0.3
+
+info:
+  title: pork
+  version: 0.0.0
+
+paths:
+  /get:
+    post:
+      operationId: getOneThing
+      requestBody:
+        $ref: "nested-1/nested-components.yml#/components/requestBodies/GetOneThingRequest"
+      responses:
+        200:
+          $ref: "nested-1/nested-components.yml#/components/responses/GetOneThingResponse"
