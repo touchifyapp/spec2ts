@@ -1,12 +1,11 @@
 {
   "name": "spec2ts-monorepo",
   "version": "1.0.0-monorepo",
-  "description": "Monorepo for utilies to convert specifications to Typescript using TypeScript native compiler",
-  "author": "Touchify <dev@touchify.co>",
   "private": true,
-  "license": "MIT",
+  "description": "Monorepo for utilies to convert specifications to Typescript using TypeScript native compiler",
   "homepage": "https://github.com/touchifyapp/spec2ts#readme",
-  "type": "module",
+  "license": "MIT",
+  "author": "Touchify <dev@touchify.co>",
   "repository": {
     "type": "git",
     "url": "https://github.com/touchifyapp/spec2ts"
@@ -14,6 +13,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "type": "module",
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
@@ -26,11 +26,12 @@
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@types/node": "^24.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "eslint": "^8.49.0",
+    "@types/yargs": "^17.0.35",
     "husky": "^8.0.0",
     "lerna": "^7.2.0",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
+    "oxlint-tsgolint": "0.24.0",
     "tsdown": "^0.22.4",
     "typescript": "^5.2.2",
     "vitest": "^4.1.10"

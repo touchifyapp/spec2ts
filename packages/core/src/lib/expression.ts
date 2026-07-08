@@ -49,7 +49,7 @@ export function isValidIdentifier(str: string): boolean {
     );
 }
 
-export function isIdentifier(n: unknown | null | undefined): n is ts.Identifier {
+export function isIdentifier(n: unknown): n is ts.Identifier {
     return !!n && ts.isIdentifier(n as ts.Node);
 }
 

@@ -73,10 +73,11 @@ function createTemplate(url: string): ts.TemplateLiteral {
     const len = tokens.length;
 
     for (let i = 1; i < len; i += 2) {
+        const template_factory = (i === len - 2 ? ts.factory.createTemplateTail.bind(ts.factory) : ts.factory.createTemplateMiddle.bind(ts.factory));
         spans.push(
             ts.factory.createTemplateSpan(
                 ts.factory.createIdentifier(tokens[i]),
-                (i === len - 2 ? ts.factory.createTemplateTail : ts.factory.createTemplateMiddle)(tokens[i + 1])
+                template_factory(tokens[i + 1])
             )
         );
     }

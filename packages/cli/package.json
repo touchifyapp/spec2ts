@@ -26,7 +26,7 @@
         "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
         "test:coverage": "npm run test -- -- --coverage",
         "lint": "npm run lint:ts",
-        "lint:ts": "eslint 'src/**/*.ts'",
+        "lint:ts": "oxlint -c ../../oxlint.config.ts",
         "lint:fix": "npm run lint -- -- --fix",
         "prepublishOnly": "npm test && npm run build"
     },
@@ -37,7 +37,6 @@
         "yargs": "^18.0.0"
     },
     "devDependencies": {
-        "eslint": "^8.49.0",
         "typescript": "^5.2.2"
     },
     "keywords": [

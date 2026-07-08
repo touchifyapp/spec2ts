@@ -169,7 +169,7 @@ export const http = {
 
         let text: string | undefined;
         try { text = await res.text(); }
-        catch (err) { /* ok */ }
+        catch { /* ok */ }
 
         if (!res.ok) {
             throw new HttpError(res.status, res.statusText, href, res.headers, text);
@@ -262,7 +262,7 @@ export class HttpError extends Error {
 
         if (text) {
             try { this.data = JSON.parse(text); }
-            catch (err) { /* ok */ }
+            catch { /* ok */ }
         }
     }
 }

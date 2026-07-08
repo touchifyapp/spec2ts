@@ -148,14 +148,14 @@ export async function handler(options: BuildClientFromOpenApiOptions): Promise<v
             }
 
             const res = await generateClientFromFile(file, options as BuildClientFromOpenApiOptions & { typesPath: string });
-            printFile(res.client, output, options);
+            await printFile(res.client, output, options);
 
             const outputTypes = path.resolve(path.dirname(output), options.typesPath + ".ts");
-            printFile(res.types, outputTypes, options);
+            await printFile(res.types, outputTypes, options);
         }
         else {
             const sourceFile = await generateClientFromFile(file, options);
-            printFile(sourceFile, output, options);
+            await printFile(sourceFile, output, options);
         }
 
         if (options.packageName) {

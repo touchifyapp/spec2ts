@@ -201,7 +201,7 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
         if (!type)
             console.log(res[code]);
         if (ts.isTypeReferenceNode(type) || core.isKeywordTypeNode(type)) {
-            isOK && types.push(type);
+            if (isOK) types.push(type);
         }
         else {
             const name = getResponseName(operationName, code, context);
