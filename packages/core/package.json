@@ -45,10 +45,7 @@
     "prepublishOnly": "npm test && npm run build"
   },
   "dependencies": {
-    "glob": "^10.3.4",
+    "glob": "^13.0.6",
     "typescript": "^6.0.0"
-  },
-  "devDependencies": {
-    "@types/glob": "^8.1.0"
   }
 }

@@ -95,9 +95,15 @@ function parseResponses(
     context: OApiGeneratorContext,
 ): void {
     const operationName = getOperationName(method, path, operation.operationId, context);
-    result.response = getTypeFromResponses(operationName, operation.responses, context);
-    result.responseJSON = isJSONResponse(operation.responses, context);
-    result.responseVoid = result.response === core.keywordType.void;
+    if (operation.responses) {
+        result.response = getTypeFromResponses(operationName, operation.responses, context);
+        result.responseJSON = isJSONResponse(operation.responses, context);
+        result.responseVoid = result.response === core.keywordType.void;
+    } else {
+        result.response = core.keywordType.unknown;
+        result.responseJSON = false;
+        result.responseVoid = false;
+    }
 }
 
 function parseParameters(result: ParsedOperation, item: PathItemObject, operation: OperationObject, context: OApiGeneratorContext): void {

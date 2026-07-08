@@ -1,18 +1,16 @@
 {
-    "compilerOptions": {
-        "target": "ES2018",
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "strict": true,
-        "sourceMap": false,
-        "declaration": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true
-    },
-    "exclude": [
-        "node_modules",
-        "**/tests/**"
-    ]
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "sourceMap": false,
+    "declaration": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "**/tests/**"]
 }

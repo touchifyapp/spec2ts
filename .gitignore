@@ -13,5 +13,6 @@ dist/
 node_modules/
 
 # Temp files
+.nx/
 *.tmp
 *.log
