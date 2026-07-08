@@ -35,6 +35,7 @@
     "build": "npm run lint && npm run build:ts",
     "build:ts": "tsdown",
     "test": "npm run lint && npm run format:check && npm run test:vitest",
+    "test:prepublish": "npm run lint && npm run test:vitest",
     "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
     "test:coverage": "npm run test -- -- --coverage",
     "lint": "npm run lint:ts",
@@ -42,7 +43,7 @@
     "lint:fix": "npm run lint -- -- --fix",
     "format": "oxfmt -c ../../oxfmt.config.ts",
     "format:check": "oxfmt -c ../../oxfmt.config.ts --check",
-    "prepublishOnly": "npm test && npm run build"
+    "prepublishOnly": "npm run test:prepublish && npm run build"
   },
   "dependencies": {
     "glob": "^13.0.6",
