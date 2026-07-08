@@ -1,4 +1,6 @@
-import * as yargs from "yargs";
+#!/usr/bin/env node
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
 import {
     usage,
@@ -7,7 +9,7 @@ import {
     handler
 } from "../cli/command";
 
-yargs
+void yargs(hideBin(process.argv))
     .command(usage, describe, builder, handler)
     .help("help", "Show help usage")
     .demandCommand()

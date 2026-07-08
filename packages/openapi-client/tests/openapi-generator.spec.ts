@@ -1,7 +1,8 @@
-import * as ts from "typescript";
 import * as core from "@spec2ts/core";
+import * as ts from "typescript";
+import { describe, test, expect } from "vitest";
 
-import { generateClient } from "../lib/openapi-generator";
+import { generateClient } from "../src/lib/openapi-generator";
 
 import { loadSpec } from "./helpers";
 

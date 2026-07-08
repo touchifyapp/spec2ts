@@ -13,9 +13,9 @@ import type {
 } from "openapi3-ts/oas31";
 
 import {
-    JSONSchema,
-    ParserContext,
-    ParsedReference,
+    type JSONSchema,
+    type ParserContext,
+    type ParsedReference,
 
     getTypeFromSchema,
     getTypeFromProperties,
@@ -23,7 +23,7 @@ import {
     createRefContext,
     resolveReference,
     pascalCase,
-} from "@spec2ts/jsonschema/lib/core-parser";
+} from "@spec2ts/jsonschema";
 
 import type { ParseOpenApiOptions } from "./openapi-parser";
 

@@ -1,6 +1,7 @@
-import { parseOpenApi } from "../lib/openapi-parser";
+import { describe, test, expect } from "vitest";
 
 import { getAssetsPath, loadSpec } from "./helpers";
+import { parseOpenApi } from "../src/lib/openapi-parser";
 
 describe("openapi-parser", () => {
 

@@ -4,8 +4,10 @@
     "description": "Core module for @spec2ts modules, includes codegen helpers and common parsing methods",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
-    "main": "index.js",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.mts",
     "homepage": "https://github.com/touchifyapp/spec2ts#readme",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/touchifyapp/spec2ts"
@@ -14,22 +16,18 @@
         "access": "public"
     },
     "files": [
-        "*.js",
-        "*.d.ts",
-        "lib/**/*.js",
-        "lib/**/*.d.ts"
+        "dist/**/*.mjs",
+        "dist/**/*.d.mts"
     ],
     "scripts": {
-        "build": "npm run clean && npm run lint && npm run build:ts",
-        "build:ts": "tsc -p .",
-        "test": "npm run clean && npm run lint && npm run test:jest",
-        "test:jest": "jest -c ../../jest.config.js --rootDir . --passWithNoTests",
+        "build": "npm run lint && npm run build:ts",
+        "build:ts": "tsdown",
+        "test": "npm run lint && npm run test:vitest",
+        "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
         "test:coverage": "npm run test -- -- --coverage",
         "lint": "npm run lint:ts",
-        "lint:ts": "eslint '*.ts' 'lib/**/*.ts'",
+        "lint:ts": "eslint 'src/**/*.ts'",
         "lint:fix": "npm run lint -- -- --fix",
-        "clean": "npm run clean:ts",
-        "clean:ts": "del '*.{js,d.ts}' '{bin,cli,lib}/**/*.{js,d.ts}'",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
@@ -38,9 +36,7 @@
     },
     "devDependencies": {
         "@types/glob": "^8.1.0",
-        "del-cli": "^5.1.0",
-        "eslint": "^8.49.0",
-        "jest": "^29.6.4"
+        "eslint": "^8.49.0"
     },
     "keywords": [
         "spec",

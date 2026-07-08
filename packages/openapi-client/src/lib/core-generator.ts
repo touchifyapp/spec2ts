@@ -9,9 +9,9 @@ import type {
 } from "openapi3-ts/oas31";
 
 import {
-    ParserContext,
+    type ParserContext,
     resolveReference
-} from "@spec2ts/jsonschema/lib/core-parser";
+} from "@spec2ts/jsonschema";
 
 import {
     parseServers,

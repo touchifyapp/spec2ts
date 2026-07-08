@@ -3,6 +3,7 @@
 *.js
 !packages/*/types/**/*.d.ts
 !*.config.js
+dist/
 
 # Test results
 **/coverage/

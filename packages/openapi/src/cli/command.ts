@@ -9,7 +9,7 @@ import {
 
 import {
     parseOpenApiFile,
-    ParseOpenApiOptions
+    type ParseOpenApiOptions
 } from "../lib/openapi-parser";
 
 export interface BuildTsFromOpenApiOptions extends ParseOpenApiOptions {

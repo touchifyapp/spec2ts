@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-import * as yargs from "yargs";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
-import * as jsonschema from "@spec2ts/jsonschema/cli/command";
-import * as openapi from "@spec2ts/openapi/cli/command";
-import * as openapiClient from "@spec2ts/openapi-client/cli/command";
+import * as jsonschema from "@spec2ts/jsonschema/cli";
+import * as openapi from "@spec2ts/openapi/cli";
+import * as openapiClient from "@spec2ts/openapi-client/cli";
 
-yargs
+void yargs(hideBin(process.argv))
     .command(
         jsonschema.usage.replace("$0", "jsonschema"),
         jsonschema.describe,

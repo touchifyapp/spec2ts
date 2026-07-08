@@ -5,5 +5,8 @@ export * from "./lib/finder";
 export * from "./lib/sourcefile";
 export * from "./lib/statement";
 
-export * as cli from "./lib/cli";
-export * as printer from "./lib/printer";
+import * as $cli from "./lib/cli";
+import * as $printer from "./lib/printer";
+
+export const cli = { ...$cli };
+export const printer = { ...$printer };

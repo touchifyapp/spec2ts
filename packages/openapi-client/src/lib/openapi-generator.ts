@@ -8,13 +8,13 @@ import type {
 } from "openapi3-ts/oas31";
 
 import {
-    ParserOptions,
+    type ParserOptions,
     createContext
-} from "@spec2ts/jsonschema/lib/core-parser";
+} from "@spec2ts/jsonschema";
 
 import {
     parseReference
-} from "@spec2ts/openapi/lib/core-parser";
+} from "@spec2ts/openapi";
 
 import {
     OApiGeneratorContext

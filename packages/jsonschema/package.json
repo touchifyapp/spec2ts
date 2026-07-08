@@ -4,8 +4,10 @@
     "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
     "author": "Touchify <dev@touchify.co>",
     "license": "MIT",
-    "main": "index.js",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.mts",
     "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema#readme",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/touchifyapp/spec2ts"
@@ -14,28 +16,36 @@
         "access": "public"
     },
     "bin": {
-        "jsonschema2ts": "./bin/jsonschema2ts.js"
+        "jsonschema2ts": "./dist/bin/jsonschema2ts.mjs"
     },
     "files": [
-        "*.js",
-        "*.d.ts",
-        "bin/**/*.js",
-        "cli/**/*.js",
-        "cli/**/*.d.ts",
-        "lib/**/*.js",
-        "lib/**/*.d.ts"
+        "dist/**/*.mjs",
+        "dist/**/*.d.mts"
     ],
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.mts"
+        },
+        "./cli": {
+            "import": "./dist/cli/index.mjs",
+            "types": "./dist/cli/index.d.mts"
+        },
+        "./bin/jsonschema2ts": {
+            "import": "./dist/bin/jsonschema2ts.mjs",
+            "types": "./dist/bin/jsonschema2ts.d.mts"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
-        "build": "npm run clean && npm run lint && npm run build:ts",
-        "build:ts": "tsc -p .",
-        "test": "npm run clean && npm run lint && npm run test:jest",
-        "test:jest": "jest -c ../../jest.config.js --rootDir .",
+        "build": "npm run lint && npm run build:ts",
+        "build:ts": "tsdown",
+        "test": "npm run lint && npm run test:vitest",
+        "test:vitest": "vitest run -c ../../vitest.config.ts",
         "test:coverage": "npm run test -- -- --coverage",
         "lint": "npm run lint:ts",
-        "lint:ts": "eslint '*.ts' '{bin,cli,lib}/**/*.ts'",
+        "lint:ts": "eslint 'src/**/*.ts'",
         "lint:fix": "npm run lint -- -- --fix",
-        "clean": "npm run clean:ts",
-        "clean:ts": "del '*.{js,d.ts}' '{bin,cli,lib}/**/*.{js,d.ts}'",
         "prepublishOnly": "npm test && npm run build"
     },
     "dependencies": {
@@ -46,9 +56,7 @@
     },
     "devDependencies": {
         "@types/json-schema": "^7.0.12",
-        "del-cli": "^5.1.0",
-        "eslint": "^8.49.0",
-        "jest": "^29.6.4"
+        "eslint": "^8.49.0"
     },
     "keywords": [
         "json",
