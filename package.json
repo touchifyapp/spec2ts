@@ -17,7 +17,7 @@
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
-    "test:ci": "lerna --ci run test -- -- --ci",
+    "test:ci": "lerna --ci run test",
     "lint": "lerna run lint",
     "format": "lerna run format",
     "clean": "lerna run clean",
