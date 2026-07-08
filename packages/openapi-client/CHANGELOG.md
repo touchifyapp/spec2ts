@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@3.1.3...@spec2ts/openapi-client@4.0.0) (2026-07-08)
+
+
+* feat!: migrate to typescript 6 ([24e1d2e](https://github.com/touchifyapp/spec2ts/commit/24e1d2edc0dd6128aced76f3e2e1fb28dd7d14c4))
+* feat!: bundle output and migrate to esm format ([6a83e9e](https://github.com/touchifyapp/spec2ts/commit/6a83e9ebf4ca82c3234c62b19afc7ee1f7fd1540))
+
+
+### BREAKING CHANGES
+
+* use typescript 6
+* client use node16 module and node16 module resolution by default
+* packages are now esm-only
+* import structure changes (can't import arbitrary internal modules)
+
+
+
+
+
 ## [3.1.3](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@3.1.2...@spec2ts/openapi-client@3.1.3) (2025-04-10)
 
 **Note:** Version bump only for package @spec2ts/openapi-client
