@@ -1,7 +1,7 @@
-import * as path from "path";
-import { readFileSync } from "fs";
-
 import type $RefParser from "@apidevtools/json-schema-ref-parser";
+
+import { readFileSync } from "fs";
+import * as path from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsYaml = require("js-yaml");
@@ -12,9 +12,7 @@ export function loadSchema(file: string): JSONSchema {
 }
 
 export function getAssetsPath(file?: string): string {
-    return file ?
-        path.join(__dirname, "assets", file) :
-        path.join(__dirname, "assets");
+    return file ? path.join(__dirname, "assets", file) : path.join(__dirname, "assets");
 }
 
 function loadFile<T>(file: string): T {

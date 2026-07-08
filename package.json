@@ -19,6 +19,7 @@
     "test": "lerna run test",
     "test:ci": "lerna --ci run test -- -- --ci",
     "lint": "lerna run lint",
+    "format": "lerna run format",
     "clean": "lerna run clean",
     "prepare": "husky install"
   },

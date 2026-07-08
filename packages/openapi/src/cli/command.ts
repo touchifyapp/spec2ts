@@ -1,16 +1,7 @@
-import {
-    Argv
-} from "yargs";
+import { printer, cli } from "@spec2ts/core";
+import { Argv } from "yargs";
 
-import {
-    printer,
-    cli
-} from "@spec2ts/core";
-
-import {
-    parseOpenApiFile,
-    type ParseOpenApiOptions
-} from "../lib/openapi-parser";
+import { parseOpenApiFile, type ParseOpenApiOptions } from "../lib/openapi-parser";
 
 export interface BuildTsFromOpenApiOptions extends ParseOpenApiOptions {
     input: string | string[];
@@ -29,45 +20,45 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
             array: true,
             type: "string",
             describe: "Path to OpenAPI Specification(s) to convert to TypeScript",
-            demandOption: true
+            demandOption: true,
         })
 
         .option("output", {
             type: "string",
             alias: "o",
-            describe: "Output directory for generated types"
+            describe: "Output directory for generated types",
         })
         .option("ext", {
             type: "string",
             alias: "e",
             describe: "Output extension for generated types",
-            choices: [".d.ts", ".ts"]
+            choices: [".d.ts", ".ts"],
         })
 
         .option("cwd", {
             type: "string",
             alias: "c",
-            describe: "Root directory for resolving $refs"
+            describe: "Root directory for resolving $refs",
         })
 
         .option("avoidAny", {
             type: "boolean",
-            describe: "Avoid the `any` type and use `unknown` instead"
+            describe: "Avoid the `any` type and use `unknown` instead",
         })
         .option("enableDate", {
             choices: [true, "strict", "lax"] as const,
-            describe: "Build `Date` for format `date` and `date-time`"
+            describe: "Build `Date` for format `date` and `date-time`",
         })
 
         .option("lowerHeaders", {
             type: "boolean",
-            describe: "Lowercase headers keys to match Node.js standard"
+            describe: "Lowercase headers keys to match Node.js standard",
         })
 
         .option("banner", {
             type: "string",
             alias: "b",
-            describe: "Comment prepended to the top of each generated file"
+            describe: "Comment prepended to the top of each generated file",
         });
 }
 
@@ -81,12 +72,7 @@ export async function handler(options: BuildTsFromOpenApiOptions): Promise<void>
         const output = cli.getOutputPath(file, options);
         await cli.mkdirp(output);
 
-        await cli.writeFile(
-            output,
-            (options.banner || defaultBanner()) +
-            "\n\n" +
-            content
-        );
+        await cli.writeFile(output, (options.banner || defaultBanner()) + "\n\n" + content);
     }
 }
 

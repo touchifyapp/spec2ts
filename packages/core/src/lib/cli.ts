@@ -1,41 +1,29 @@
 import { promises as fs } from "fs";
-import * as path from "path";
 import { glob, type GlobOptions } from "glob";
+import * as path from "path";
 
 export function writeFile(path: string, content: string): Promise<void> {
-    return fs.writeFile(
-        path,
-        content,
-        { encoding: "utf8" }
-    );
+    return fs.writeFile(path, content, { encoding: "utf8" });
 }
 
 export async function mkdirp(file: string): Promise<void> {
     await fs.mkdir(path.dirname(file), { recursive: true });
 }
 
-export function getOutputPath(src: string, { output, ext }: { output?: string, ext?: string }): string {
+export function getOutputPath(src: string, { output, ext }: { output?: string; ext?: string }): string {
     if (output) {
-        return path.join(
-            output,
-            getOutputFileName(src)
-        );
+        return path.join(output, getOutputFileName(src));
     }
 
     if (src.startsWith("http")) {
         return path.basename(src);
     }
 
-    return path.join(
-        path.dirname(src),
-        getOutputFileName(src, ext)
-    );
+    return path.join(path.dirname(src), getOutputFileName(src, ext));
 }
 
 export function getOutputFileName(src: string, ext = ".d.ts"): string {
-    return path.basename(src)
-        .replace(path.extname(src), "")
-        + ext;
+    return path.basename(src).replace(path.extname(src), "") + ext;
 }
 
 export async function findFiles(pattern: string | string[], options?: GlobOptions): Promise<string[]> {
@@ -43,7 +31,7 @@ export async function findFiles(pattern: string | string[], options?: GlobOption
         return findFilesOne(pattern, options);
     }
 
-    const res = await Promise.all(pattern.map(p => findFilesOne(p, options)));
+    const res = await Promise.all(pattern.map((p) => findFilesOne(p, options)));
     return res.flat();
 }
 

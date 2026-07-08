@@ -1,74 +1,76 @@
 {
-    "name": "@spec2ts/jsonschema",
-    "version": "3.0.5",
-    "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
-    "author": "Touchify <dev@touchify.co>",
-    "license": "MIT",
-    "main": "dist/index.mjs",
-    "types": "dist/index.d.mts",
-    "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema#readme",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/touchifyapp/spec2ts"
+  "name": "@spec2ts/jsonschema",
+  "version": "3.0.5",
+  "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
+  "keywords": [
+    "ast",
+    "compile",
+    "compiler",
+    "interface",
+    "json",
+    "schema",
+    "share",
+    "spec",
+    "spec2ts",
+    "transpile",
+    "typescript",
+    "typing"
+  ],
+  "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/jsonschema#readme",
+  "license": "MIT",
+  "author": "Touchify <dev@touchify.co>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/touchifyapp/spec2ts"
+  },
+  "bin": {
+    "jsonschema2ts": "./dist/bin/jsonschema2ts.mjs"
+  },
+  "files": [
+    "dist/**/*.mjs",
+    "dist/**/*.d.mts"
+  ],
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     },
-    "publishConfig": {
-        "access": "public"
+    "./cli": {
+      "import": "./dist/cli/index.mjs",
+      "types": "./dist/cli/index.d.mts"
     },
-    "bin": {
-        "jsonschema2ts": "./dist/bin/jsonschema2ts.mjs"
+    "./bin/jsonschema2ts": {
+      "import": "./dist/bin/jsonschema2ts.mjs",
+      "types": "./dist/bin/jsonschema2ts.d.mts"
     },
-    "files": [
-        "dist/**/*.mjs",
-        "dist/**/*.d.mts"
-    ],
-    "exports": {
-        ".": {
-            "import": "./dist/index.mjs",
-            "types": "./dist/index.d.mts"
-        },
-        "./cli": {
-            "import": "./dist/cli/index.mjs",
-            "types": "./dist/cli/index.d.mts"
-        },
-        "./bin/jsonschema2ts": {
-            "import": "./dist/bin/jsonschema2ts.mjs",
-            "types": "./dist/bin/jsonschema2ts.d.mts"
-        },
-        "./package.json": "./package.json"
-    },
-    "scripts": {
-        "build": "npm run lint && npm run build:ts",
-        "build:ts": "tsdown",
-        "test": "npm run lint && npm run test:vitest",
-        "test:vitest": "vitest run -c ../../vitest.config.ts",
-        "test:coverage": "npm run test -- -- --coverage",
-        "lint": "npm run lint:ts",
-        "lint:ts": "oxlint -c ../../oxlint.config.ts",
-        "lint:fix": "npm run lint -- -- --fix",
-        "prepublishOnly": "npm test && npm run build"
-    },
-    "dependencies": {
-        "@apidevtools/json-schema-ref-parser": "^10.1.0",
-        "@spec2ts/core": "^3.0.2",
-        "typescript": "^5.0.0",
-        "yargs": "^18.0.0"
-    },
-    "devDependencies": {
-        "@types/json-schema": "^7.0.12"
-    },
-    "keywords": [
-        "json",
-        "schema",
-        "spec",
-        "typescript",
-        "compile",
-        "compiler",
-        "ast",
-        "transpile",
-        "interface",
-        "typing",
-        "spec2ts",
-        "share"
-    ]
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run lint && npm run build:ts",
+    "build:ts": "tsdown",
+    "test": "npm run lint && npm run format:check && npm run test:vitest",
+    "test:vitest": "vitest run -c ../../vitest.config.ts",
+    "test:coverage": "npm run test -- -- --coverage",
+    "lint": "npm run lint:ts",
+    "lint:ts": "oxlint -c ../../oxlint.config.ts",
+    "lint:fix": "npm run lint -- -- --fix",
+    "format": "oxfmt -c ../../oxfmt.config.ts",
+    "format:check": "oxfmt -c ../../oxfmt.config.ts --check",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^10.1.0",
+    "@spec2ts/core": "^3.0.2",
+    "typescript": "^5.0.0",
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/json-schema": "^7.0.12"
+  }
 }

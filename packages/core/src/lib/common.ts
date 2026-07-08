@@ -1,6 +1,19 @@
 import * as ts from "typescript";
 
-export type KeywordTypeName = "any" | "number" | "object" | "string" | "boolean" | "bigint" | "symbol" | "this" | "void" | "unknown" | "undefined" | "null" | "never";
+export type KeywordTypeName =
+    | "any"
+    | "number"
+    | "object"
+    | "string"
+    | "boolean"
+    | "bigint"
+    | "symbol"
+    | "this"
+    | "void"
+    | "unknown"
+    | "undefined"
+    | "null"
+    | "never";
 
 export const questionToken = ts.factory.createToken(ts.SyntaxKind.QuestionToken);
 export const questionDotToken = ts.factory.createToken(ts.SyntaxKind.QuestionDotToken);
@@ -18,12 +31,12 @@ export const keywordType: Record<KeywordTypeName, ts.TypeNode> = {
     unknown: ts.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword),
     undefined: ts.factory.createKeywordTypeNode(ts.SyntaxKind.UndefinedKeyword),
     null: ts.factory.createLiteralTypeNode(ts.factory.createNull()),
-    never: ts.factory.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword)
+    never: ts.factory.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword),
 };
 
 export const modifier: Record<string, ts.Modifier> = {
     async: ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword),
-    export: ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)
+    export: ts.factory.createModifier(ts.SyntaxKind.ExportKeyword),
 };
 
 export function getName(name: ts.Node): string | ts.__String {
@@ -56,10 +69,7 @@ export function createKeywordType(type: KeywordTypeName): ts.TypeNode {
     return keywordType[type];
 }
 
-export function appendNodes<T extends ts.Node>(
-    array: ts.NodeArray<T>,
-    ...nodes: T[]
-): ts.NodeArray<T> {
+export function appendNodes<T extends ts.Node>(array: ts.NodeArray<T>, ...nodes: T[]): ts.NodeArray<T> {
     return ts.factory.createNodeArray([...array, ...nodes]);
 }
 
@@ -67,11 +77,7 @@ export function replaceNode<T extends ts.Node>(array: ts.NodeArray<T>, oldNode: 
     const i = array.indexOf(oldNode);
     if (i === -1) return array;
 
-    return ts.factory.createNodeArray([
-        ...array.slice(0, i),
-        newNode,
-        ...array.slice(i + 1)
-    ]);
+    return ts.factory.createNodeArray([...array.slice(0, i), newNode, ...array.slice(i + 1)]);
 }
 
 export function block(...statements: ts.Statement[]): ts.Block {
@@ -85,7 +91,8 @@ export function isKeywordTypeName(type: string): type is KeywordTypeName {
 export function isKeywordTypeNode(node?: ts.Node): node is ts.KeywordTypeNode {
     if (!node) return false;
 
-    return node.kind === ts.SyntaxKind.AnyKeyword ||
+    return (
+        node.kind === ts.SyntaxKind.AnyKeyword ||
         node.kind === ts.SyntaxKind.UnknownKeyword ||
         node.kind === ts.SyntaxKind.NumberKeyword ||
         node.kind === ts.SyntaxKind.BigIntKeyword ||
@@ -97,5 +104,6 @@ export function isKeywordTypeNode(node?: ts.Node): node is ts.KeywordTypeNode {
         node.kind === ts.SyntaxKind.VoidKeyword ||
         node.kind === ts.SyntaxKind.UndefinedKeyword ||
         node.kind === ts.SyntaxKind.NullKeyword ||
-        node.kind === ts.SyntaxKind.NeverKeyword;
+        node.kind === ts.SyntaxKind.NeverKeyword
+    );
 }

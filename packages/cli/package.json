@@ -1,62 +1,64 @@
 {
-    "name": "@spec2ts/cli",
-    "version": "3.0.5",
-    "description": "Utility to convert specifications (Open API, JSON Schemas) to TypeScript using TypeScript native compiler",
-    "author": "Touchify <dev@touchify.co>",
-    "license": "MIT",
-    "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/cli#readme",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/touchifyapp/spec2ts"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "bin": {
-        "spec2ts": "./bin/spec2ts.mjs"
-    },
-    "files": [
-        "bin/**/*.mjs"
-    ],
-    "scripts": {
-        "build": "npm run lint && npm run build:ts",
-        "build:ts": "tsdown",
-        "test": "npm run lint && npm run test:vitest",
-        "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
-        "test:coverage": "npm run test -- -- --coverage",
-        "lint": "npm run lint:ts",
-        "lint:ts": "oxlint -c ../../oxlint.config.ts",
-        "lint:fix": "npm run lint -- -- --fix",
-        "prepublishOnly": "npm test && npm run build"
-    },
-    "dependencies": {
-        "@spec2ts/jsonschema": "^3.0.5",
-        "@spec2ts/openapi": "^3.1.3",
-        "@spec2ts/openapi-client": "^3.1.3",
-        "yargs": "^18.0.0"
-    },
-    "devDependencies": {
-        "typescript": "^5.2.2"
-    },
-    "keywords": [
-        "spec",
-        "jsonschema",
-        "json",
-        "schema",
-        "openapi",
-        "openapiv3",
-        "typescript",
-        "compile",
-        "compiler",
-        "client",
-        "http",
-        "rest",
-        "ast",
-        "transpile",
-        "interface",
-        "typing",
-        "spec2ts",
-        "share"
-    ]
+  "name": "@spec2ts/cli",
+  "version": "3.0.5",
+  "description": "Utility to convert specifications (Open API, JSON Schemas) to TypeScript using TypeScript native compiler",
+  "keywords": [
+    "ast",
+    "client",
+    "compile",
+    "compiler",
+    "http",
+    "interface",
+    "json",
+    "jsonschema",
+    "openapi",
+    "openapiv3",
+    "rest",
+    "schema",
+    "share",
+    "spec",
+    "spec2ts",
+    "transpile",
+    "typescript",
+    "typing"
+  ],
+  "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/cli#readme",
+  "license": "MIT",
+  "author": "Touchify <dev@touchify.co>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/touchifyapp/spec2ts"
+  },
+  "bin": {
+    "spec2ts": "./bin/spec2ts.mjs"
+  },
+  "files": [
+    "bin/**/*.mjs"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run lint && npm run build:ts",
+    "build:ts": "tsdown",
+    "test": "npm run lint && npm run format:check && npm run test:vitest",
+    "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
+    "test:coverage": "npm run test -- -- --coverage",
+    "lint": "npm run lint:ts",
+    "lint:ts": "oxlint -c ../../oxlint.config.ts",
+    "lint:fix": "npm run lint -- -- --fix",
+    "format": "oxfmt -c ../../oxfmt.config.ts",
+    "format:check": "oxfmt -c ../../oxfmt.config.ts --check",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "dependencies": {
+    "@spec2ts/jsonschema": "^3.0.5",
+    "@spec2ts/openapi": "^3.1.3",
+    "@spec2ts/openapi-client": "^3.1.3",
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
 }

@@ -3,13 +3,10 @@ import * as ts from "typescript";
 import { describe, test, expect } from "vitest";
 
 import { generateClient } from "../src/lib/openapi-generator";
-
 import { loadSpec } from "./helpers";
 
 describe("openapi-parser", () => {
-
     describe(".generateClient()", () => {
-
         test("should resolves with an object with a ts.SourceFile", async () => {
             const schema = loadSpec("petstore.yml");
             const res = await generateClient(schema);
@@ -42,7 +39,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "listPets"
+                (node) => node.name?.text === "listPets",
             );
 
             expect(func).toHaveProperty(["modifiers", 0], core.modifier.export);
@@ -56,7 +53,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "listPets"
+                (node) => node.name?.text === "listPets",
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
@@ -75,7 +72,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "findPetById"
+                (node) => node.name?.text === "findPetById",
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
@@ -94,7 +91,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "deletePet"
+                (node) => node.name?.text === "deletePet",
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
@@ -118,7 +115,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "deletePet"
+                (node) => node.name?.text === "deletePet",
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "text"], "id");
@@ -140,7 +137,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "deletePet"
+                (node) => node.name?.text === "deletePet",
             );
 
             expect(func).toHaveProperty(["parameters", 1, "name", "text"], "options");
@@ -155,7 +152,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "listPets"
+                (node) => node.name?.text === "listPets",
             );
 
             expect(func).toHaveProperty(["type", "kind"], ts.SyntaxKind.TypeReference);
@@ -173,7 +170,7 @@ describe("openapi-parser", () => {
             const func = core.findNode<ts.FunctionDeclaration>(
                 file.statements,
                 ts.SyntaxKind.FunctionDeclaration,
-                node => node.name?.text === "addPet"
+                (node) => node.name?.text === "addPet",
             );
 
             expect(func).toHaveProperty(["modifiers", 0], core.modifier.export);
@@ -191,7 +188,7 @@ describe("openapi-parser", () => {
             const pet = core.findNode<ts.InterfaceDeclaration>(
                 file.statements,
                 ts.SyntaxKind.InterfaceDeclaration,
-                node => node.name.text === "Pet"
+                (node) => node.name.text === "Pet",
             );
 
             expect(pet).toHaveProperty(["name", "text"], "Pet");
@@ -213,13 +210,12 @@ describe("openapi-parser", () => {
             const pets = core.findNode<ts.TypeAliasDeclaration>(
                 file.statements,
                 ts.SyntaxKind.TypeAliasDeclaration,
-                node => node.name.text === "Pets"
+                (node) => node.name.text === "Pets",
             );
 
             expect(pets).toHaveProperty(["name", "text"], "Pets");
             expect(pets).toHaveProperty(["type", "kind"], ts.SyntaxKind.ArrayType);
             expect(pets).toHaveProperty(["type", "elementType", "typeName", "escapedText"], "Pet");
-
         });
 
         test("should export Error entity", async () => {
@@ -229,7 +225,7 @@ describe("openapi-parser", () => {
             const error = core.findNode<ts.InterfaceDeclaration>(
                 file.statements,
                 ts.SyntaxKind.InterfaceDeclaration,
-                node => node.name.text === "Error"
+                (node) => node.name.text === "Error",
             );
 
             expect(error).toHaveProperty(["name", "text"], "Error");
@@ -266,7 +262,6 @@ describe("openapi-parser", () => {
         });
 
         describe("with typesPath", () => {
-
             test("should output two separated files", async () => {
                 const schema = loadSpec("petstore.yml");
                 const res = await generateClient(schema, { typesPath: "./types" });
@@ -282,7 +277,7 @@ describe("openapi-parser", () => {
                 const pet = core.findNode<ts.InterfaceDeclaration>(
                     types.statements,
                     ts.SyntaxKind.InterfaceDeclaration,
-                    node => node.name.text === "Pet"
+                    (node) => node.name.text === "Pet",
                 );
 
                 expect(pet).toHaveProperty(["name", "text"], "Pet");
@@ -301,17 +296,11 @@ describe("openapi-parser", () => {
                 const schema = loadSpec("petstore.yml");
                 const { client } = await generateClient(schema, { typesPath: "./types" });
 
-                const importTypes = core.findNode<ts.ImportDeclaration>(
-                    client.statements,
-                    ts.SyntaxKind.ImportDeclaration
-                );
+                const importTypes = core.findNode<ts.ImportDeclaration>(client.statements, ts.SyntaxKind.ImportDeclaration);
 
                 expect(importTypes).toHaveProperty(["importClause", "namedBindings", "elements", 0, "name", "escapedText"], "Pet");
                 expect(importTypes).toHaveProperty("moduleSpecifier.text", "./types");
             });
-
         });
-
     });
-
 });

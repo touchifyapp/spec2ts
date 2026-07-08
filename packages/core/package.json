@@ -1,52 +1,54 @@
 {
-    "name": "@spec2ts/core",
-    "version": "3.0.2",
-    "description": "Core module for @spec2ts modules, includes codegen helpers and common parsing methods",
-    "author": "Touchify <dev@touchify.co>",
-    "license": "MIT",
-    "main": "dist/index.mjs",
-    "types": "dist/index.d.mts",
-    "homepage": "https://github.com/touchifyapp/spec2ts#readme",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/touchifyapp/spec2ts"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "files": [
-        "dist/**/*.mjs",
-        "dist/**/*.d.mts"
-    ],
-    "scripts": {
-        "build": "npm run lint && npm run build:ts",
-        "build:ts": "tsdown",
-        "test": "npm run lint && npm run test:vitest",
-        "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
-        "test:coverage": "npm run test -- -- --coverage",
-        "lint": "npm run lint:ts",
-        "lint:ts": "oxlint -c ../../oxlint.config.ts",
-        "lint:fix": "npm run lint -- -- --fix",
-        "prepublishOnly": "npm test && npm run build"
-    },
-    "dependencies": {
-        "glob": "^10.3.4",
-        "typescript": "^5.0.0"
-    },
-    "devDependencies": {
-        "@types/glob": "^8.1.0"
-    },
-    "keywords": [
-        "spec",
-        "typescript",
-        "compile",
-        "compiler",
-        "ast",
-        "transpile",
-        "interface",
-        "typing",
-        "spec2ts",
-        "share"
-    ]
+  "name": "@spec2ts/core",
+  "version": "3.0.2",
+  "description": "Core module for @spec2ts modules, includes codegen helpers and common parsing methods",
+  "keywords": [
+    "ast",
+    "compile",
+    "compiler",
+    "interface",
+    "share",
+    "spec",
+    "spec2ts",
+    "transpile",
+    "typescript",
+    "typing"
+  ],
+  "homepage": "https://github.com/touchifyapp/spec2ts#readme",
+  "license": "MIT",
+  "author": "Touchify <dev@touchify.co>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/touchifyapp/spec2ts"
+  },
+  "files": [
+    "dist/**/*.mjs",
+    "dist/**/*.d.mts"
+  ],
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run lint && npm run build:ts",
+    "build:ts": "tsdown",
+    "test": "npm run lint && npm run format:check && npm run test:vitest",
+    "test:vitest": "vitest run -c ../../vitest.config.ts --passWithNoTests",
+    "test:coverage": "npm run test -- -- --coverage",
+    "lint": "npm run lint:ts",
+    "lint:ts": "oxlint -c ../../oxlint.config.ts",
+    "lint:fix": "npm run lint -- -- --fix",
+    "format": "oxfmt -c ../../oxfmt.config.ts",
+    "format:check": "oxfmt -c ../../oxfmt.config.ts --check",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "dependencies": {
+    "glob": "^10.3.4",
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0"
+  }
 }

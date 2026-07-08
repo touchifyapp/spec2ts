@@ -48,9 +48,7 @@ export const _ = {
     },
 
     isEmpty(v: unknown): boolean {
-        return typeof v === "object" && !!v ?
-            Object.keys(v).length === 0 && v.constructor === Object :
-            v === undefined;
+        return typeof v === "object" && !!v ? Object.keys(v).length === 0 && v.constructor === Object : v === undefined;
     },
 
     /** Creates a tag-function to encode template strings with the given encoders. */
@@ -65,10 +63,7 @@ export const _ = {
                 if (Array.isArray(v)) {
                     return v.map(encoder).join(delimiter);
                 }
-                const flat = Object.entries(v).reduce(
-                    (flat, entry) => [...flat, ...entry],
-                    [] as any
-                );
+                const flat = Object.entries(v).reduce((flat, entry) => [...flat, ...entry], [] as any);
                 return flat.map(encoder).join(delimiter);
             }
 
@@ -91,14 +86,14 @@ export const _ = {
             .filter(Boolean)
             .join("/")
             .replace(/([^:]\/)\/+/, "$1");
-    }
+    },
 };
 
 /** Functions to serialize query parameters in different styles. */
 export const QS = {
     /** Join params using an ampersand and prepends a questionmark if not empty. */
     query(...params: string[]): string {
-        const s = params.filter(p => !!p).join("&");
+        const s = params.filter((p) => !!p).join("&");
         return s && `?${s}`;
     },
 
@@ -168,8 +163,11 @@ export const http = {
         });
 
         let text: string | undefined;
-        try { text = await res.text(); }
-        catch { /* ok */ }
+        try {
+            text = await res.text();
+        } catch {
+            /* ok */
+        }
 
         if (!res.ok) {
             throw new HttpError(res.status, res.statusText, href, res.headers, text);
@@ -179,7 +177,7 @@ export const http = {
             status: res.status,
             statusText: res.statusText,
             headers: http.headers(res.headers),
-            data: text
+            data: text,
         };
     },
 
@@ -243,9 +241,9 @@ export const http = {
 
     headers(headers: Headers): Record<string, string> {
         const res: Record<string, string> = {};
-        headers.forEach((value, key) => res[key] = value);
+        headers.forEach((value, key) => (res[key] = value));
         return res;
-    }
+    },
 };
 
 export class HttpError extends Error {
@@ -261,8 +259,11 @@ export class HttpError extends Error {
         this.headers = http.headers(headers);
 
         if (text) {
-            try { this.data = JSON.parse(text); }
-            catch { /* ok */ }
+            try {
+                this.data = JSON.parse(text);
+            } catch {
+                /* ok */
+            }
         }
     }
 }

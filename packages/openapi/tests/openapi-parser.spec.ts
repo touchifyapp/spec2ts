@@ -1,12 +1,10 @@
 import { describe, test, expect } from "vitest";
 
-import { getAssetsPath, loadSpec } from "./helpers";
 import { parseOpenApi } from "../src/lib/openapi-parser";
+import { getAssetsPath, loadSpec } from "./helpers";
 
 describe("openapi-parser", () => {
-
     describe(".parseOpenApi()", () => {
-
         test("should resolves with an object with parsed results", async () => {
             const schema = loadSpec("petstore.yml");
             const res = await parseOpenApi(schema);
@@ -28,13 +26,13 @@ describe("openapi-parser", () => {
 
             expect(res.all).toHaveLength(
                 res.import.length +
-                res.params.length +
-                res.query.length +
-                res.headers.length +
-                res.body.length +
-                res.responses.length +
-                res.models.length +
-                res.cookie.length
+                    res.params.length +
+                    res.query.length +
+                    res.headers.length +
+                    res.body.length +
+                    res.responses.length +
+                    res.models.length +
+                    res.cookie.length,
             );
         });
 
@@ -115,7 +113,5 @@ describe("openapi-parser", () => {
             expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "escapedText"], "ThingData");
             expect(models[3]).toHaveProperty("name.text", "ThingNested");
         });
-
     });
-
 });

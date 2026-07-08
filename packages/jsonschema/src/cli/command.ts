@@ -1,16 +1,7 @@
-import {
-    Argv
-} from "yargs";
+import { printer, cli } from "@spec2ts/core";
+import { Argv } from "yargs";
 
-import {
-    printer,
-    cli
-} from "@spec2ts/core";
-
-import {
-    parseSchemaFile,
-    ParseSchemaOptions
-} from "../lib/schema-parser";
+import { parseSchemaFile, ParseSchemaOptions } from "../lib/schema-parser";
 
 export interface BuildTsFromSchemaOptions extends ParseSchemaOptions {
     input: string | string[];
@@ -29,40 +20,40 @@ export function builder(argv: Argv): Argv<BuildTsFromSchemaOptions> {
             array: true,
             type: "string",
             describe: "Path to JSON Schema(s) to convert to TypeScript",
-            demandOption: true
+            demandOption: true,
         })
 
         .option("output", {
             type: "string",
             alias: "o",
-            describe: "Output directory for generated types"
+            describe: "Output directory for generated types",
         })
         .option("ext", {
             type: "string",
             alias: "e",
             describe: "Output extension for generated types",
-            choices: [".d.ts", ".ts"]
+            choices: [".d.ts", ".ts"],
         })
 
         .option("cwd", {
             type: "string",
             alias: "c",
-            describe: "Root directory for resolving $refs"
+            describe: "Root directory for resolving $refs",
         })
 
         .option("avoidAny", {
             type: "boolean",
-            describe: "Avoid the `any` type and use `unknown` instead"
+            describe: "Avoid the `any` type and use `unknown` instead",
         })
         .option("enableDate", {
             choices: [true, "strict", "lax"] as const,
-            describe: "Build `Date` for format `date` and `date-time`"
+            describe: "Build `Date` for format `date` and `date-time`",
         })
 
         .option("banner", {
             type: "string",
             alias: "b",
-            describe: "Comment prepended to the top of each generated file"
+            describe: "Comment prepended to the top of each generated file",
         });
 }
 
@@ -76,12 +67,7 @@ export async function handler(options: BuildTsFromSchemaOptions): Promise<void> 
         const output = cli.getOutputPath(file, options);
         await cli.mkdirp(output);
 
-        await cli.writeFile(
-            output,
-            (options.banner || defaultBanner()) +
-            "\n\n" +
-            content
-        );
+        await cli.writeFile(output, (options.banner || defaultBanner()) + "\n\n" + content);
     }
 }
 

@@ -8,15 +8,16 @@
 
 ## Features
 
-* **AST-based:** Unlike other code generators `@spec2ts/openapi` does not use templates to generate code but uses TypeScript's built-in API to generate and pretty-print an abstract syntax tree.
-* **Tree-shakeable:** Individually exported types allows you to bundle only the ones you actually use.
-* **YAML or JSON:** Use YAML or JSON for your OpenAPI v3 specification.
-* **External references:** Resolves automatically external references and bundle or import them in generated files.
-* **Implementation agnostic:** Use generated types in any projet or framework.
+- **AST-based:** Unlike other code generators `@spec2ts/openapi` does not use templates to generate code but uses TypeScript's built-in API to generate and pretty-print an abstract syntax tree.
+- **Tree-shakeable:** Individually exported types allows you to bundle only the ones you actually use.
+- **YAML or JSON:** Use YAML or JSON for your OpenAPI v3 specification.
+- **External references:** Resolves automatically external references and bundle or import them in generated files.
+- **Implementation agnostic:** Use generated types in any projet or framework.
 
 ## Installation
 
 Install in your project:
+
 ```bash
 npm install @spec2ts/openapi
 ```
@@ -56,32 +57,32 @@ async function generateSpec(path: string): Promise<string> {
 ## Implementations
 
 - [x] Types for parameters:
-  - [x] path
-  - [x] header
-  - [x] query
-  - [x] cookie
+    - [x] path
+    - [x] header
+    - [x] query
+    - [x] cookie
 - [x] Types for requestBody
 - [x] Types for responses
 - [x] Automatic naming
-  - [x] From operationId
-  - [x] From path
+    - [x] From operationId
+    - [x] From path
 - [x] Parameters merging
-  - [x] From path item
-  - [x] From operation
-  - [x] Override from operation
+    - [x] From path item
+    - [x] From operation
+    - [x] Override from operation
 - [x] [Schema references](http://json-schema.org/latest/json-schema-core.html#rfc.section.7.2.2)
-  - [x] Local (filesystem) schema references
-  - [x] External (network) schema references
+    - [x] Local (filesystem) schema references
+    - [x] External (network) schema references
 - [x] Modular architecture
-  - [x] Import local references
-  - [x] Embed external references
+    - [x] Import local references
+    - [x] Embed external references
 
 ## Compatibility Matrix
 
 | TypeScript version | spec2ts version |
-|--------------------|-----------------|
-| v3.x.x             | v1              | 
-| v4.x.x             | v2              | 
+| ------------------ | --------------- |
+| v3.x.x             | v1              |
+| v4.x.x             | v2              |
 
 ## License
 

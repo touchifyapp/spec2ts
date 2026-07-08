@@ -8,15 +8,16 @@
 
 ## Features
 
-* **AST-based:** Unlike other code generators `@spec2ts/cli` does not use templates to generate code but uses TypeScript's built-in API to generate and pretty-print an abstract syntax tree.
-* **Tree-shakeable:** Individually exported types allows you to bundle only the ones you actually use.
-* **YAML or JSON:** Use YAML or JSON for your specifications.
-* **External references:** Resolves automatically external references and bundle or import them in generated files.
-* **Implementation agnostic:** Use generated types in any projet or framework.
+- **AST-based:** Unlike other code generators `@spec2ts/cli` does not use templates to generate code but uses TypeScript's built-in API to generate and pretty-print an abstract syntax tree.
+- **Tree-shakeable:** Individually exported types allows you to bundle only the ones you actually use.
+- **YAML or JSON:** Use YAML or JSON for your specifications.
+- **External references:** Resolves automatically external references and bundle or import them in generated files.
+- **Implementation agnostic:** Use generated types in any projet or framework.
 
 ## Installation
 
 Install in your project:
+
 ```bash
 npm install @spec2ts/cli
 ```
@@ -71,9 +72,9 @@ Options:
 ## Compatibility Matrix
 
 | TypeScript version | spec2ts version |
-|--------------------|-----------------|
-| v3.x.x             | v1              | 
-| v4.x.x             | v2              | 
+| ------------------ | --------------- |
+| v3.x.x             | v1              |
+| v4.x.x             | v2              |
 
 ## License
 

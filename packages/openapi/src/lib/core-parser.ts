@@ -1,6 +1,3 @@
-import * as ts from "typescript";
-import * as core from "@spec2ts/core";
-
 import type {
     SchemaObject,
     ReferenceObject,
@@ -12,20 +9,20 @@ import type {
     RequestBodyObject,
 } from "openapi3-ts/oas31";
 
+import type { ParseOpenApiOptions } from "./openapi-parser";
+
+import * as core from "@spec2ts/core";
 import {
     type JSONSchema,
     type ParserContext,
     type ParsedReference,
-
     getTypeFromSchema,
     getTypeFromProperties,
-
     createRefContext,
     resolveReference,
     pascalCase,
 } from "@spec2ts/jsonschema";
-
-import type { ParseOpenApiOptions } from "./openapi-parser";
+import * as ts from "typescript";
 
 export interface ParseOpenApiResult {
     import: ts.Statement[];
@@ -46,20 +43,21 @@ export interface OApiParserContext extends ParserContext {
 }
 
 export function parsePathItem(path: string, item: PathItemObject, context: OApiParserContext, result: ParseOpenApiResult): void {
-    const baseParams = item.parameters && parseParameters(
-        getPathName(path, context),
-        item.parameters,
-        undefined,
-        context,
-        result
-    );
+    const baseParams = item.parameters && parseParameters(getPathName(path, context), item.parameters, undefined, context, result);
 
     Object.entries(item)
-        .filter(([verb,]) => VERBS.includes(verb.toUpperCase()))
+        .filter(([verb]) => VERBS.includes(verb.toUpperCase()))
         .forEach(([verb, entry]) => parseOperation(path, verb, entry, baseParams, context, result));
 }
 
-export function parseOperation(path: string, verb: string, operation: OperationObject, baseParams: ParsedParams | undefined, context: OApiParserContext, result: ParseOpenApiResult): void {
+export function parseOperation(
+    path: string,
+    verb: string,
+    operation: OperationObject,
+    baseParams: ParsedParams | undefined,
+    context: OApiParserContext,
+    result: ParseOpenApiResult,
+): void {
     const name = getOperationName(verb, path, operation.operationId, context);
     if (operation.parameters) {
         parseParameters(name, operation.parameters, baseParams, context, result);
@@ -68,7 +66,9 @@ export function parseOperation(path: string, verb: string, operation: OperationO
     if (operation.requestBody) {
         const requestBody = resolveReference<RequestBodyObject>(operation.requestBody, context);
         const decla = getContentDeclaration(name + "Body", requestBody.content, context);
-        if (decla) { addToOpenApiResult(result, "body", decla); }
+        if (decla) {
+            addToOpenApiResult(result, "body", decla);
+        }
     }
 
     if (operation.responses) {
@@ -77,22 +77,30 @@ export function parseOperation(path: string, verb: string, operation: OperationO
             const response = resolveReference<ResponseObject>(responseObj, context);
 
             const decla = getContentDeclaration(getResponseName(name, status, context), response.content, context);
-            if (decla) { addToOpenApiResult(result, "responses", decla); }
+            if (decla) {
+                addToOpenApiResult(result, "responses", decla);
+            }
         });
     }
 }
 
 export type ParamType = "params" | "headers" | "query" | "cookie";
 
-export function parseParameters(baseName: string, data: Array<ReferenceObject | ParameterObject>, baseParams: ParsedParams = {}, context: OApiParserContext, result: ParseOpenApiResult): ParsedParams {
+export function parseParameters(
+    baseName: string,
+    data: Array<ReferenceObject | ParameterObject>,
+    baseParams: ParsedParams = {},
+    context: OApiParserContext,
+    result: ParseOpenApiResult,
+): ParsedParams {
     const params: ParameterObject[] = [];
     const query: ParameterObject[] = [];
     const headers: ParameterObject[] = [];
     const cookie: ParameterObject[] = [];
 
-    const res: ParsedParams = {}
+    const res: ParsedParams = {};
 
-    data.forEach(item => {
+    data.forEach((item) => {
         item = resolveReference<ParameterObject>(item, context);
 
         switch (item.in) {
@@ -111,7 +119,6 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
         }
     });
 
-
     addParams(params, "params");
     addParams(headers, "headers");
     addParams(query, "query");
@@ -125,12 +132,14 @@ export function parseParameters(baseName: string, data: Array<ReferenceObject | 
         const name = baseName + pascalCase(paramType);
         const type = getParamType(paramType, params, baseParams[paramType], context);
 
-        addToOpenApiResult(result, paramType,
+        addToOpenApiResult(
+            result,
+            paramType,
             core.createTypeOrInterfaceDeclaration({
                 modifiers: [core.modifier.export],
                 name,
-                type
-            })
+                type,
+            }),
         );
 
         res[paramType] = ts.factory.createTypeReferenceNode(name, undefined);
@@ -143,8 +152,8 @@ export function parseReference(ref: ParsedReference, context: ParserContext): vo
         core.createTypeOrInterfaceDeclaration({
             modifiers: [core.modifier.export],
             name: ref.name,
-            type
-        })
+            type,
+        }),
     );
 }
 
@@ -152,7 +161,11 @@ export function parseReference(ref: ParsedReference, context: ParserContext): vo
 
 //#region Utils
 
-export function getContentDeclaration(name: string, content: ReferenceObject | ContentObject | undefined, context: OApiParserContext): ts.Statement | undefined {
+export function getContentDeclaration(
+    name: string,
+    content: ReferenceObject | ContentObject | undefined,
+    context: OApiParserContext,
+): ts.Statement | undefined {
     if (!content) return;
 
     content = resolveReference<ContentObject>(content, context);
@@ -164,15 +177,20 @@ export function getContentDeclaration(name: string, content: ReferenceObject | C
     return core.createTypeOrInterfaceDeclaration({
         modifiers: [core.modifier.export],
         name,
-        type
+        type,
     });
 }
 
-export function getParamType(paramType: ParamType, data: ParameterObject[], baseType: ts.TypeReferenceNode | undefined, context: OApiParserContext): ts.TypeNode {
+export function getParamType(
+    paramType: ParamType,
+    data: ParameterObject[],
+    baseType: ts.TypeReferenceNode | undefined,
+    context: OApiParserContext,
+): ts.TypeNode {
     const required: string[] = [];
 
     const props: Record<string, SchemaObject | ReferenceObject> = {};
-    data.forEach(m => {
+    data.forEach((m) => {
         let name = m.name;
         if (paramType === "headers" && context.options.lowerHeaders) {
             name = name.toLowerCase();
@@ -184,9 +202,10 @@ export function getParamType(paramType: ParamType, data: ParameterObject[], base
         }
     });
 
-    const ctx = paramType === "query" && typeof context.options.enableDateForQueryParams !== "undefined"
-        ? { ...context, options: { ...context.options, enableDate: context.options.enableDateForQueryParams } }
-        : context;
+    const ctx =
+        paramType === "query" && typeof context.options.enableDateForQueryParams !== "undefined"
+            ? { ...context, options: { ...context.options, enableDate: context.options.enableDateForQueryParams } }
+            : context;
 
     const type = getTypeFromProperties(props as Record<string, JSONSchema>, required, false, ctx);
     if (baseType) {
@@ -197,10 +216,12 @@ export function getParamType(paramType: ParamType, data: ParameterObject[], base
 }
 
 export function getSchemaFromContent(content: ContentObject): SchemaObject | ReferenceObject | undefined {
-    return content?.["application/json"]?.schema ||
+    return (
+        content?.["application/json"]?.schema ||
         content?.["application/x-www-form-urlencoded"]?.schema ||
         content?.["multipart/form-data"]?.schema ||
-        content?.["*/*"]?.schema;
+        content?.["*/*"]?.schema
+    );
 }
 
 export function getResponseName(operationName: string, statusCode: string, context: OApiParserContext): string {
@@ -212,11 +233,9 @@ export function getResponseName(operationName: string, statusCode: string, conte
         if (count > 1) {
             name += statusCode;
         }
-    }
-    else if (!isNaN(status)) {
+    } else if (!isNaN(status)) {
         name += statusCode;
-    }
-    else {
+    } else {
         // default
         name += pascalCase(statusCode);
     }
@@ -252,7 +271,11 @@ export function getOperationIdentifier(id?: string): string | void {
     if (core.isValidIdentifier(id)) return id;
 }
 
-export function addToOpenApiResult(result: ParseOpenApiResult, prop: keyof ParseOpenApiResult, statement: ts.Statement | ts.Statement[]): void {
+export function addToOpenApiResult(
+    result: ParseOpenApiResult,
+    prop: keyof ParseOpenApiResult,
+    statement: ts.Statement | ts.Statement[],
+): void {
     const statements = Array.isArray(statement) ? statement : [statement];
     result[prop].push(...statements);
     result.all.push(...statements);

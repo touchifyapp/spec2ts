@@ -1,7 +1,7 @@
-import * as path from "path";
-import { readFileSync } from "fs";
-
 import type { OpenAPIObject } from "openapi3-ts/oas31";
+
+import { readFileSync } from "fs";
+import * as path from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsYaml = require("js-yaml");
@@ -11,9 +11,7 @@ export function loadSpec(file: string): OpenAPIObject {
 }
 
 export function getAssetsPath(file?: string): string {
-    return file ?
-        path.join(__dirname, "assets", file) :
-        path.join(__dirname, "assets");
+    return file ? path.join(__dirname, "assets", file) : path.join(__dirname, "assets");
 }
 
 function loadFile<T>(file: string): T {

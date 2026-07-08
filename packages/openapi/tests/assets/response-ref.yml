@@ -9,10 +9,10 @@ paths:
     post:
       operationId: getOneThing
       requestBody:
-        $ref: '#/components/requestBodies/GetOneThingRequest'
+        $ref: "#/components/requestBodies/GetOneThingRequest"
       responses:
         200:
-          $ref: '#/components/responses/GetOneThingResponse'
+          $ref: "#/components/responses/GetOneThingResponse"
 
 components:
   schemas:
@@ -35,19 +35,19 @@ components:
           format: date-time
         value:
           type: integer
-          
+
     Thing:
       type: object
       allOf:
-        - $ref: '#/components/schemas/ThingKey'
-        - $ref: '#/components/schemas/ThingData'
+        - $ref: "#/components/schemas/ThingKey"
+        - $ref: "#/components/schemas/ThingData"
 
   requestBodies:
     GetOneThingRequest:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ThingKey'
+            $ref: "#/components/schemas/ThingKey"
 
   responses:
     GetOneThingResponse:
@@ -55,4 +55,4 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Thing'
+            $ref: "#/components/schemas/Thing"

@@ -4,7 +4,7 @@ export default defineConfig({
     tabWidth: 4,
     printWidth: 140,
     trailingComma: "all",
-    ignorePatterns: ["**/dist/**", "**/node_modules/**"],
+    ignorePatterns: ["**/dist/**", "**/node_modules/**", "**/coverage/**", "**/CHANGELOG.md"],
     sortImports: {
         groups: [
             ["type-builtin", "type-external"],
@@ -16,5 +16,5 @@ export default defineConfig({
             "unknown",
         ],
     },
-    overrides: [{ files: ["*.json"], options: { tabWidth: 2 } }],
+    overrides: [{ files: ["*.json", "*.yml", "*.yaml"], options: { tabWidth: 2 } }],
 });

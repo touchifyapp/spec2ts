@@ -1,77 +1,79 @@
 {
-    "name": "@spec2ts/openapi-client",
-    "version": "3.1.3",
-    "description": "Utility to convert OpenAPI v3 specifications to Typescript HTTP client using TypeScript native compiler",
-    "author": "Touchify <dev@touchify.co>",
-    "license": "MIT",
-    "main": "dist/index.mjs",
-    "types": "dist/index.d.mts",
-    "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi#readme",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/touchifyapp/spec2ts"
+  "name": "@spec2ts/openapi-client",
+  "version": "3.1.3",
+  "description": "Utility to convert OpenAPI v3 specifications to Typescript HTTP client using TypeScript native compiler",
+  "keywords": [
+    "ast",
+    "client",
+    "compile",
+    "compiler",
+    "http",
+    "interface",
+    "openapi",
+    "openapi3",
+    "rest",
+    "share",
+    "spec",
+    "spec2ts",
+    "specification",
+    "transpile",
+    "typescript",
+    "typing"
+  ],
+  "homepage": "https://github.com/touchifyapp/spec2ts/blob/master/packages/openapi#readme",
+  "license": "MIT",
+  "author": "Touchify <dev@touchify.co>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/touchifyapp/spec2ts"
+  },
+  "bin": {
+    "oapi2tsclient": "./dist/bin/oapi2tsclient.mjs"
+  },
+  "files": [
+    "dist/**/*.mjs",
+    "dist/**/*.d.mts"
+  ],
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     },
-    "publishConfig": {
-        "access": "public"
+    "./cli": {
+      "import": "./dist/cli/index.mjs",
+      "types": "./dist/cli/index.d.mts"
     },
-    "bin": {
-        "oapi2tsclient": "./dist/bin/oapi2tsclient.mjs"
+    "./bin/oapi2tsclient": {
+      "import": "./dist/bin/oapi2tsclient.mjs",
+      "types": "./dist/bin/oapi2tsclient.d.mts"
     },
-    "files": [
-        "dist/**/*.mjs",
-        "dist/**/*.d.mts"
-    ],
-    "exports": {
-        ".": {
-            "import": "./dist/index.mjs",
-            "types": "./dist/index.d.mts"
-        },
-        "./cli": {
-            "import": "./dist/cli/index.mjs",
-            "types": "./dist/cli/index.d.mts"
-        },
-        "./bin/oapi2tsclient": {
-            "import": "./dist/bin/oapi2tsclient.mjs",
-            "types": "./dist/bin/oapi2tsclient.d.mts"
-        },
-        "./package.json": "./package.json"
-    },
-    "scripts": {
-        "build": "npm run lint && npm run build:ts",
-        "build:ts": "tsdown",
-        "test": "npm run lint && npm run test:vitest",
-        "test:vitest": "vitest run -c ../../vitest.config.ts",
-        "test:coverage": "npm run test -- -- --coverage",
-        "lint": "npm run lint:ts",
-        "lint:ts": "oxlint -c ../../oxlint.config.ts",
-        "lint:fix": "npm run lint -- -- --fix",
-        "prepublishOnly": "npm test && npm run build"
-    },
-    "dependencies": {
-        "@spec2ts/core": "^3.0.2",
-        "@spec2ts/jsonschema": "^3.0.5",
-        "@spec2ts/openapi": "^3.1.3",
-        "openapi3-ts": "^4.1.2",
-        "typescript": "^5.0.0",
-        "yargs": "^18.0.0"
-    },
-    "keywords": [
-        "openapi",
-        "specification",
-        "openapi3",
-        "spec",
-        "typescript",
-        "client",
-        "http",
-        "rest",
-        "compile",
-        "compiler",
-        "ast",
-        "transpile",
-        "interface",
-        "typing",
-        "spec2ts",
-        "share"
-    ]
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run lint && npm run build:ts",
+    "build:ts": "tsdown",
+    "test": "npm run lint && npm run format:check && npm run test:vitest",
+    "test:vitest": "vitest run -c ../../vitest.config.ts",
+    "test:coverage": "npm run test -- -- --coverage",
+    "lint": "npm run lint:ts",
+    "lint:ts": "oxlint -c ../../oxlint.config.ts",
+    "lint:fix": "npm run lint -- -- --fix",
+    "format": "oxfmt -c ../../oxfmt.config.ts",
+    "format:check": "oxfmt -c ../../oxfmt.config.ts --check",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "dependencies": {
+    "@spec2ts/core": "^3.0.2",
+    "@spec2ts/jsonschema": "^3.0.5",
+    "@spec2ts/openapi": "^3.1.3",
+    "openapi3-ts": "^4.1.2",
+    "typescript": "^5.0.0",
+    "yargs": "^18.0.0"
+  }
 }

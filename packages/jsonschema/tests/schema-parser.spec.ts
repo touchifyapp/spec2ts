@@ -6,9 +6,7 @@ import { parseSchema, parseSchemaFile } from "../src/lib/schema-parser";
 import { loadSchema, getAssetsPath } from "./helpers";
 
 describe("schema-parser", () => {
-
     describe(".parseSchema()", () => {
-
         test("should resolve with an array of ts.Statement", async () => {
             const schema = loadSchema("person.schema.json");
             const res = await parseSchema(schema);
@@ -41,7 +39,11 @@ describe("schema-parser", () => {
             const res = await parseSchema(schema);
 
             const arr = ts.factory.createNodeArray(res);
-            const decla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration, n => n.name.text === "ArraysSchema");
+            const decla = cg.findNode<ts.InterfaceDeclaration>(
+                arr,
+                ts.SyntaxKind.InterfaceDeclaration,
+                (n) => n.name.text === "ArraysSchema",
+            );
 
             expect(decla).toHaveProperty("name.text", "ArraysSchema");
         });
@@ -49,8 +51,7 @@ describe("schema-parser", () => {
         test("should rejects if name could not be defined and no name is passed", async () => {
             const schema = loadSchema("noname.schema.json");
 
-            await expect(parseSchema(schema))
-                .rejects.toBeInstanceOf(Error);
+            await expect(parseSchema(schema)).rejects.toBeInstanceOf(Error);
         });
 
         test("should export a type alias declaration if type is not a simple object", async () => {
@@ -166,7 +167,11 @@ describe("schema-parser", () => {
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
             const arr = ts.factory.createNodeArray(res);
-            const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration, e => e.name.text === "StrictTuple");
+            const decla = cg.findNode<ts.TypeAliasDeclaration>(
+                arr,
+                ts.SyntaxKind.TypeAliasDeclaration,
+                (e) => e.name.text === "StrictTuple",
+            );
 
             expect(decla).toBeDefined();
             expect(decla).toHaveProperty("type.kind", ts.SyntaxKind.TupleType);
@@ -178,7 +183,11 @@ describe("schema-parser", () => {
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
             const arr = ts.factory.createNodeArray(res);
-            const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration, e => e.name.text === "LaxAnyTuple");
+            const decla = cg.findNode<ts.TypeAliasDeclaration>(
+                arr,
+                ts.SyntaxKind.TypeAliasDeclaration,
+                (e) => e.name.text === "LaxAnyTuple",
+            );
 
             expect(decla).toBeDefined();
             expect(decla).toHaveProperty("type.kind", ts.SyntaxKind.TupleType);
@@ -191,7 +200,11 @@ describe("schema-parser", () => {
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
 
             const arr = ts.factory.createNodeArray(res);
-            const decla = cg.findNode<ts.TypeAliasDeclaration>(arr, ts.SyntaxKind.TypeAliasDeclaration, e => e.name.text === "LaxTypeTuple");
+            const decla = cg.findNode<ts.TypeAliasDeclaration>(
+                arr,
+                ts.SyntaxKind.TypeAliasDeclaration,
+                (e) => e.name.text === "LaxTypeTuple",
+            );
 
             expect(decla).toBeDefined();
             expect(decla).toHaveProperty("type.kind", ts.SyntaxKind.TupleType);
@@ -272,13 +285,10 @@ describe("schema-parser", () => {
             const typeDecla = cg.findNode<ts.InterfaceDeclaration>(arr, ts.SyntaxKind.InterfaceDeclaration);
 
             expect(typeDecla).toHaveProperty(["members", 0, "type", "typeName", "escapedText"], "Addresses");
-
         });
-
     });
 
     describe(".parseSchemaFile()", () => {
-
         test("should accept json schema", async () => {
             const res = await parseSchemaFile(getAssetsPath("person.schema.json"));
 
@@ -296,7 +306,5 @@ describe("schema-parser", () => {
 
             expect(decla).toHaveProperty("name.text", "Person");
         });
-
     });
-
 });

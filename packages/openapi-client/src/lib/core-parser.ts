@@ -1,6 +1,3 @@
-import * as ts from "typescript";
-import * as core from "@spec2ts/core";
-
 import type {
     PathItemObject,
     OperationObject,
@@ -9,25 +6,17 @@ import type {
     ReferenceObject,
     ResponseObject,
     ResponsesObject,
-    ContentObject
+    ContentObject,
 } from "openapi3-ts/oas31";
 
-import {
-    type ParserContext,
-    JSONSchema,
-    JSONReference,
-    getTypeFromSchema,
-    resolveReference,
-    isReference
-} from "@spec2ts/jsonschema";
+import type { OApiGeneratorOptions } from "./openapi-generator";
 
-import {
-    getOperationName,
-    getResponseName
-} from "@spec2ts/openapi";
+import * as core from "@spec2ts/core";
+import { type ParserContext, JSONSchema, JSONReference, getTypeFromSchema, resolveReference, isReference } from "@spec2ts/jsonschema";
+import { getOperationName, getResponseName } from "@spec2ts/openapi";
+import * as ts from "typescript";
 
 import { camelCase } from "./util";
-import type { OApiGeneratorOptions } from "./openapi-generator";
 
 export type Method = "GET" | "PUT" | "POST" | "DELETE" | "OPTIONS" | "HEAD" | "PATCH" | "TRACE";
 const methods = ["GET", "PUT", "POST", "DELETE", "OPTIONS", "HEAD", "PATCH", "TRACE"];
@@ -61,15 +50,21 @@ export interface ParsedOperation {
     bodyVar?: string;
 }
 
-export function parseOperation(path: string, item: PathItemObject, method: Method, operation: OperationObject, context: OApiGeneratorContext): ParsedOperation {
+export function parseOperation(
+    path: string,
+    item: PathItemObject,
+    method: Method,
+    operation: OperationObject,
+    context: OApiGeneratorContext,
+): ParsedOperation {
     const result: ParsedOperation = {
         name: getOperationVar(method, path, operation.operationId, context),
         paramsVars: {},
         args: [],
         query: [],
         header: [],
-        response: core.keywordType.void
-    }
+        response: core.keywordType.void,
+    };
 
     parseArgs(result, item, operation, context);
     parseResponses(result, path, method, operation, context);
@@ -78,21 +73,27 @@ export function parseOperation(path: string, item: PathItemObject, method: Metho
 }
 
 function parseArgs(result: ParsedOperation, item: PathItemObject, operation: OperationObject, context: OApiGeneratorContext): void {
-    parseParameters(result, item, operation, context)
+    parseParameters(result, item, operation, context);
 
     if (operation.requestBody) {
-        parseRequestBody(result, operation.requestBody, context)
+        parseRequestBody(result, operation.requestBody, context);
     }
 
     result.args.push(
         core.createParameter("options", {
             type: ts.factory.createTypeReferenceNode("RequestOptions", undefined),
             questionToken: true,
-        })
+        }),
     );
 }
 
-function parseResponses(result: ParsedOperation, path: string, method: string, operation: OperationObject, context: OApiGeneratorContext): void {
+function parseResponses(
+    result: ParsedOperation,
+    path: string,
+    method: string,
+    operation: OperationObject,
+    context: OApiGeneratorContext,
+): void {
     const operationName = getOperationName(method, path, operation.operationId, context);
     result.response = getTypeFromResponses(operationName, operation.responses, context);
     result.responseJSON = isJSONResponse(operation.responses, context);
@@ -108,18 +109,18 @@ function parseParameters(result: ParsedOperation, item: PathItemObject, operatio
     result.query = parameters.filter((p) => p.in === "query");
     result.header = parameters.filter((p) => p.in === "header");
 
-    const argNames = result.paramsVars = createParametersNames(parameters);
+    const argNames = (result.paramsVars = createParametersNames(parameters));
 
     let objectBindingParams = parameters;
     if (context.options.inlineRequired) {
         const [required, optional] = splitParameters(parameters);
         objectBindingParams = optional;
 
-        required.forEach(p => {
+        required.forEach((p) => {
             result.args.push(
                 core.createParameter(argNames[p.name], {
                     type: getTypeFromSchema(p.schema as JSONSchema, context),
-                })
+                }),
             );
         });
     }
@@ -129,23 +130,18 @@ function parseParameters(result: ParsedOperation, item: PathItemObject, operatio
     }
 
     result.args.push(
-        core.createParameter(
-            core.createObjectBinding(
-                objectBindingParams.map(({ name }) => ({ name: argNames[name] }))
-            ),
-            {
-                initializer: objectBindingParams.some(p => p.required) ? undefined : ts.factory.createObjectLiteralExpression(),
-                type: ts.factory.createTypeLiteralNode(
-                    objectBindingParams.map((p) =>
-                        core.createPropertySignature({
-                            name: argNames[p.name],
-                            questionToken: !p.required,
-                            type: getTypeFromSchema(p.schema as JSONSchema, context)
-                        })
-                    )
+        core.createParameter(core.createObjectBinding(objectBindingParams.map(({ name }) => ({ name: argNames[name] }))), {
+            initializer: objectBindingParams.some((p) => p.required) ? undefined : ts.factory.createObjectLiteralExpression(),
+            type: ts.factory.createTypeLiteralNode(
+                objectBindingParams.map((p) =>
+                    core.createPropertySignature({
+                        name: argNames[p.name],
+                        questionToken: !p.required,
+                        type: getTypeFromSchema(p.schema as JSONSchema, context),
+                    }),
                 ),
-            }
-        )
+            ),
+        }),
     );
 }
 
@@ -154,15 +150,11 @@ function parseRequestBody(result: ParsedOperation, requestBody: RequestBodyObjec
     const [schema, mode] = getSchemaFromContent(body.content);
     const type = getTypeFromSchema(schema as JSONSchema, context);
 
-    const bodyVar = result.bodyVar = camelCase(
-        (type as any).name || getReferenceName(schema) || "body"
-    );
+    const bodyVar = (result.bodyVar = camelCase((type as any).name || getReferenceName(schema) || "body"));
 
     result.bodyMode = mode;
 
-    result.args.push(
-        core.createParameter(bodyVar, { type })
-    );
+    result.args.push(core.createParameter(bodyVar, { type }));
 }
 
 function createParametersNames(parameters: ParameterObject[]): Record<string, string> {
@@ -182,7 +174,7 @@ function splitParameters(parameters: ParameterObject[]): [ParameterObject[], Par
     const required: ParameterObject[] = [];
     const optional: ParameterObject[] = [];
 
-    parameters.forEach(p => {
+    parameters.forEach((p) => {
         if (p.required) required.push(p);
         else optional.push(p);
     });
@@ -194,29 +186,26 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
     const codes = Object.keys(res);
     const types: ts.TypeNode[] = [];
 
-    codes.forEach(code => {
+    codes.forEach((code) => {
         const isOK = isOKResponse(code, codes.length);
         const type = getTypeFromResponse(res[code], context);
 
-        if (!type)
-            console.log(res[code]);
+        if (!type) console.log(res[code]);
         if (ts.isTypeReferenceNode(type) || core.isKeywordTypeNode(type)) {
             if (isOK) types.push(type);
-        }
-        else {
+        } else {
             const name = getResponseName(operationName, code, context);
 
             context.aliases.push(
                 core.createTypeOrInterfaceDeclaration({
                     modifiers: [core.modifier.export],
-                    name, type
-                })
+                    name,
+                    type,
+                }),
             );
 
             if (isOK) {
-                types.push(
-                    ts.factory.createTypeReferenceNode(name, undefined)
-                );
+                types.push(ts.factory.createTypeReferenceNode(name, undefined));
             }
         }
     });
@@ -230,21 +219,18 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
 
 function isJSONResponse(responses: ResponsesObject, context: OApiGeneratorContext): boolean {
     const codes = Object.keys(responses);
-    const resCode = codes.find(code => isOKResponse(code, codes.length));
+    const resCode = codes.find((code) => isOKResponse(code, codes.length));
 
     if (!resCode) {
         return false;
     }
 
     const response = resolveReference<ResponseObject>(responses[resCode], context);
-    return (
-        !!response?.content?.["application/json"] ||
-        !!response?.content?.["*/*"]
-    );
+    return !!response?.content?.["application/json"] || !!response?.content?.["*/*"];
 }
 
 function isOKResponse(code: string, codesCount: number): boolean {
-    return codesCount === 1 || parseInt(code, 10) < 400
+    return codesCount === 1 || parseInt(code, 10) < 400;
 }
 
 //#endregion
@@ -284,7 +270,7 @@ function getSchemaFromContent(content: ContentObject): [JSONSchema, ContentTypeM
 }
 
 function resolveReferences<T>(array: Array<JSONReference | T> | undefined, context: OApiGeneratorContext): T[] {
-    return array?.map(ref => resolveReference(ref, context)) ?? [];
+    return array?.map((ref) => resolveReference(ref, context)) ?? [];
 }
 
 function getReferenceName(obj: any): string | void {

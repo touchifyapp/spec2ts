@@ -1,19 +1,19 @@
 import * as ts from "typescript";
-import { replaceNode } from "./common";
 
+import { replaceNode } from "./common";
 import { updateVariableDeclarationInitializer } from "./declaration";
 import { upsertPropertyValue } from "./expression";
 import { findNode, findVariableDeclarationName } from "./finder";
 
 export function findFirstVariableStatement(nodes: ts.NodeArray<ts.Node>, variableName: string): ts.VariableStatement | undefined {
-    return findNode<ts.VariableStatement>(
-        nodes,
-        ts.SyntaxKind.VariableStatement,
-        n => !!findVariableDeclarationName(n, variableName)
-    );
+    return findNode<ts.VariableStatement>(nodes, ts.SyntaxKind.VariableStatement, (n) => !!findVariableDeclarationName(n, variableName));
 }
 
-export function updateVariableStatementValue(statement: ts.VariableStatement, variableName: string, value: ts.Expression): ts.VariableStatement {
+export function updateVariableStatementValue(
+    statement: ts.VariableStatement,
+    variableName: string,
+    value: ts.Expression,
+): ts.VariableStatement {
     const decla = findVariableDeclarationName(statement, variableName);
     if (!decla) {
         throw new Error(`Could not find variable declaration in given statement: ${variableName}`);
@@ -24,16 +24,17 @@ export function updateVariableStatementValue(statement: ts.VariableStatement, va
         statement.modifiers,
         ts.factory.updateVariableDeclarationList(
             statement.declarationList,
-            replaceNode(
-                statement.declarationList.declarations,
-                decla,
-                updateVariableDeclarationInitializer(decla, value)
-            )
-        )
+            replaceNode(statement.declarationList.declarations, decla, updateVariableDeclarationInitializer(decla, value)),
+        ),
     );
 }
 
-export function updateVariableStatementPropertyValue(statement: ts.VariableStatement, variableName: string, propertyName: string, value: ts.Expression): ts.VariableStatement {
+export function updateVariableStatementPropertyValue(
+    statement: ts.VariableStatement,
+    variableName: string,
+    propertyName: string,
+    value: ts.Expression,
+): ts.VariableStatement {
     const decla = findVariableDeclarationName(statement, variableName);
     if (!decla) {
         throw new Error(`Could not find variable declaration in given statement: ${variableName}`);
@@ -50,12 +51,10 @@ export function updateVariableStatementPropertyValue(statement: ts.VariableState
                     decla,
                     updateVariableDeclarationInitializer(
                         decla,
-                        ts.factory.createObjectLiteralExpression([
-                            ts.factory.createPropertyAssignment(propertyName, value)
-                        ])
-                    )
-                )
-            )
+                        ts.factory.createObjectLiteralExpression([ts.factory.createPropertyAssignment(propertyName, value)]),
+                    ),
+                ),
+            ),
         );
     }
 
@@ -67,11 +66,8 @@ export function updateVariableStatementPropertyValue(statement: ts.VariableState
             replaceNode(
                 statement.declarationList.declarations,
                 decla,
-                updateVariableDeclarationInitializer(
-                    decla,
-                    upsertPropertyValue(decla.initializer, propertyName, value)
-                )
-            )
-        )
+                updateVariableDeclarationInitializer(decla, upsertPropertyValue(decla.initializer, propertyName, value)),
+            ),
+        ),
     );
 }
