@@ -91,6 +91,7 @@ export function generateFunctions(file: ts.SourceFile, spec: OpenAPIObject, cont
 
         file = core.updateSourceFileStatements(file, [
             core.createNamedImportDeclaration({
+                isTypeOnly: true,
                 moduleSpecifier: context.options.typesPath,
                 bindings: context.aliases.map((a) => a.name.text),
             }),

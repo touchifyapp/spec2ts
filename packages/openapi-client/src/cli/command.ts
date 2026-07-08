@@ -21,6 +21,7 @@ export interface BuildClientFromOpenApiOptions extends OApiGeneratorOptions {
     packagePrivate?: boolean;
     packageBuildTarget?: string;
     packageBuildModule?: string;
+    packageBuildModuleResolution?: string;
 }
 
 export const usage = "$0 <input..>";
@@ -115,6 +116,10 @@ export function builder(argv: Argv): Argv<BuildClientFromOpenApiOptions> {
             type: "string",
             describe: "Set the TypeScript build module",
         })
+        .option("packageBuildModuleResolution", {
+            type: "string",
+            describe: "Set the TypeScript build module resolution",
+        })
 
         .option("banner", {
             type: "string",
@@ -181,12 +186,12 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
         main: main.replace(/\.ts$/, ".js"),
         files: ["*.js", "*.d.ts"],
         scripts: {
-            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "UMD"} --moduleResolution node --skipLibCheck`,
+            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "node16"} --moduleResolution ${options.packageBuildModuleResolution || "node16"} --skipLibCheck`,
             prepublishOnly: "npm run build",
         },
         dependencies: {},
         devDependencies: {
-            typescript: "^4.2.0",
+            typescript: "^6.0.0",
         },
     };
 

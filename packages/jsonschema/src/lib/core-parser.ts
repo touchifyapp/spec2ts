@@ -403,7 +403,7 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
             importDeclaration.modifiers,
             ts.factory.updateImportClause(
                 importDeclaration.importClause,
-                importDeclaration.importClause.isTypeOnly,
+                importDeclaration.importClause.phaseModifier,
                 importDeclaration.importClause.name,
                 ts.factory.updateNamedImports(
                     importDeclaration.importClause.namedBindings,
@@ -418,6 +418,7 @@ function addOrUpdateImport(importPath: string, ref: ParsedReference, context: Pa
     } else {
         context.imports.push(
             core.createNamedImportDeclaration({
+                isTypeOnly: true,
                 moduleSpecifier: importPath,
                 bindings: [importNamedBinding],
             }),

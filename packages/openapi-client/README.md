@@ -69,6 +69,8 @@ async function generate(path: string): Promise<string> {
 | ------------------ | --------------- |
 | v3.x.x             | v1              |
 | v4.x.x             | v2              |
+| v5.x.x             | v3              |
+| v6.x.x             | v4              |
 
 ## License
 
