@@ -1,5 +1,5 @@
 import * as cg from "@spec2ts/core";
-import * as ts from "typescript";
+import ts from "typescript";
 import { describe, test, expect } from "vitest";
 
 import { parseSchema, parseSchemaFile } from "../src/lib/schema-parser";

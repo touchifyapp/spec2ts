@@ -2,7 +2,7 @@ import type { OpenAPIObject, ParameterObject, PathItemObject, OperationObject } 
 
 import * as core from "@spec2ts/core";
 import { type ParserContext, resolveReference } from "@spec2ts/jsonschema";
-import * as ts from "typescript";
+import ts from "typescript";
 
 import { Method, OApiGeneratorContext, isMethod, parseOperation } from "./core-parser";
 import { parseServers, defaultBaseUrl } from "./server-parser";

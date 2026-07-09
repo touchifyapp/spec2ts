@@ -1,7 +1,7 @@
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 
 import { readFileSync } from "fs";
-import * as path from "path";
+import path from "node:path";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsYaml = require("js-yaml");

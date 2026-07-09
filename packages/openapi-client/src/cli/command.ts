@@ -1,7 +1,7 @@
 import { printer, cli } from "@spec2ts/core";
-import { promises as fs } from "fs";
-import * as path from "path";
-import * as ts from "typescript";
+import fs from "node:fs/promises";
+import path from "node:path";
+import ts from "typescript";
 import { Argv } from "yargs";
 
 import { generateClientFromFile, OApiGeneratorOptions } from "../lib/openapi-generator";

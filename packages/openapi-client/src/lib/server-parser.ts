@@ -1,7 +1,7 @@
 import type { ServerObject, ServerVariableObject } from "openapi3-ts/oas31";
 
 import * as core from "@spec2ts/core";
-import * as ts from "typescript";
+import ts from "typescript";
 
 import { camelCase } from "./util";
 

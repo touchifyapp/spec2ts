@@ -22,7 +22,7 @@ import {
     resolveReference,
     pascalCase,
 } from "@spec2ts/jsonschema";
-import * as ts from "typescript";
+import ts from "typescript";
 
 export interface ParseOpenApiResult {
     import: ts.Statement[];

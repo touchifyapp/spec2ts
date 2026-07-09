@@ -1,7 +1,7 @@
 import type $RefParser from "@apidevtools/json-schema-ref-parser";
 
 import { readFileSync } from "fs";
-import * as path from "path";
+import path from "node:path";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsYaml = require("js-yaml");

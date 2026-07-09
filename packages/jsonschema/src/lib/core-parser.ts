@@ -2,8 +2,8 @@ import type { JSONSchema4, JSONSchema4TypeName, JSONSchema6, JSONSchema6TypeName
 
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import * as core from "@spec2ts/core";
-import * as path from "path";
-import * as ts from "typescript";
+import path from "node:path";
+import ts from "typescript";
 
 //#region Types
 

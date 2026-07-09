@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 
 import { keywordType, createQuestionToken } from "./common";
 import { isIdentifier, toIdentifier, toLiteral, toPropertyName } from "./expression";

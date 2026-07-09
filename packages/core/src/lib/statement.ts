@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 
 import { replaceNode } from "./common";
 import { updateVariableDeclarationInitializer } from "./declaration";

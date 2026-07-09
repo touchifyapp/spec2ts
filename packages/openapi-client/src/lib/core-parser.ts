@@ -14,7 +14,7 @@ import type { OApiGeneratorOptions } from "./openapi-generator";
 import * as core from "@spec2ts/core";
 import { type ParserContext, JSONSchema, JSONReference, getTypeFromSchema, resolveReference, isReference } from "@spec2ts/jsonschema";
 import { getOperationName, getResponseName } from "@spec2ts/openapi";
-import * as ts from "typescript";
+import ts from "typescript";
 
 import { camelCase } from "./util";
 

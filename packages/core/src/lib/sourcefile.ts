@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
-import * as ts from "typescript";
+import fs from "node:fs/promises";
+import ts from "typescript";
 
 export async function createSourceFileFromFile(file: string): Promise<ts.SourceFile> {
     const content = await fs.readFile(file, "utf8");

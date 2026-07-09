@@ -2,7 +2,7 @@ import type { OpenAPIObject } from "openapi3-ts/oas31";
 
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import { type ParserOptions, createContext } from "@spec2ts/jsonschema";
-import * as path from "path";
+import path from "node:path";
 
 import { type ParseOpenApiResult, parsePathItem, parseReference, createOpenApiResult, addToOpenApiResult } from "./core-parser";
 

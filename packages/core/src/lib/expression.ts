@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 
 import { getName, appendNodes } from "./common";
 import { createPropertyAssignment } from "./declaration";

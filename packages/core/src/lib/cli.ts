@@ -1,6 +1,6 @@
-import { promises as fs } from "fs";
 import { glob, type GlobOptions } from "glob";
-import * as path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 export function writeFile(path: string, content: string): Promise<void> {
     return fs.writeFile(path, content, { encoding: "utf8" });

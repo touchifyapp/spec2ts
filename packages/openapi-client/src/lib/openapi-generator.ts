@@ -4,8 +4,8 @@ import $RefParser from "@apidevtools/json-schema-ref-parser";
 import * as core from "@spec2ts/core";
 import { type ParserOptions, createContext } from "@spec2ts/jsonschema";
 import { parseReference } from "@spec2ts/openapi";
-import * as path from "path";
-import * as ts from "typescript";
+import path from "node:path";
+import ts from "typescript";
 
 import { generateServers, generateDefaults, generateFunctions } from "./core-generator";
 import { OApiGeneratorContext } from "./core-parser";
