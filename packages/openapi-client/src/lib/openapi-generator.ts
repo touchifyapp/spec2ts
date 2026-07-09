@@ -49,7 +49,7 @@ export async function generateClient(
     }
 
     const context = (await createContext(spec, options)) as OApiGeneratorContext;
-    let file = await core.createSourceFileFromFile(__dirname + "/templates/_client.tpl.ts");
+    let file = await core.createSourceFileFromFile(import.meta.dirname + "/templates/_client.tpl.ts");
 
     if (context.options.typesPath) {
         context.typesFile = ts.createSourceFile("types.ts", "", ts.ScriptTarget.Latest, false, ts.ScriptKind.TS);
