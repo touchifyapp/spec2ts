@@ -11,7 +11,7 @@ export function loadSpec(file: string): OpenAPIObject {
 }
 
 export function getAssetsPath(file?: string): string {
-    return file ? path.join(__dirname, "assets", file) : path.join(__dirname, "assets");
+    return file ? path.join(import.meta.dirname, "assets", file) : path.join(import.meta.dirname, "assets");
 }
 
 function loadFile<T>(file: string): T {
@@ -20,7 +20,7 @@ function loadFile<T>(file: string): T {
     }
 
     if (file.endsWith(".yml") || file.endsWith(".yaml")) {
-        return jsYaml.load(readFileSync(path.join(__dirname, "assets", file), "utf8"));
+        return jsYaml.load(readFileSync(path.join(import.meta.dirname, "assets", file), "utf8"));
     }
 
     throw new Error("Unsupported extension: " + file);

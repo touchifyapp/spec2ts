@@ -70,6 +70,7 @@
     "prepublishOnly": "npm run test:prepublish && npm run build"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^10.1.0",
     "@spec2ts/core": "^4.0.0",
     "@spec2ts/jsonschema": "^4.0.0",
     "@spec2ts/openapi": "^4.0.0",
