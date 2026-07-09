@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@4.0.0...@spec2ts/core@4.0.1) (2026-07-09)
+
+**Note:** Version bump only for package @spec2ts/core
+
+
+
+
+
 # [4.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/core@3.0.2...@spec2ts/core@4.0.0) (2026-07-08)
 
 

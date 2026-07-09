@@ -1,6 +1,6 @@
 {
   "name": "@spec2ts/cli",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Utility to convert specifications (Open API, JSON Schemas) to TypeScript using TypeScript native compiler",
   "keywords": [
     "ast",
@@ -54,9 +54,9 @@
     "prepublishOnly": "npm run test:prepublish && npm run build"
   },
   "dependencies": {
-    "@spec2ts/jsonschema": "^4.0.0",
-    "@spec2ts/openapi": "^4.0.0",
-    "@spec2ts/openapi-client": "^4.0.0",
+    "@spec2ts/jsonschema": "^4.0.1",
+    "@spec2ts/openapi": "^4.0.1",
+    "@spec2ts/openapi-client": "^4.0.1",
     "typescript": "^6.0.0",
     "yargs": "^18.0.0"
   }

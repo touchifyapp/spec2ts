@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@4.0.0...@spec2ts/openapi-client@4.0.1) (2026-07-09)
+
+
+### Bug Fixes
+
+* dependencies issues ([1f4be16](https://github.com/touchifyapp/spec2ts/commit/1f4be16dfa0edc050c28fefee5574359a2aa9558))
+* missing templates in output ([50e8b09](https://github.com/touchifyapp/spec2ts/commit/50e8b09732dd63320ee4fdc3074dd7fd3e8fab28))
+
+
+
+
+
 # [4.0.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/openapi-client@3.1.3...@spec2ts/openapi-client@4.0.0) (2026-07-08)
 
 

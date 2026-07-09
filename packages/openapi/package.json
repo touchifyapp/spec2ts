@@ -1,6 +1,6 @@
 {
   "name": "@spec2ts/openapi",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Utility to convert OpenAPI v3 specifications to Typescript using TypeScript native compiler",
   "keywords": [
     "ast",
@@ -68,8 +68,8 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^10.1.0",
-    "@spec2ts/core": "^4.0.0",
-    "@spec2ts/jsonschema": "^4.0.0",
+    "@spec2ts/core": "^4.0.1",
+    "@spec2ts/jsonschema": "^4.0.1",
     "openapi3-ts": "^4.6.0",
     "typescript": "^6.0.0",
     "yargs": "^18.0.0"
