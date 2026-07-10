@@ -8,6 +8,7 @@ import type {
     ResponseObject,
     RequestBodyObject,
 } from "openapi3-ts/oas31";
+import type * as ts from "typescript/unstable/ast";
 
 import type { ParseOpenApiOptions } from "./openapi-parser";
 
@@ -22,7 +23,7 @@ import {
     resolveReference,
     pascalCase,
 } from "@spec2ts/jsonschema";
-import ts from "typescript";
+import * as factory from "typescript/unstable/ast/factory";
 
 export interface ParseOpenApiResult {
     import: ts.Statement[];
@@ -142,7 +143,7 @@ export function parseParameters(
             }),
         );
 
-        res[paramType] = ts.factory.createTypeReferenceNode(name, undefined);
+        res[paramType] = core.createTypeReferenceNode(name);
     }
 }
 
@@ -209,7 +210,7 @@ export function getParamType(
 
     const type = getTypeFromProperties(props as Record<string, JSONSchema>, required, false, ctx);
     if (baseType) {
-        return ts.factory.createIntersectionTypeNode([baseType, type]);
+        return factory.createIntersectionTypeNode([baseType, type]);
     }
 
     return type;

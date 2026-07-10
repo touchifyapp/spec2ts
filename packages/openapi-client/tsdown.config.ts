@@ -5,5 +5,10 @@ export default defineConfig([
         entry: ["src/index.ts", "src/cli/index.ts", "src/bin/oapi2tsclient.ts"],
         platform: "node",
         copy: [{ from: "src/lib/templates", to: "dist" }],
+        dts: {
+            tsgo: {
+                path: import.meta.dirname + "/../../node_modules/typescript/bin/tsc",
+            },
+        },
     },
 ]);

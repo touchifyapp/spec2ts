@@ -1,7 +1,42 @@
-import ts from "typescript";
+import type * as ts from "typescript/unstable/ast";
+
+import { SyntaxKind, TokenFlags } from "typescript/unstable/ast";
+import * as factory from "typescript/unstable/ast/factory";
+import * as astIs from "typescript/unstable/ast/is";
 
 import { keywordType, createQuestionToken } from "./common";
-import { isIdentifier, toIdentifier, toLiteral, toPropertyName } from "./expression";
+import { toIdentifier, toLiteral, toPropertyName } from "./expression";
+
+const missingTypeNode = undefined as unknown as ts.TypeNode;
+const missingExpression = undefined as unknown as ts.Expression;
+
+function toImportPhaseModifier(isTypeOnly?: boolean): ts.ImportPhaseModifierSyntaxKind | undefined {
+    return isTypeOnly ? SyntaxKind.TypeKeyword : undefined;
+}
+
+export function createIdentifier(name: string | ts.Identifier): ts.Identifier;
+export function createIdentifier(name: string | ts.Identifier | undefined): ts.Identifier | undefined;
+export function createIdentifier(name: string | ts.Identifier | undefined): ts.Identifier | undefined {
+    if (!name) return undefined;
+    if (typeof name === "string") return factory.createIdentifier(name);
+    return name;
+}
+
+export function createTypeReferenceNode(name: string, typeArguments?: readonly ts.TypeNode[]): ts.TypeReferenceNode {
+    return factory.createTypeReferenceNode(createIdentifier(name), typeArguments);
+}
+
+export function createStringLiteral(value: string): ts.StringLiteral {
+    return factory.createStringLiteral(value, TokenFlags.None);
+}
+
+export function createNumericLiteral(value: number | string): ts.NumericLiteral {
+    return factory.createNumericLiteral(String(value), TokenFlags.None);
+}
+
+export function createBooleanLiteral(value: boolean): ts.BooleanLiteral {
+    return factory.createKeywordExpression(value ? SyntaxKind.TrueKeyword : SyntaxKind.FalseKeyword);
+}
 
 export function createTypeAliasDeclaration({
     modifiers,
@@ -14,7 +49,7 @@ export function createTypeAliasDeclaration({
     typeParameters?: ts.TypeParameterDeclaration[];
     type: ts.TypeNode;
 }): ts.TypeAliasDeclaration {
-    return ts.factory.createTypeAliasDeclaration(modifiers, name, typeParameters, type);
+    return factory.createTypeAliasDeclaration(modifiers, createIdentifier(name), typeParameters, type);
 }
 
 export function createFunctionDeclaration(
@@ -33,7 +68,7 @@ export function createFunctionDeclaration(
     parameters: ts.ParameterDeclaration[],
     body?: ts.Block,
 ): ts.FunctionDeclaration {
-    return ts.factory.createFunctionDeclaration(modifiers, asteriskToken, name, typeParameters, parameters, type, body);
+    return factory.createFunctionDeclaration(modifiers, asteriskToken, createIdentifier(name), typeParameters, parameters, type, body);
 }
 
 export function createInterfaceDeclaration({
@@ -49,7 +84,7 @@ export function createInterfaceDeclaration({
     heritageClauses?: ts.HeritageClause[];
     members: readonly ts.TypeElement[];
 }): ts.InterfaceDeclaration {
-    return ts.factory.createInterfaceDeclaration(modifiers, name, typeParameters, heritageClauses, members);
+    return factory.createInterfaceDeclaration(modifiers, createIdentifier(name), typeParameters, heritageClauses, members);
 }
 
 export function createClassDeclaration({
@@ -65,7 +100,7 @@ export function createClassDeclaration({
     heritageClauses?: ts.HeritageClause[];
     members: ts.ClassElement[];
 }): ts.ClassDeclaration {
-    return ts.factory.createClassDeclaration(modifiers, name, typeParameters, heritageClauses, members);
+    return factory.createClassDeclaration(modifiers, createIdentifier(name), typeParameters, heritageClauses, members);
 }
 
 export function createConstructor({
@@ -77,11 +112,19 @@ export function createConstructor({
     parameters: ts.ParameterDeclaration[];
     body?: ts.Block;
 }): ts.ConstructorDeclaration {
-    return ts.factory.createConstructorDeclaration(modifiers, parameters, body);
+    return factory.createConstructorDeclaration(modifiers, undefined, parameters, undefined, body);
 }
 
 export function createMethod(
-    name: string | ts.Identifier | ts.StringLiteral | ts.NumericLiteral | ts.ComputedPropertyName,
+    name:
+        | string
+        | ts.Identifier
+        | ts.StringLiteral
+        | ts.NoSubstitutionTemplateLiteral
+        | ts.NumericLiteral
+        | ts.ComputedPropertyName
+        | ts.PrivateIdentifier
+        | ts.BigIntLiteral,
     {
         modifiers,
         asteriskToken,
@@ -98,7 +141,9 @@ export function createMethod(
     parameters: ts.ParameterDeclaration[] = [],
     body?: ts.Block,
 ): ts.MethodDeclaration {
-    return ts.factory.createMethodDeclaration(
+    if (typeof name === "string") name = factory.createIdentifier(name);
+
+    return factory.createMethodDeclaration(
         modifiers,
         asteriskToken,
         name,
@@ -111,7 +156,7 @@ export function createMethod(
 }
 
 export function createParameter(
-    name: string | ts.BindingName,
+    name: string | ts.Identifier | ts.BindingName,
     {
         modifiers,
         dotDotDotToken,
@@ -126,7 +171,8 @@ export function createParameter(
         initializer?: ts.Expression;
     },
 ): ts.ParameterDeclaration {
-    return ts.factory.createParameterDeclaration(modifiers, dotDotDotToken, name, createQuestionToken(questionToken), type, initializer);
+    if (typeof name === "string") name = factory.createIdentifier(name);
+    return factory.createParameterDeclaration(modifiers, dotDotDotToken, name, createQuestionToken(questionToken), type, initializer);
 }
 
 export function createPropertySignature({
@@ -139,18 +185,28 @@ export function createPropertySignature({
     name: ts.PropertyName | string;
     questionToken?: ts.QuestionToken | boolean;
     type?: ts.TypeNode;
-}): ts.PropertySignature {
-    return ts.factory.createPropertySignature(modifiers, toPropertyName(name), createQuestionToken(questionToken), type);
+}): ts.PropertySignatureDeclaration {
+    return factory.createPropertySignatureDeclaration(
+        modifiers,
+        toPropertyName(name),
+        createQuestionToken(questionToken),
+        type ?? missingTypeNode,
+        missingExpression,
+    );
 }
 
-export function createPropertyAssignment(name: string, expression: ts.Expression): ts.PropertyAssignment | ts.ShorthandPropertyAssignment {
-    if (ts.isIdentifier(expression)) {
+export function createPropertyAssignment(
+    name: string,
+    expression: ts.Expression,
+    { modifiers, postfixToken }: { modifiers?: ts.Modifier[]; postfixToken?: ts.QuestionToken | ts.ExclamationToken | undefined } = {},
+): ts.PropertyAssignment | ts.ShorthandPropertyAssignment {
+    if (astIs.isIdentifier(expression)) {
         if (expression.text === name) {
-            return ts.factory.createShorthandPropertyAssignment(name);
+            return factory.createShorthandPropertyAssignment(modifiers, expression, postfixToken, missingTypeNode);
         }
     }
 
-    return ts.factory.createPropertyAssignment(toPropertyName(name), expression);
+    return factory.createPropertyAssignment(modifiers, toPropertyName(name), postfixToken, missingTypeNode, expression);
 }
 
 export function createIndexSignature(
@@ -165,7 +221,7 @@ export function createIndexSignature(
         modifiers?: ts.Modifier[];
     } = {},
 ): ts.IndexSignatureDeclaration {
-    return ts.factory.createIndexSignature(modifiers, [createParameter(indexName, { type: indexType })], type);
+    return factory.createIndexSignatureDeclaration(modifiers, [createParameter(indexName, { type: indexType })], type);
 }
 
 export function createNamedImportDeclaration({
@@ -179,9 +235,13 @@ export function createNamedImportDeclaration({
     isTypeOnly?: boolean;
     moduleSpecifier: string | ts.Expression;
 }): ts.ImportDeclaration {
-    return ts.factory.createImportDeclaration(
+    return factory.createImportDeclaration(
         modifiers,
-        ts.factory.createImportClause(isTypeOnly || false, undefined, ts.factory.createNamedImports(bindings.map(createImportSpecifier))),
+        factory.createImportClause(
+            toImportPhaseModifier(isTypeOnly),
+            undefined,
+            factory.createNamedImports(bindings.map(createImportSpecifier)),
+        ),
         toLiteral(moduleSpecifier),
     );
 }
@@ -199,12 +259,12 @@ export function createDefaultImportDeclaration({
     isTypeOnly?: boolean;
     moduleSpecifier: string | ts.Expression;
 }): ts.ImportDeclaration {
-    return ts.factory.createImportDeclaration(
+    return factory.createImportDeclaration(
         modifiers,
-        ts.factory.createImportClause(
-            isTypeOnly || false,
+        factory.createImportClause(
+            toImportPhaseModifier(isTypeOnly),
             toIdentifier(name),
-            bindings ? ts.factory.createNamedImports(bindings.map(createImportSpecifier)) : undefined,
+            bindings ? factory.createNamedImports(bindings.map(createImportSpecifier)) : undefined,
         ),
         toLiteral(moduleSpecifier),
     );
@@ -221,9 +281,9 @@ export function createNamespaceImportDeclaration({
     isTypeOnly?: boolean;
     moduleSpecifier: string | ts.Expression;
 }): ts.ImportDeclaration {
-    return ts.factory.createImportDeclaration(
+    return factory.createImportDeclaration(
         modifiers,
-        ts.factory.createImportClause(isTypeOnly || false, undefined, ts.factory.createNamespaceImport(toIdentifier(name))),
+        factory.createImportClause(toImportPhaseModifier(isTypeOnly), undefined, factory.createNamespaceImport(toIdentifier(name))),
         toLiteral(moduleSpecifier),
     );
 }
@@ -237,7 +297,7 @@ export function createTypeOrInterfaceDeclaration({
     name: string | ts.Identifier;
     type: ts.TypeNode;
 }): ts.InterfaceDeclaration | ts.TypeAliasDeclaration {
-    if (ts.isTypeLiteralNode(type)) {
+    if (astIs.isTypeLiteralNode(type)) {
         return createInterfaceDeclaration({
             modifiers,
             name,
@@ -245,20 +305,20 @@ export function createTypeOrInterfaceDeclaration({
         });
     }
 
-    if (ts.isIntersectionTypeNode(type)) {
+    if (astIs.isIntersectionTypeNode(type)) {
         const isExtendCompatible = type.types.every(
-            (t) => ts.isTypeLiteralNode(t) || (ts.isTypeReferenceNode(t) && ts.isIdentifier(t.typeName)),
+            (t) => astIs.isTypeLiteralNode(t) || (astIs.isTypeReferenceNode(t) && astIs.isIdentifier(t.typeName)),
         );
         if (isExtendCompatible) {
             const members: ts.TypeElement[] = [];
             const extend: ts.Identifier[] = [];
 
             type.types.forEach((t) => {
-                if (ts.isTypeLiteralNode(t)) {
+                if (astIs.isTypeLiteralNode(t)) {
                     members.push(...t.members);
                 }
 
-                if (ts.isTypeReferenceNode(t) && ts.isIdentifier(t.typeName)) {
+                if (astIs.isTypeReferenceNode(t) && astIs.isIdentifier(t.typeName)) {
                     extend.push(t.typeName);
                 }
             });
@@ -268,9 +328,9 @@ export function createTypeOrInterfaceDeclaration({
                 name,
                 members,
                 heritageClauses: [
-                    ts.factory.createHeritageClause(
-                        ts.SyntaxKind.ExtendsKeyword,
-                        extend.map((t) => ts.factory.createExpressionWithTypeArguments(t, undefined)),
+                    factory.createHeritageClause(
+                        SyntaxKind.ExtendsKeyword,
+                        extend.map((t) => factory.createExpressionWithTypeArguments(t, undefined)),
                     ),
                 ],
             });
@@ -288,22 +348,18 @@ export function updateVariableDeclarationInitializer(
     declaration: ts.VariableDeclaration,
     initializer: ts.Expression,
 ): ts.VariableDeclaration {
-    return ts.factory.updateVariableDeclaration(declaration, declaration.name, declaration.exclamationToken, declaration.type, initializer);
+    return factory.updateVariableDeclaration(declaration, declaration.name, declaration.exclamationToken, declaration.type, initializer);
 }
 
 export type ImportSpecifier = { name: ts.Identifier | string; propertyName: ts.Identifier | string; type?: boolean };
 export function createImportSpecifier(binding: ts.Identifier | string | ImportSpecifier): ts.ImportSpecifier {
-    if (typeof binding === "string" || isIdentifier(binding)) {
-        if (ts.factory.createImportSpecifier.length === 2) {
-            return (ts.factory.createImportSpecifier as any)(undefined, toIdentifier(binding));
-        } else {
-            return ts.factory.createImportSpecifier(false, undefined, toIdentifier(binding));
-        }
+    if (typeof binding === "string") {
+        return factory.createImportSpecifier(false, undefined, toIdentifier(binding));
     }
 
-    if (ts.factory.createImportSpecifier.length === 2) {
-        return (ts.factory.createImportSpecifier as any)(toIdentifier(binding.propertyName), toIdentifier(binding.name));
-    } else {
-        return ts.factory.createImportSpecifier(binding.type || false, toIdentifier(binding.propertyName), toIdentifier(binding.name));
+    if ("kind" in binding) {
+        return factory.createImportSpecifier(false, undefined, binding);
     }
+
+    return factory.createImportSpecifier(binding.type || false, toIdentifier(binding.propertyName), toIdentifier(binding.name));
 }

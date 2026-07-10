@@ -1,7 +1,8 @@
+import type * as ts from "typescript/unstable/ast";
+
 import { printer, cli } from "@spec2ts/core";
 import fs from "node:fs/promises";
 import path from "node:path";
-import ts from "typescript";
 import { Argv } from "yargs";
 
 import { generateClientFromFile, OApiGeneratorOptions } from "../lib/openapi-generator";

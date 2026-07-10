@@ -1,11 +1,13 @@
 import type { OpenAPIObject } from "openapi3-ts/oas31";
+import type * as ts from "typescript/unstable/ast";
 
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import * as core from "@spec2ts/core";
 import { type ParserOptions, createContext } from "@spec2ts/jsonschema";
 import { parseReference } from "@spec2ts/openapi";
 import path from "node:path";
-import ts from "typescript";
+import { SyntaxKind } from "typescript/unstable/ast";
+import * as factory from "typescript/unstable/ast/factory";
 
 import { generateServers, generateDefaults, generateFunctions } from "./core-generator";
 import { OApiGeneratorContext } from "./core-parser";
@@ -52,7 +54,7 @@ export async function generateClient(
     let file = await core.createSourceFileFromFile(import.meta.dirname + "/templates/_client.tpl.ts");
 
     if (context.options.typesPath) {
-        context.typesFile = ts.createSourceFile("types.ts", "", ts.ScriptTarget.Latest, false, ts.ScriptKind.TS);
+        context.typesFile = factory.createSourceFile([], factory.createToken(SyntaxKind.EndOfFile), "", "types.ts", "types.ts" as ts.Path);
     }
 
     file = generateServers(file, spec, context);

@@ -1,22 +1,32 @@
-import fs from "node:fs/promises";
-import ts from "typescript";
+import type * as ts from "typescript/unstable/ast";
+
+import path from "node:path";
+import * as factory from "typescript/unstable/ast/factory";
+import { API } from "typescript/unstable/sync";
 
 export async function createSourceFileFromFile(file: string): Promise<ts.SourceFile> {
-    const content = await fs.readFile(file, "utf8");
+    const api = new API({ cwd: path.dirname(file) });
 
-    return ts.createSourceFile(file, content, ts.ScriptTarget.Latest, /*setParentNodes*/ false, ts.ScriptKind.TS);
+    try {
+        const snapshot = api.updateSnapshot({ openFiles: [file] });
+        const project = snapshot.getDefaultProjectForFile(file);
+        if (!project) {
+            throw new Error(`Unable to open a TypeScript project for file: ${file}`);
+        }
+
+        const sourceFile = project.program.getSourceFile(file);
+        if (!sourceFile) {
+            throw new Error(`Unable to parse source file: ${file}`);
+        }
+
+        return sourceFile;
+    } finally {
+        api.close();
+    }
 }
 
 export function updateSourceFileStatements(file: ts.SourceFile, statements: ts.Statement[]): ts.SourceFile {
-    return ts.factory.updateSourceFile(
-        file,
-        ts.factory.createNodeArray(statements),
-        file.isDeclarationFile,
-        file.referencedFiles,
-        file.typeReferenceDirectives,
-        file.hasNoDefaultLib,
-        file.libReferenceDirectives,
-    );
+    return factory.updateSourceFile(file, statements, file.endOfFileToken);
 }
 
 export function appendSourceFileStatements(file: ts.SourceFile, ...statements: ts.Statement[]): ts.SourceFile {

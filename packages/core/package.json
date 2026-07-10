@@ -47,6 +47,6 @@
   },
   "dependencies": {
     "glob": "^13.0.6",
-    "typescript": "^6.0.0"
+    "typescript": "^7.0.0"
   }
 }

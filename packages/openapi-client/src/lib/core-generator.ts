@@ -1,8 +1,10 @@
 import type { OpenAPIObject, ParameterObject, PathItemObject, OperationObject } from "openapi3-ts/oas31";
+import type * as ts from "typescript/unstable/ast";
 
 import * as core from "@spec2ts/core";
 import { type ParserContext, resolveReference } from "@spec2ts/jsonschema";
-import ts from "typescript";
+import { NodeFlags } from "typescript/unstable/ast";
+import * as factory from "typescript/unstable/ast/factory";
 
 import { Method, OApiGeneratorContext, isMethod, parseOperation } from "./core-parser";
 import { parseServers, defaultBaseUrl } from "./server-parser";
@@ -123,30 +125,31 @@ function generateFunction(
     const qs = generateQs(query, paramsVars);
     const url = generateUrl(path, qs);
 
-    const init: ts.ObjectLiteralElementLike[] = [ts.factory.createSpreadAssignment(ts.factory.createIdentifier("options"))];
+    const init: ts.ObjectLiteralElementLike[] = [factory.createSpreadAssignment(factory.createIdentifier("options"))];
 
     if (method !== "GET") {
-        init.push(ts.factory.createPropertyAssignment("method", ts.factory.createStringLiteral(method)));
+        init.push(core.createPropertyAssignment("method", core.createStringLiteral(method)));
     }
 
     if (bodyVar) {
-        init.push(core.createPropertyAssignment("body", ts.factory.createIdentifier(bodyVar)));
+        init.push(core.createPropertyAssignment("body", factory.createIdentifier(bodyVar)));
     }
 
     if (header.length) {
         init.push(
-            ts.factory.createPropertyAssignment(
+            core.createPropertyAssignment(
                 "headers",
-                ts.factory.createObjectLiteralExpression(
+                factory.createObjectLiteralExpression(
                     [
-                        ts.factory.createSpreadAssignment(
-                            ts.factory.createPropertyAccessChain(
-                                ts.factory.createIdentifier("options"),
+                        factory.createSpreadAssignment(
+                            factory.createPropertyAccessExpression(
+                                factory.createIdentifier("options"),
                                 core.questionDotToken,
-                                ts.factory.createIdentifier("headers"),
+                                factory.createIdentifier("headers"),
+                                NodeFlags.None,
                             ),
                         ),
-                        ...header.map(({ name }) => core.createPropertyAssignment(name, ts.factory.createIdentifier(paramsVars[name]))),
+                        ...header.map(({ name }) => core.createPropertyAssignment(name, factory.createIdentifier(paramsVars[name]))),
                     ],
                     true,
                 ),
@@ -157,7 +160,7 @@ function generateFunction(
     const fetchArgs: ts.Expression[] = [url];
 
     if (init.length) {
-        const initObj = ts.factory.createObjectLiteralExpression(init, true);
+        const initObj = factory.createObjectLiteralExpression(init, true);
         fetchArgs.push(bodyMode ? callFunction("http", bodyMode, [initObj]) : initObj);
     }
 
@@ -166,12 +169,12 @@ function generateFunction(
             name,
             {
                 modifiers: [core.modifier.export, core.modifier.async],
-                type: ts.factory.createTypeReferenceNode("Promise", [ts.factory.createTypeReferenceNode("ApiResponse", [response])]),
+                type: core.createTypeReferenceNode("Promise", [core.createTypeReferenceNode("ApiResponse", [response])]),
             },
             args,
             core.block(
-                ts.factory.createReturnStatement(
-                    ts.factory.createAwaitExpression(
+                factory.createReturnStatement(
+                    factory.createAwaitExpression(
                         callFunction("http", responseJSON ? "fetchJson" : responseVoid ? "fetchVoid" : "fetch", fetchArgs),
                     ),
                 ),
@@ -202,7 +205,7 @@ function generateUrl(path: string, qs?: ts.CallExpression): ts.Expression {
     // Use a replacer function to collect spans as a side effect:
     const head = path.replace(/(.*?)\{(.+?)\}(.*?)(?=\{|$)/g, (_, head, name, literal) => {
         const expression = camelCase(name);
-        spans.push({ expression: ts.factory.createIdentifier(expression), literal });
+        spans.push({ expression: factory.createIdentifier(expression), literal });
         return head;
     });
 
@@ -219,7 +222,10 @@ function generateUrl(path: string, qs?: ts.CallExpression): ts.Expression {
 //#region Utils
 
 function callFunction(ns: string, name: string, args: ts.Expression[]): ts.CallExpression {
-    return core.createCall(ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(ns), name), { args });
+    return core.createCall(
+        factory.createPropertyAccessExpression(factory.createIdentifier(ns), undefined, factory.createIdentifier(name), NodeFlags.None),
+        { args },
+    );
 }
 
 function groupByFormatter(parameters: ParameterObject[]): Record<Formatter, ParameterObject[]> {

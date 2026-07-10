@@ -97,8 +97,8 @@ describe("openapi-parser", () => {
             expect(models[0]).toHaveProperty("name.text", "ThingKey");
             expect(models[1]).toHaveProperty("name.text", "ThingData");
             expect(models[2]).toHaveProperty("name.text", "Thing");
-            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "escapedText"], "ThingKey");
-            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "escapedText"], "ThingData");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "text"], "ThingKey");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "text"], "ThingData");
         });
 
         test("should properly resolve nested references", async () => {
@@ -109,8 +109,8 @@ describe("openapi-parser", () => {
             expect(models[0]).toHaveProperty("name.text", "ThingKey");
             expect(models[1]).toHaveProperty("name.text", "ThingData");
             expect(models[2]).toHaveProperty("name.text", "Thing");
-            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "escapedText"], "ThingKey");
-            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "escapedText"], "ThingData");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 0, "expression", "text"], "ThingKey");
+            expect(models[2]).toHaveProperty(["heritageClauses", 0, "types", 1, "expression", "text"], "ThingData");
             expect(models[3]).toHaveProperty("name.text", "ThingNested");
         });
     });

@@ -1,4 +1,6 @@
-import ts from "typescript";
+import type * as ts from "typescript/unstable/ast";
+
+import { SyntaxKind } from "typescript/unstable/ast";
 
 import { getName } from "./common";
 
@@ -22,7 +24,7 @@ export function filterNodes<T extends ts.Node>(
 export function findFirstVariableDeclaration(nodes: ts.NodeArray<ts.Node>, name: string): ts.VariableDeclaration | undefined {
     const statement = findNode<ts.VariableStatement>(
         nodes,
-        ts.SyntaxKind.VariableStatement,
+        SyntaxKind.VariableStatement,
         (n) => findFirstVariableDeclarationName(n) === name,
     );
     if (!statement) return;
@@ -31,14 +33,13 @@ export function findFirstVariableDeclaration(nodes: ts.NodeArray<ts.Node>, name:
 }
 
 export function findFirstVariableDeclarationName(n: ts.VariableStatement): string | ts.__String | undefined {
-    const name = ts.getNameOfDeclaration(n.declarationList.declarations[0]);
+    const name = n.declarationList.declarations[0]?.name;
     return name && getName(name);
 }
 
 export function findVariableDeclarationName(variable: ts.VariableStatement, name: string): ts.VariableDeclaration | null {
     for (const decla of variable.declarationList.declarations) {
-        const declaName = ts.getNameOfDeclaration(decla);
-        if (declaName && getName(declaName) === name) {
+        if (getName(decla.name) === name) {
             return decla;
         }
     }

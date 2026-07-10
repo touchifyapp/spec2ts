@@ -1,12 +1,16 @@
-import ts from "typescript";
+import type * as ts from "typescript/unstable/ast";
+
+import { SyntaxKind } from "typescript/unstable/ast";
+import * as factory from "typescript/unstable/ast/factory";
+import * as astIs from "typescript/unstable/ast/is";
 
 import { replaceNode } from "./common";
-import { updateVariableDeclarationInitializer } from "./declaration";
+import { createPropertyAssignment, updateVariableDeclarationInitializer } from "./declaration";
 import { upsertPropertyValue } from "./expression";
 import { findNode, findVariableDeclarationName } from "./finder";
 
 export function findFirstVariableStatement(nodes: ts.NodeArray<ts.Node>, variableName: string): ts.VariableStatement | undefined {
-    return findNode<ts.VariableStatement>(nodes, ts.SyntaxKind.VariableStatement, (n) => !!findVariableDeclarationName(n, variableName));
+    return findNode<ts.VariableStatement>(nodes, SyntaxKind.VariableStatement, (n) => !!findVariableDeclarationName(n, variableName));
 }
 
 export function updateVariableStatementValue(
@@ -19,10 +23,10 @@ export function updateVariableStatementValue(
         throw new Error(`Could not find variable declaration in given statement: ${variableName}`);
     }
 
-    return ts.factory.updateVariableStatement(
+    return factory.updateVariableStatement(
         statement,
         statement.modifiers,
-        ts.factory.updateVariableDeclarationList(
+        factory.updateVariableDeclarationList(
             statement.declarationList,
             replaceNode(statement.declarationList.declarations, decla, updateVariableDeclarationInitializer(decla, value)),
         ),
@@ -40,28 +44,28 @@ export function updateVariableStatementPropertyValue(
         throw new Error(`Could not find variable declaration in given statement: ${variableName}`);
     }
 
-    if (!decla.initializer || !ts.isObjectLiteralExpression(decla.initializer)) {
-        return ts.factory.updateVariableStatement(
+    if (!decla.initializer || !astIs.isObjectLiteralExpression(decla.initializer)) {
+        return factory.updateVariableStatement(
             statement,
             statement.modifiers,
-            ts.factory.updateVariableDeclarationList(
+            factory.updateVariableDeclarationList(
                 statement.declarationList,
                 replaceNode(
                     statement.declarationList.declarations,
                     decla,
                     updateVariableDeclarationInitializer(
                         decla,
-                        ts.factory.createObjectLiteralExpression([ts.factory.createPropertyAssignment(propertyName, value)]),
+                        factory.createObjectLiteralExpression([createPropertyAssignment(propertyName, value)]),
                     ),
                 ),
             ),
         );
     }
 
-    return ts.factory.updateVariableStatement(
+    return factory.updateVariableStatement(
         statement,
         statement.modifiers,
-        ts.factory.updateVariableDeclarationList(
+        factory.updateVariableDeclarationList(
             statement.declarationList,
             replaceNode(
                 statement.declarationList.declarations,

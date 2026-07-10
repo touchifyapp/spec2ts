@@ -8,13 +8,15 @@ import type {
     ResponsesObject,
     ContentObject,
 } from "openapi3-ts/oas31";
+import type * as ts from "typescript/unstable/ast";
 
 import type { OApiGeneratorOptions } from "./openapi-generator";
 
 import * as core from "@spec2ts/core";
 import { type ParserContext, JSONSchema, JSONReference, getTypeFromSchema, resolveReference, isReference } from "@spec2ts/jsonschema";
 import { getOperationName, getResponseName } from "@spec2ts/openapi";
-import ts from "typescript";
+import * as factory from "typescript/unstable/ast/factory";
+import * as astIs from "typescript/unstable/ast/is";
 
 import { camelCase } from "./util";
 
@@ -81,7 +83,7 @@ function parseArgs(result: ParsedOperation, item: PathItemObject, operation: Ope
 
     result.args.push(
         core.createParameter("options", {
-            type: ts.factory.createTypeReferenceNode("RequestOptions", undefined),
+            type: core.createTypeReferenceNode("RequestOptions"),
             questionToken: true,
         }),
     );
@@ -137,8 +139,8 @@ function parseParameters(result: ParsedOperation, item: PathItemObject, operatio
 
     result.args.push(
         core.createParameter(core.createObjectBinding(objectBindingParams.map(({ name }) => ({ name: argNames[name] }))), {
-            initializer: objectBindingParams.some((p) => p.required) ? undefined : ts.factory.createObjectLiteralExpression(),
-            type: ts.factory.createTypeLiteralNode(
+            initializer: objectBindingParams.some((p) => p.required) ? undefined : factory.createObjectLiteralExpression([], false),
+            type: factory.createTypeLiteralNode(
                 objectBindingParams.map((p) =>
                     core.createPropertySignature({
                         name: argNames[p.name],
@@ -197,7 +199,7 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
         const type = getTypeFromResponse(res[code], context);
 
         if (!type) console.log(res[code]);
-        if (ts.isTypeReferenceNode(type) || core.isKeywordTypeNode(type)) {
+        if (astIs.isTypeReferenceNode(type) || core.isKeywordTypeNode(type)) {
             if (isOK) types.push(type);
         } else {
             const name = getResponseName(operationName, code, context);
@@ -211,7 +213,7 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
             );
 
             if (isOK) {
-                types.push(ts.factory.createTypeReferenceNode(name, undefined));
+                types.push(core.createTypeReferenceNode(name));
             }
         }
     });
@@ -220,7 +222,7 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
         return types[0];
     }
 
-    return ts.factory.createUnionTypeNode(types);
+    return factory.createUnionTypeNode(types);
 }
 
 function isJSONResponse(responses: ResponsesObject, context: OApiGeneratorContext): boolean {

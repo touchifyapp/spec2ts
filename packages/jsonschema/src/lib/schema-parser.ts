@@ -1,7 +1,8 @@
+import type * as ts from "typescript/unstable/ast";
+
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import * as core from "@spec2ts/core";
 import path from "node:path";
-import ts from "typescript";
 
 import { JSONSchema, ParserOptions, getTypeFromSchema, parseDefinitions, getSchemaName, createContext } from "./core-parser";
 

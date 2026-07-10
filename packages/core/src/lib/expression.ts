@@ -1,30 +1,38 @@
-import ts from "typescript";
+import type * as ts from "typescript/unstable/ast";
+
+import { NodeFlags, ScriptTarget, SyntaxKind, TokenFlags } from "typescript/unstable/ast";
+import * as factory from "typescript/unstable/ast/factory";
+import * as astIs from "typescript/unstable/ast/is";
+import { isIdentifierText, stringToToken } from "typescript/unstable/ast/scanner";
 
 import { getName, appendNodes } from "./common";
 import { createPropertyAssignment } from "./declaration";
 
+const missingTypeNode = undefined as unknown as ts.TypeNode;
+const syntheticCommentKey = Symbol.for("spec2ts.comment");
+
 export function toExpression(ex: ts.Expression | string): ts.Expression;
 export function toExpression(ex: ts.Expression | string | undefined): ts.Expression | undefined;
 export function toExpression(ex: ts.Expression | string | undefined): ts.Expression | undefined {
-    if (typeof ex === "string") return ts.factory.createIdentifier(ex);
+    if (typeof ex === "string") return factory.createIdentifier(ex);
     return ex;
 }
 
 export function toIdentifier(ex: ts.Identifier | string): ts.Identifier;
 export function toIdentifier(ex: ts.Identifier | string | undefined): ts.Identifier | undefined;
 export function toIdentifier(ex: ts.Identifier | string | undefined): ts.Identifier | undefined {
-    if (typeof ex === "string") return ts.factory.createIdentifier(ex);
+    if (typeof ex === "string") return factory.createIdentifier(ex);
     return ex;
 }
 
 export function toLiteral(ex: ts.Expression | string | number | bigint): ts.Expression;
 export function toLiteral(ex: ts.Expression | string | number | bigint | undefined): ts.Expression | undefined;
 export function toLiteral(ex: ts.Expression | string | number | bigint | undefined): ts.Expression | undefined {
-    if (ex === "true") return ts.factory.createTrue();
-    if (ex === "false") return ts.factory.createFalse();
-    if (typeof ex === "string") return ts.factory.createStringLiteral(ex);
-    if (typeof ex === "number") return ts.factory.createNumericLiteral(ex);
-    if (typeof ex === "bigint") return ts.factory.createBigIntLiteral(ex.toString());
+    if (ex === "true") return factory.createKeywordExpression(SyntaxKind.TrueKeyword);
+    if (ex === "false") return factory.createKeywordExpression(SyntaxKind.FalseKeyword);
+    if (typeof ex === "string") return factory.createStringLiteral(ex, TokenFlags.None);
+    if (typeof ex === "number") return factory.createNumericLiteral(ex.toString(), TokenFlags.None);
+    if (typeof ex === "bigint") return factory.createBigIntLiteral(ex.toString(), TokenFlags.None);
     return ex;
 }
 
@@ -32,19 +40,20 @@ export function toPropertyName(ex: ts.PropertyName | string): ts.PropertyName;
 export function toPropertyName(ex: ts.PropertyName | string | undefined): ts.PropertyName | undefined;
 export function toPropertyName(name: ts.PropertyName | string | undefined): ts.PropertyName | undefined {
     if (typeof name === "string") {
-        return isValidIdentifier(name) ? ts.factory.createIdentifier(name) : ts.factory.createStringLiteral(name);
+        return isValidIdentifier(name) ? factory.createIdentifier(name) : factory.createStringLiteral(name, TokenFlags.None);
     }
     return name;
 }
 
 export function isValidIdentifier(str: string): boolean {
     if (!str.length || str.trim() !== str) return false;
-    const node = ts.parseIsolatedEntityName(str, ts.ScriptTarget.Latest);
-    return !!node && node.kind === ts.SyntaxKind.Identifier && !ts.identifierToKeywordKind(node);
+
+    const token = stringToToken(str);
+    return isIdentifierText(str, ScriptTarget.Latest) && (!token || !astIs.isKeywordKind(token));
 }
 
 export function isIdentifier(n: unknown): n is ts.Identifier {
-    return !!n && ts.isIdentifier(n as ts.Node);
+    return !!n && typeof n === "object" && "kind" in n && astIs.isIdentifier(n as ts.Node);
 }
 
 export function createCall(
@@ -57,7 +66,7 @@ export function createCall(
         args?: ts.Expression[];
     } = {},
 ): ts.CallExpression {
-    return ts.factory.createCallExpression(toExpression(expression), typeArgs, args);
+    return factory.createCallExpression(toExpression(expression), undefined, typeArgs, args ?? [], NodeFlags.None);
 }
 
 export function createMethodCall(
@@ -67,27 +76,37 @@ export function createMethodCall(
         args?: ts.Expression[];
     },
 ): ts.CallExpression {
-    return createCall(ts.factory.createPropertyAccessExpression(ts.factory.createThis(), method), opts);
+    return createCall(
+        factory.createPropertyAccessExpression(
+            factory.createKeywordExpression(SyntaxKind.ThisKeyword),
+            undefined,
+            factory.createIdentifier(method),
+            NodeFlags.None,
+        ),
+        opts,
+    );
 }
 
 export function createTemplateString(head: string, spans: Array<{ literal: string; expression: ts.Expression }>): ts.Expression {
     if (!spans.length) {
-        return ts.factory.createStringLiteral(head);
+        return factory.createStringLiteral(head, TokenFlags.None);
     }
 
-    return ts.factory.createTemplateExpression(
-        ts.factory.createTemplateHead(head),
+    return factory.createTemplateExpression(
+        factory.createTemplateHead(head, head, TokenFlags.None),
         spans.map(({ expression, literal }, i) =>
-            ts.factory.createTemplateSpan(
+            factory.createTemplateSpan(
                 expression,
-                i === spans.length - 1 ? ts.factory.createTemplateTail(literal) : ts.factory.createTemplateMiddle(literal),
+                i === spans.length - 1
+                    ? factory.createTemplateTail(literal, literal, TokenFlags.None)
+                    : factory.createTemplateMiddle(literal, literal, TokenFlags.None),
             ),
         ),
     );
 }
 
 export function createObjectLiteral(props: Array<[string, string | ts.Expression]>): ts.ObjectLiteralExpression {
-    return ts.factory.createObjectLiteralExpression(
+    return factory.createObjectLiteralExpression(
         props.map(([name, identifier]) => createPropertyAssignment(name, toExpression(identifier))),
         true,
     );
@@ -108,7 +127,14 @@ export function createArrowFunction(
         equalsGreaterThanToken?: ts.EqualsGreaterThanToken;
     } = {},
 ): ts.ArrowFunction {
-    return ts.factory.createArrowFunction(modifiers, typeParameters, parameters, type, equalsGreaterThanToken, body);
+    return factory.createArrowFunction(
+        modifiers,
+        typeParameters,
+        parameters,
+        type,
+        equalsGreaterThanToken ?? factory.createToken(SyntaxKind.EqualsGreaterThanToken),
+        body,
+    );
 }
 
 export function createObjectBinding(
@@ -119,52 +145,59 @@ export function createObjectBinding(
         initializer?: ts.Expression;
     }>,
 ): ts.ObjectBindingPattern {
-    return ts.factory.createObjectBindingPattern(
+    return factory.createObjectBindingPattern(
         elements.map(({ dotDotDotToken, propertyName, name, initializer }) =>
-            ts.factory.createBindingElement(dotDotDotToken, propertyName, name, initializer),
+            factory.createBindingElement(
+                dotDotDotToken,
+                typeof propertyName === "string" ? toPropertyName(propertyName) : propertyName,
+                typeof name === "string" ? factory.createIdentifier(name) : name,
+                initializer,
+            ),
         ),
     );
 }
 
 export function changePropertyValue(o: ts.ObjectLiteralExpression, property: string, value: ts.Expression): ts.ObjectLiteralExpression {
-    const i = o.properties.findIndex((p) => ts.isPropertyAssignment(p) && getName(p.name) === property);
+    const i = o.properties.findIndex((p) => astIs.isPropertyAssignment(p) && getName(p.name) === property);
 
     if (i === -1) {
         throw new Error(`No such property: ${property}`);
     }
 
     const p = o.properties[i];
-    if (!ts.isPropertyAssignment(p)) {
+    if (!astIs.isPropertyAssignment(p)) {
         throw new Error(`Invalid node: ${property}`);
     }
 
-    return ts.factory.updateObjectLiteralExpression(o, [
+    return factory.updateObjectLiteralExpression(o, [
         ...o.properties.slice(0, i),
-        ts.factory.updatePropertyAssignment(p, p.name, value),
+        factory.updatePropertyAssignment(p, p.modifiers, p.name, p.postfixToken, p.type ?? missingTypeNode, value),
         ...o.properties.slice(i + 1),
     ]);
 }
 
 export function upsertPropertyValue(o: ts.ObjectLiteralExpression, property: string, value: ts.Expression): ts.ObjectLiteralExpression {
-    const i = o.properties.findIndex((p) => ts.isPropertyAssignment(p) && getName(p.name) === property);
+    const i = o.properties.findIndex((p) => astIs.isPropertyAssignment(p) && getName(p.name) === property);
 
     if (i === -1) {
-        return ts.factory.updateObjectLiteralExpression(o, appendNodes(o.properties, ts.factory.createPropertyAssignment(property, value)));
+        return factory.updateObjectLiteralExpression(o, appendNodes(o.properties, createPropertyAssignment(property, value)));
     }
 
     const p = o.properties[i];
-    if (!ts.isPropertyAssignment(p)) {
+    if (!astIs.isPropertyAssignment(p)) {
         throw new Error(`Invalid node: ${property}`);
     }
 
-    return ts.factory.updateObjectLiteralExpression(o, [
+    return factory.updateObjectLiteralExpression(o, [
         ...o.properties.slice(0, i),
-        ts.factory.updatePropertyAssignment(p, p.name, value),
+        factory.updatePropertyAssignment(p, p.modifiers, p.name, p.postfixToken, p.type ?? missingTypeNode, value),
         ...o.properties.slice(i + 1),
     ]);
 }
 
 export function addComment<T extends ts.Node>(node: T, comment?: string): T {
     if (!comment) return node;
-    return ts.addSyntheticLeadingComment(node, ts.SyntaxKind.MultiLineCommentTrivia, `*\n * ${comment.replace(/\n/g, "\n * ")}\n `, true);
+
+    (node as T & { [syntheticCommentKey]?: string })[syntheticCommentKey] = comment;
+    return node;
 }

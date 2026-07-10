@@ -1,7 +1,8 @@
 import type { ServerObject, ServerVariableObject } from "openapi3-ts/oas31";
+import type * as ts from "typescript/unstable/ast";
 
 import * as core from "@spec2ts/core";
-import ts from "typescript";
+import * as factory from "typescript/unstable/ast/factory";
 
 import { camelCase } from "./util";
 
@@ -11,7 +12,7 @@ export function parseServers(servers: ServerObject[]): ts.ObjectLiteralExpressio
 }
 
 export function defaultBaseUrl(servers: ServerObject[]): ts.StringLiteral {
-    return ts.factory.createStringLiteral(defaultUrl(servers[0]));
+    return core.createStringLiteral(defaultUrl(servers[0]));
 }
 
 function serverName(server: ServerObject, index: number): string {
@@ -19,7 +20,7 @@ function serverName(server: ServerObject, index: number): string {
 }
 
 function generateServerExpression(server: ServerObject): ts.Expression {
-    return server.variables ? createServerFunction(server.url, server.variables) : ts.factory.createStringLiteral(server.url);
+    return server.variables ? createServerFunction(server.url, server.variables) : core.createStringLiteral(server.url);
 }
 
 function createServerFunction(template: string, vars: Record<string, ServerVariableObject>): ts.ArrowFunction {
@@ -34,17 +35,13 @@ function createServerFunction(template: string, vars: Record<string, ServerVaria
                 }),
             ),
             {
-                type: ts.factory.createTypeLiteralNode(
+                type: factory.createTypeLiteralNode(
                     Object.entries(vars || {}).map(([name, value]) => {
                         return core.createPropertySignature({
                             name,
                             type: value.enum
-                                ? ts.factory.createUnionTypeNode(createUnion(value.enum))
-                                : ts.factory.createUnionTypeNode([
-                                      core.keywordType.string,
-                                      core.keywordType.number,
-                                      core.keywordType.boolean,
-                                  ]),
+                                ? factory.createUnionTypeNode(createUnion(value.enum))
+                                : factory.createUnionTypeNode([core.keywordType.string, core.keywordType.number, core.keywordType.boolean]),
                         });
                     }),
                 ),
@@ -56,31 +53,29 @@ function createServerFunction(template: string, vars: Record<string, ServerVaria
 }
 
 function createUnion(strs: Array<string | boolean | number>): ts.LiteralTypeNode[] {
-    return strs.map((e) => ts.factory.createLiteralTypeNode(createLiteral(e)));
+    return strs.map((e) => factory.createLiteralTypeNode(createLiteral(e)));
 }
 
-function createTemplate(url: string): ts.TemplateLiteral {
+function createTemplate(url: string): ts.Expression {
     const tokens = url.split(/{([\s\S]+?)}/g);
-    const spans: ts.TemplateSpan[] = [];
+    const spans: Array<{ expression: ts.Expression; literal: string }> = [];
     const len = tokens.length;
 
     for (let i = 1; i < len; i += 2) {
-        const template_factory =
-            i === len - 2 ? ts.factory.createTemplateTail.bind(ts.factory) : ts.factory.createTemplateMiddle.bind(ts.factory);
-        spans.push(ts.factory.createTemplateSpan(ts.factory.createIdentifier(tokens[i]), template_factory(tokens[i + 1])));
+        spans.push({ expression: factory.createIdentifier(tokens[i]), literal: tokens[i + 1] });
     }
 
-    return ts.factory.createTemplateExpression(ts.factory.createTemplateHead(tokens[0]), spans);
+    return core.createTemplateString(tokens[0], spans);
 }
 
 function createLiteral(v: string | boolean | number): ts.StringLiteral | ts.BooleanLiteral | ts.NumericLiteral {
     switch (typeof v) {
         case "string":
-            return ts.factory.createStringLiteral(v);
+            return core.createStringLiteral(v);
         case "boolean":
-            return v ? ts.factory.createTrue() : ts.factory.createFalse();
+            return core.createBooleanLiteral(v);
         case "number":
-            return ts.factory.createNumericLiteral(String(v));
+            return core.createNumericLiteral(v);
     }
 }
 

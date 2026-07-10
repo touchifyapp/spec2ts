@@ -57,7 +57,7 @@
     "@spec2ts/jsonschema": "^4.0.1",
     "@spec2ts/openapi": "^4.0.1",
     "@spec2ts/openapi-client": "^4.0.1",
-    "typescript": "^6.0.0",
+    "typescript": "^7.0.0",
     "yargs": "^18.0.0"
   }
 }

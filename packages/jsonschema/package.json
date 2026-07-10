@@ -68,7 +68,7 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^10.1.0",
     "@spec2ts/core": "^4.0.1",
-    "typescript": "^6.0.0",
+    "typescript": "^7.0.0",
     "yargs": "^18.0.0"
   },
   "devDependencies": {

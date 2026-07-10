@@ -1,5 +1,6 @@
 import * as core from "@spec2ts/core";
-import ts from "typescript";
+import * as ts from "typescript/unstable/ast";
+import * as astIs from "typescript/unstable/ast/is";
 import { describe, test, expect } from "vitest";
 
 import { generateClient } from "../src/lib/openapi-generator";
@@ -11,7 +12,7 @@ describe("openapi-parser", () => {
             const schema = loadSpec("petstore.yml");
             const res = await generateClient(schema);
 
-            expect(ts.isSourceFile(res)).toBe(true);
+            expect(astIs.isSourceFile(res)).toBe(true);
         });
 
         test("should set servers variable", async () => {
@@ -57,11 +58,11 @@ describe("openapi-parser", () => {
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
-            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 0, "name", "escapedText"], "limit");
+            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 0, "name", "text"], "limit");
 
             expect(func).toHaveProperty(["parameters", 0, "type", "kind"], ts.SyntaxKind.TypeLiteral);
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "name", "text"], "limit");
-            expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "questionToken"], core.questionToken);
+            expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "postfixToken"], core.questionToken);
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "type", "kind"], ts.SyntaxKind.NumberKeyword);
         });
 
@@ -76,7 +77,7 @@ describe("openapi-parser", () => {
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
-            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 0, "name", "escapedText"], "id");
+            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 0, "name", "text"], "id");
 
             expect(func).toHaveProperty(["parameters", 0, "type", "kind"], ts.SyntaxKind.TypeLiteral);
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "name", "text"], "id");
@@ -95,16 +96,16 @@ describe("openapi-parser", () => {
             );
 
             expect(func).toHaveProperty(["parameters", 0, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
-            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 0, "name", "escapedText"], "id");
-            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 1, "name", "escapedText"], "force");
+            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 0, "name", "text"], "id");
+            expect(func).toHaveProperty(["parameters", 0, "name", "elements", 1, "name", "text"], "force");
 
             expect(func).toHaveProperty(["parameters", 0, "type", "kind"], ts.SyntaxKind.TypeLiteral);
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "name", "text"], "id");
-            expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "questionToken"], undefined);
+            expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "postfixToken"], undefined);
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 0, "type", "kind"], ts.SyntaxKind.NumberKeyword);
 
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 1, "name", "text"], "force");
-            expect(func).toHaveProperty(["parameters", 0, "type", "members", 1, "questionToken"], core.questionToken);
+            expect(func).toHaveProperty(["parameters", 0, "type", "members", 1, "postfixToken"], core.questionToken);
             expect(func).toHaveProperty(["parameters", 0, "type", "members", 1, "type", "kind"], ts.SyntaxKind.BooleanKeyword);
         });
 
@@ -122,11 +123,11 @@ describe("openapi-parser", () => {
             expect(func).toHaveProperty(["parameters", 0, "type", "kind"], ts.SyntaxKind.NumberKeyword);
 
             expect(func).toHaveProperty(["parameters", 1, "name", "kind"], ts.SyntaxKind.ObjectBindingPattern);
-            expect(func).toHaveProperty(["parameters", 1, "name", "elements", 0, "name", "escapedText"], "force");
+            expect(func).toHaveProperty(["parameters", 1, "name", "elements", 0, "name", "text"], "force");
 
             expect(func).toHaveProperty(["parameters", 1, "type", "kind"], ts.SyntaxKind.TypeLiteral);
             expect(func).toHaveProperty(["parameters", 1, "type", "members", 0, "name", "text"], "force");
-            expect(func).toHaveProperty(["parameters", 1, "type", "members", 0, "questionToken"], core.questionToken);
+            expect(func).toHaveProperty(["parameters", 1, "type", "members", 0, "postfixToken"], core.questionToken);
             expect(func).toHaveProperty(["parameters", 1, "type", "members", 0, "type", "kind"], ts.SyntaxKind.BooleanKeyword);
         });
 
@@ -142,7 +143,7 @@ describe("openapi-parser", () => {
 
             expect(func).toHaveProperty(["parameters", 1, "name", "text"], "options");
             expect(func).toHaveProperty(["parameters", 1, "type", "kind"], ts.SyntaxKind.TypeReference);
-            expect(func).toHaveProperty(["parameters", 1, "type", "typeName", "escapedText"], "RequestOptions");
+            expect(func).toHaveProperty(["parameters", 1, "type", "typeName", "text"], "RequestOptions");
         });
 
         test("should generate return type", async () => {
@@ -156,11 +157,11 @@ describe("openapi-parser", () => {
             );
 
             expect(func).toHaveProperty(["type", "kind"], ts.SyntaxKind.TypeReference);
-            expect(func).toHaveProperty(["type", "typeName", "escapedText"], "Promise");
+            expect(func).toHaveProperty(["type", "typeName", "text"], "Promise");
             expect(func).toHaveProperty(["type", "typeArguments", 0, "kind"], ts.SyntaxKind.TypeReference);
-            expect(func).toHaveProperty(["type", "typeArguments", 0, "typeName", "escapedText"], "ApiResponse");
+            expect(func).toHaveProperty(["type", "typeArguments", 0, "typeName", "text"], "ApiResponse");
             expect(func).toHaveProperty(["type", "typeArguments", 0, "typeArguments", 0, "kind"], ts.SyntaxKind.TypeReference);
-            expect(func).toHaveProperty(["type", "typeArguments", 0, "typeArguments", 0, "typeName", "escapedText"], "Pets");
+            expect(func).toHaveProperty(["type", "typeArguments", 0, "typeArguments", 0, "typeName", "text"], "Pets");
         });
 
         test("should generate a body parameter", async () => {
@@ -178,7 +179,7 @@ describe("openapi-parser", () => {
 
             expect(func).toHaveProperty(["parameters", 0, "name", "text"], "newPet");
             expect(func).toHaveProperty(["parameters", 0, "type", "kind"], ts.SyntaxKind.TypeReference);
-            expect(func).toHaveProperty(["parameters", 0, "type", "typeName", "escapedText"], "NewPet");
+            expect(func).toHaveProperty(["parameters", 0, "type", "typeName", "text"], "NewPet");
         });
 
         test("should export Pet entity", async () => {
@@ -215,7 +216,7 @@ describe("openapi-parser", () => {
 
             expect(pets).toHaveProperty(["name", "text"], "Pets");
             expect(pets).toHaveProperty(["type", "kind"], ts.SyntaxKind.ArrayType);
-            expect(pets).toHaveProperty(["type", "elementType", "typeName", "escapedText"], "Pet");
+            expect(pets).toHaveProperty(["type", "elementType", "typeName", "text"], "Pet");
         });
 
         test("should export Error entity", async () => {
@@ -248,7 +249,7 @@ describe("openapi-parser", () => {
 
             const servers = core.findFirstVariableDeclaration(file.statements, "defaults");
             expect(servers).toHaveProperty(["initializer", "properties", 1, "name", "text"], "fetch");
-            expect(servers).toHaveProperty(["initializer", "properties", 1, "initializer", "text"], "fetch");
+            expect(servers).toHaveProperty(["initializer", "properties", 1, "kind"], ts.SyntaxKind.ShorthandPropertyAssignment);
         });
 
         test("should import custom form-data if importFetch option is passed", async () => {
@@ -298,7 +299,7 @@ describe("openapi-parser", () => {
 
                 const importTypes = core.findNode<ts.ImportDeclaration>(client.statements, ts.SyntaxKind.ImportDeclaration);
 
-                expect(importTypes).toHaveProperty(["importClause", "namedBindings", "elements", 0, "name", "escapedText"], "Pet");
+                expect(importTypes).toHaveProperty(["importClause", "namedBindings", "elements", 0, "name", "text"], "Pet");
                 expect(importTypes).toHaveProperty("moduleSpecifier.text", "./types");
             });
         });
