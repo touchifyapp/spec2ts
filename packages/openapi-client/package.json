@@ -32,7 +32,8 @@
   },
   "files": [
     "dist/**/*.mjs",
-    "dist/**/*.d.mts"
+    "dist/**/*.d.mts",
+    "dist/templates/**/*.ts"
   ],
   "type": "module",
   "main": "dist/index.mjs",
