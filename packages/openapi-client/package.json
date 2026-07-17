@@ -1,6 +1,6 @@
 {
   "name": "@spec2ts/openapi-client",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Utility to convert OpenAPI v3 specifications to Typescript HTTP client using TypeScript native compiler",
   "keywords": [
     "ast",

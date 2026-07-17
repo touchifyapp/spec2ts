@@ -1,6 +1,6 @@
 {
   "name": "@spec2ts/cli",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Utility to convert specifications (Open API, JSON Schemas) to TypeScript using TypeScript native compiler",
   "keywords": [
     "ast",
@@ -56,7 +56,7 @@
   "dependencies": {
     "@spec2ts/jsonschema": "^4.0.1",
     "@spec2ts/openapi": "^4.0.1",
-    "@spec2ts/openapi-client": "^4.0.2",
+    "@spec2ts/openapi-client": "^4.0.3",
     "typescript": "^6.0.0",
     "yargs": "^18.0.0"
   }
