@@ -186,7 +186,7 @@ async function generatePackage(output: string, options: BuildClientFromOpenApiOp
         main: main.replace(/\.ts$/, ".js"),
         files: ["*.js", "*.d.ts"],
         scripts: {
-            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "node16"} --moduleResolution ${options.packageBuildModuleResolution || "node16"} --skipLibCheck`,
+            build: `tsc ${main} --strict --target ${options.packageBuildTarget || "ES2018"} --module ${options.packageBuildModule || "node16"} --moduleResolution ${options.packageBuildModuleResolution || "node16"} --skipLibCheck --ignoreConfig`,
             prepublishOnly: "npm run build",
         },
         dependencies: {},

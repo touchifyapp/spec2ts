@@ -17,7 +17,7 @@ export type ApiResponse<T> = {
     data: T;
 };
 
-type Encoders = Array<(s: string) => string>;
+type Encoders = ReadonlyArray<(s: string) => string>;
 type TagFunction = (strings: TemplateStringsArray, ...values: any[]) => string;
 
 type FetchRequestOptions = RequestOptions & {
@@ -39,8 +39,8 @@ type MultipartRequestOptions = RequestOptions & {
 /** Utilities functions */
 export const _ = {
     // Encode param names and values as URIComponent
-    encodeReserved: [encodeURI, encodeURIComponent],
-    allowReserved: [encodeURI, encodeURI],
+    encodeReserved: [encodeURI, encodeURIComponent] as const,
+    allowReserved: [encodeURI, encodeURI] as const,
 
     /** Deeply remove all properties with undefined values. */
     stripUndefined<T extends Record<string, U | undefined>, U>(obj?: T): Record<string, U> | undefined {
@@ -58,7 +58,7 @@ export const _ = {
         };
 
         function q(v: any, i: number): string {
-            const encoder = encoders[i % encoders.length];
+            const encoder = encoders[i % encoders.length]!;
             if (typeof v === "object") {
                 if (Array.isArray(v)) {
                     return v.map(encoder).join(delimiter);
