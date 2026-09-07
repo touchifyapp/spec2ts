@@ -197,7 +197,7 @@ export function getTypeFromProperties(
     if (additionalProperties) {
         const type = additionalProperties === true ? core.keywordType.any : getTypeFromSchema(additionalProperties, context);
 
-        members.push(core.createIndexSignature(type, { questionToken: context.options.additionalPropertiesOptional }));
+        members.push(core.createIndexSignature(type, { optional: context.options.additionalPropertiesOptional }));
     }
 
     return ts.factory.createTypeLiteralNode(members);

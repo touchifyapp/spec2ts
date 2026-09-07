@@ -159,15 +159,21 @@ export function createIndexSignature(
         modifiers,
         indexName = "key",
         indexType = keywordType.string,
-        questionToken,
+        optional,
     }: {
         indexName?: string;
         indexType?: ts.TypeNode;
         modifiers?: ts.Modifier[];
-        questionToken?: ts.QuestionToken | boolean;
+        optional?: boolean;
     } = {},
 ): ts.IndexSignatureDeclaration {
-    return ts.factory.createIndexSignature(modifiers, [createParameter(indexName, { type: indexType, questionToken })], type);
+    const index = ts.factory.createIndexSignature(
+        modifiers,
+        [createParameter(indexName, { type: indexType })],
+        optional ? ts.factory.createUnionTypeNode([type, keywordType.undefined]) : type,
+    );
+
+    return index;
 }
 
 export function createNamedImportDeclaration({
