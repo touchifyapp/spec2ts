@@ -29,7 +29,7 @@
     "@types/node": "^24.0.0",
     "@types/yargs": "^17.0.35",
     "husky": "^9.1.7",
-    "lerna": "^9.0.7",
+    "lerna": "^10.0.1",
     "oxfmt": "^0.58.0",
     "oxlint": "^1.73.0",
     "oxlint-tsgolint": "0.24.0",
