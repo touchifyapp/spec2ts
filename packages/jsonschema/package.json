@@ -1,6 +1,6 @@
 {
   "name": "@spec2ts/jsonschema",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "Utility to convert JSON Schemas to Typescript using TypeScript native compiler",
   "keywords": [
     "ast",
@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^10.1.0",
-    "@spec2ts/core": "^4.0.1",
+    "@spec2ts/core": "^4.1.0",
     "typescript": "^6.0.0",
     "yargs": "^18.0.0"
   },

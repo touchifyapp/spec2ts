@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@4.0.1...@spec2ts/jsonschema@4.1.0) (2026-09-07)
+
+
+### Features
+
+* allow additional properties to be optional (questionToken) ([473bdcd](https://github.com/touchifyapp/spec2ts/commit/473bdcdfda93bf3099be35a766aa6d0d10f6069c))
+
+
+
+
+
 ## [4.0.1](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/jsonschema@4.0.0...@spec2ts/jsonschema@4.0.1) (2026-07-09)
 
 
