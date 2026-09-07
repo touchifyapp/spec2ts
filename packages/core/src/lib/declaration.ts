@@ -159,13 +159,15 @@ export function createIndexSignature(
         modifiers,
         indexName = "key",
         indexType = keywordType.string,
+        questionToken,
     }: {
         indexName?: string;
         indexType?: ts.TypeNode;
         modifiers?: ts.Modifier[];
+        questionToken?: ts.QuestionToken | boolean;
     } = {},
 ): ts.IndexSignatureDeclaration {
-    return ts.factory.createIndexSignature(modifiers, [createParameter(indexName, { type: indexType })], type);
+    return ts.factory.createIndexSignature(modifiers, [createParameter(indexName, { type: indexType, questionToken })], type);
 }
 
 export function createNamedImportDeclaration({

@@ -19,6 +19,7 @@ export interface ParserOptions {
     cwd?: string;
     avoidAny?: boolean;
     enableDate?: boolean | "strict" | "lax";
+    additionalPropertiesOptional?: boolean;
     parseReference?: (ref: ParsedReference, context: ParserContext) => void;
 }
 
@@ -196,7 +197,7 @@ export function getTypeFromProperties(
     if (additionalProperties) {
         const type = additionalProperties === true ? core.keywordType.any : getTypeFromSchema(additionalProperties, context);
 
-        members.push(core.createIndexSignature(type));
+        members.push(core.createIndexSignature(type, { questionToken: context.options.additionalPropertiesOptional }));
     }
 
     return ts.factory.createTypeLiteralNode(members);

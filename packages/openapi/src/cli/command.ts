@@ -49,6 +49,10 @@ export function builder(argv: Argv): Argv<BuildTsFromOpenApiOptions> {
             choices: [true, "strict", "lax"] as const,
             describe: "Build `Date` for format `date` and `date-time`",
         })
+        .option("additionalPropertiesOptional", {
+            type: "boolean",
+            describe: "Make additional properties optional in generated types",
+        })
 
         .option("lowerHeaders", {
             type: "boolean",
