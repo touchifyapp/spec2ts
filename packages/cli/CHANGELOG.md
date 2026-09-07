@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.5](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fcli%404.0.4...%40spec2ts%2Fcli%404.0.5) (2026-09-07)
+
+**Note:** Version bump only for package @spec2ts/cli
+
+
+
+
+
 ## [4.0.4](https://github.com/touchifyapp/spec2ts/compare/@spec2ts/cli@4.0.3...@spec2ts/cli@4.0.4) (2026-09-07)
 
 **Note:** Version bump only for package @spec2ts/cli
