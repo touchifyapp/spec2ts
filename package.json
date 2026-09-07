@@ -36,5 +36,8 @@
     "tsdown": "^0.22.4",
     "typescript": "^6.0.0",
     "vitest": "^4.1.10"
+  },
+  "allowScripts": {
+    "nx@23.2.0": true
   }
 }
