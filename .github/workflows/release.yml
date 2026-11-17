@@ -25,12 +25,13 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
+          package-manager-cache: false
 
       - name: List unpublished versions
         id: check
@@ -58,12 +59,13 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
+          package-manager-cache: false
 
       - name: Install Dependencies
         run: npm ci
