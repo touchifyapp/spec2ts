@@ -127,35 +127,12 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
     // (could be boolean -> strong checking required)
     if (typeof schema.const !== "undefined") {
         // const -> literal type
-        return ts.factory.createLiteralTypeNode(
-            ((s) => {
-                switch (typeof s) {
-                    case "string":
-                        return ts.factory.createStringLiteral(s);
-                    case "number":
-                        return ts.factory.createNumericLiteral(s.toString());
-                    case "boolean":
-                        return s ? ts.factory.createTrue() : ts.factory.createFalse();
-                    default:
-                        return ts.factory.createStringLiteral(String(s));
-                }
-            })(schema.const),
-        );
+        return getLiteralType(schema.const, context);
     }
 
     if (schema.enum) {
         // enum -> union of literal types
-        return ts.factory.createUnionTypeNode(
-            (schema.enum as Array<string | number | boolean | null>).map((s) =>
-                ts.factory.createLiteralTypeNode(
-                    typeof s === "string"
-                        ? ts.factory.createStringLiteral(s)
-                        : typeof s === "number"
-                          ? ts.factory.createNumericLiteral(s.toString())
-                          : ts.factory.createStringLiteral(String(s)),
-                ),
-            ),
-        );
+        return ts.factory.createUnionTypeNode(schema.enum.map((s) => getLiteralType(s, context)));
     }
 
     if (schema.format == "binary") {
@@ -367,6 +344,15 @@ export function getSchemaName(schema: JSONSchema, path?: string): string {
             .replace(/\.(json)|(ya?ml)$/, "")
             .replace(/#$/, ""),
     );
+}
+
+function getLiteralType(value: unknown, context: ParserContext): ts.TypeNode {
+    if (value === null || typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        return core.createLiteralType(value);
+    }
+
+    // objects and arrays cannot be expressed as literal types
+    return getAnyType(context);
 }
 
 export function getAnyType(context: ParserContext): ts.TypeNode {

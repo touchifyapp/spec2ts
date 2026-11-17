@@ -73,14 +73,14 @@ function createTemplate(url: string): ts.TemplateLiteral {
     return ts.factory.createTemplateExpression(ts.factory.createTemplateHead(tokens[0]), spans);
 }
 
-function createLiteral(v: string | boolean | number): ts.StringLiteral | ts.BooleanLiteral | ts.NumericLiteral {
+function createLiteral(v: string | boolean | number): ts.StringLiteral | ts.BooleanLiteral | ts.NumericLiteral | ts.PrefixUnaryExpression {
     switch (typeof v) {
         case "string":
             return ts.factory.createStringLiteral(v);
         case "boolean":
             return v ? ts.factory.createTrue() : ts.factory.createFalse();
         case "number":
-            return ts.factory.createNumericLiteral(String(v));
+            return core.createNumericLiteral(v);
     }
 }
 

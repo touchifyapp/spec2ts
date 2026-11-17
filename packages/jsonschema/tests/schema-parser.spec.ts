@@ -271,6 +271,36 @@ describe("schema-parser", () => {
             expect(types[2]).not.toHaveProperty("type.literal.text");
         });
 
+        describe("literals and inline allOf (#41)", () => {
+            const print = async (schema: Record<string, unknown>): Promise<string> =>
+                cg.printer.printNodes(await parseSchema({ ...schema, title: "Root" })).trim();
+
+            test("should support negative numbers in const and enum", async () => {
+                expect(await print({ const: -1 })).toBe("export type Root = -1;");
+                expect(await print({ enum: [-1, 2, -3.5] })).toBe("export type Root = -1 | 2 | -3.5;");
+            });
+
+            test("should emit boolean literals in enum", async () => {
+                expect(await print({ enum: [true, false] })).toBe("export type Root = true | false;");
+            });
+
+            test("should emit null literals in const and enum", async () => {
+                expect(await print({ const: null })).toBe("export type Root = null;");
+                expect(await print({ enum: [1, null] })).toBe("export type Root = 1 | null;");
+            });
+
+            test("should not emit an empty extends clause for inline allOf", async () => {
+                const output = await print({
+                    allOf: [{ properties: { a: { type: "string" } } }, { properties: { b: { type: "integer" } } }],
+                });
+
+                expect(output).not.toContain("extends");
+                expect(output).toContain("export interface Root {");
+                expect(output).toContain("a?: string;");
+                expect(output).toContain("b?: number;");
+            });
+        });
+
         test("should resolve nested references from their own context", async () => {
             const schema = loadSchema("nested.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });
