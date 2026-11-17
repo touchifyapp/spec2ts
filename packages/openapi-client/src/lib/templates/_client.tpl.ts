@@ -154,7 +154,8 @@ export const QS = {
 
 /** Http request base methods. */
 export const http = {
-    async fetch(url: string, req?: FetchRequestOptions): Promise<ApiResponse<string | undefined>> {
+    /** Sends the request and returns the raw response. Throws an `HttpError` if the response is not OK. */
+    async request(url: string, req?: FetchRequestOptions): Promise<Response> {
         const { baseUrl, headers, fetch: customFetch, ...init } = { ...defaults, ...req };
         const href = _.joinUrl(baseUrl, url);
         const res = await (customFetch || fetch)(href, {
@@ -162,23 +163,40 @@ export const http = {
             headers: _.stripUndefined({ ...defaults.headers, ...headers }),
         });
 
-        let text: string | undefined;
-        try {
-            text = await res.text();
-        } catch {
-            /* ok */
-        }
-
         if (!res.ok) {
-            throw new HttpError(res.status, res.statusText, href, res.headers, text);
+            throw new HttpError(res.status, res.statusText, href, res.headers, await http.readText(res));
         }
 
-        return {
-            status: res.status,
-            statusText: res.statusText,
-            headers: http.headers(res.headers),
-            data: text,
-        };
+        return res;
+    },
+
+    async fetch(url: string, req?: FetchRequestOptions): Promise<ApiResponse<string | undefined>> {
+        const res = await http.request(url, req);
+        return http.response(res, await http.readText(res));
+    },
+
+    async fetchText(url: string, req: FetchRequestOptions = {}, accept = "text/plain"): Promise<ApiResponse<string>> {
+        const res = await http.request(url, {
+            ...req,
+            headers: {
+                ...req.headers,
+                Accept: accept,
+            },
+        });
+
+        return http.response(res, await res.text());
+    },
+
+    async fetchBlob(url: string, req: FetchRequestOptions = {}, accept = "*/*"): Promise<ApiResponse<Blob>> {
+        const res = await http.request(url, {
+            ...req,
+            headers: {
+                ...req.headers,
+                Accept: accept,
+            },
+        });
+
+        return http.response(res, await res.blob());
     },
 
     async fetchJson(url: string, req: FetchRequestOptions = {}): Promise<ApiResponse<any>> {
@@ -237,6 +255,23 @@ export const http = {
             ...req,
             body: data,
         };
+    },
+
+    response<T>(res: Response, data: T): ApiResponse<T> {
+        return {
+            status: res.status,
+            statusText: res.statusText,
+            headers: http.headers(res.headers),
+            data,
+        };
+    },
+
+    async readText(res: Response): Promise<string | undefined> {
+        try {
+            return await res.text();
+        } catch {
+            return undefined;
+        }
     },
 
     headers(headers: Headers): Record<string, string> {

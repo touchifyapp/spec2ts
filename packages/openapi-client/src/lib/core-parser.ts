@@ -13,7 +13,7 @@ import type { OApiGeneratorOptions } from "./openapi-generator";
 
 import * as core from "@spec2ts/core";
 import { type ParserContext, JSONSchema, JSONReference, getTypeFromSchema, resolveReference, isReference } from "@spec2ts/jsonschema";
-import { getOperationName, getResponseName } from "@spec2ts/openapi";
+import { type ResponseMode, getOperationName, getResponseName, getResponseContent, getResponseType } from "@spec2ts/openapi";
 import ts from "typescript";
 
 import { camelCase } from "./util";
@@ -44,7 +44,13 @@ export interface ParsedOperation {
     query: ParameterObject[];
     header: ParameterObject[];
     response: ts.TypeNode;
+    /** How the response body is read: `json`, `text`, `blob` or `void` (`undefined` if responses are not specified). */
+    responseMode?: ResponseMode | "void";
+    /** The media type of the response, sent as `Accept` header for `text` and `blob` responses. */
+    responseMediaType?: string;
+    /** @deprecated use `responseMode === "json"` */
     responseJSON?: boolean;
+    /** @deprecated use `responseMode === "void"` */
     responseVoid?: boolean;
     bodyMode?: ContentTypeMode;
     bodyVar?: string;
@@ -97,8 +103,12 @@ function parseResponses(
     const operationName = getOperationName(method, path, operation.operationId, context);
     if (operation.responses) {
         result.response = getTypeFromResponses(operationName, operation.responses, context);
-        result.responseJSON = isJSONResponse(operation.responses, context);
-        result.responseVoid = result.response === core.keywordType.void;
+
+        const content = getOKResponseContent(operation.responses, context);
+        result.responseMode = content?.mode ?? (result.response === core.keywordType.void ? "void" : undefined);
+        result.responseMediaType = content?.mediaType;
+        result.responseJSON = result.responseMode === "json";
+        result.responseVoid = result.responseMode === "void";
     } else {
         result.response = core.keywordType.unknown;
         result.responseJSON = false;
@@ -223,16 +233,16 @@ function getTypeFromResponses(operationName: string, res: ResponsesObject, conte
     return ts.factory.createUnionTypeNode(types);
 }
 
-function isJSONResponse(responses: ResponsesObject, context: OApiGeneratorContext): boolean {
+function getOKResponseContent(responses: ResponsesObject, context: OApiGeneratorContext): ReturnType<typeof getResponseContent> {
     const codes = Object.keys(responses);
     const resCode = codes.find((code) => isOKResponse(code, codes.length));
 
     if (!resCode) {
-        return false;
+        return;
     }
 
     const response = resolveReference<ResponseObject>(responses[resCode], context);
-    return !!response?.content?.["application/json"] || !!response?.content?.["*/*"];
+    return getResponseContent(response?.content);
 }
 
 function isOKResponse(code: string, codesCount: number): boolean {
@@ -258,7 +268,7 @@ function getTypeFromResponse(res: ResponseObject | ReferenceObject, context: OAp
         return core.keywordType.void;
     }
 
-    return getTypeFromSchema(getSchemaFromContent(res.content)[0], context);
+    return getResponseType(res.content, context) ?? core.keywordType.string;
 }
 
 function getSchemaFromContent(content: ContentObject): [JSONSchema, ContentTypeMode | undefined] {

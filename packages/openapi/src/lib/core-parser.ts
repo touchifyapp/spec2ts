@@ -76,7 +76,7 @@ export function parseOperation(
         Object.entries(responses).forEach(([status, responseObj]) => {
             const response = resolveReference<ResponseObject>(responseObj, context);
 
-            const decla = getContentDeclaration(getResponseName(name, status, context), response.content, context);
+            const decla = getResponseDeclaration(getResponseName(name, status, context), response.content, context);
             if (decla) {
                 addToOpenApiResult(result, "responses", decla);
             }
@@ -160,6 +160,76 @@ export function parseReference(ref: ParsedReference, context: ParserContext): vo
 //#endregion
 
 //#region Utils
+
+/**
+ * How a response body should be read and typed:
+ * - `json`: `application/json`, `*\/*+json` and `*\/*` — typed from the schema.
+ * - `text`: `text/*`, `application/xml` and `*\/*+xml` — typed as `string`.
+ * - `blob`: any other media type (binary, office documents, images...) — typed as `Blob`.
+ */
+export type ResponseMode = "json" | "text" | "blob";
+
+export interface ResponseContent {
+    mediaType: string;
+    mode: ResponseMode;
+    schema?: SchemaObject | ReferenceObject;
+}
+
+export function getResponseMode(mediaType: string): ResponseMode {
+    const type = mediaType.split(";")[0].trim().toLowerCase();
+
+    if (type === "*/*" || type === "application/json" || type.endsWith("+json")) return "json";
+    if (type.startsWith("text/") || type === "application/xml" || type.endsWith("+xml")) return "text";
+    return "blob";
+}
+
+/**
+ * Selects the media type used to type a response.
+ * JSON media types take precedence (`application/json` first), then the first declared media type.
+ */
+export function getResponseContent(content: ContentObject | undefined): ResponseContent | undefined {
+    const mediaTypes = Object.keys(content ?? {});
+    if (!content || !mediaTypes.length) return;
+
+    const mediaType =
+        mediaTypes.find((t) => t === "application/json") ?? mediaTypes.find((t) => getResponseMode(t) === "json") ?? mediaTypes[0];
+
+    return {
+        mediaType,
+        mode: getResponseMode(mediaType),
+        schema: content[mediaType]?.schema,
+    };
+}
+
+/** Gets the type of a response content. Returns `undefined` for a JSON response without schema. */
+export function getResponseType(content: ContentObject | undefined, context: ParserContext): ts.TypeNode | undefined {
+    const res = getResponseContent(content);
+    if (!res) return;
+
+    switch (res.mode) {
+        case "text":
+            return core.keywordType.string;
+        case "blob":
+            return ts.factory.createTypeReferenceNode("Blob", undefined);
+        default:
+            return res.schema ? getTypeFromSchema(res.schema as JSONSchema, context) : undefined;
+    }
+}
+
+export function getResponseDeclaration(
+    name: string,
+    content: ContentObject | undefined,
+    context: OApiParserContext,
+): ts.Statement | undefined {
+    const type = getResponseType(content, context);
+    if (!type) return;
+
+    return core.createTypeOrInterfaceDeclaration({
+        modifiers: [core.modifier.export],
+        name,
+        type,
+    });
+}
 
 export function getContentDeclaration(
     name: string,
