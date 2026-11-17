@@ -30,14 +30,19 @@
     "@types/yargs": "^17.0.35",
     "husky": "^9.1.7",
     "lerna": "^10.0.1",
-    "oxfmt": "^0.58.0",
+    "oxfmt": "^0.79.0",
     "oxlint": "^1.73.0",
-    "oxlint-tsgolint": "0.24.0",
+    "oxlint-tsgolint": "^7.0.2007",
     "tsdown": "^0.22.4",
     "typescript": "^6.0.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.12"
   },
   "allowScripts": {
-    "nx@23.2.0": true
+    "nx@23.3.2": true
+  },
+  "overrides": {
+    "nx": {
+      "undici": "^7.30.1"
+    }
   }
 }
