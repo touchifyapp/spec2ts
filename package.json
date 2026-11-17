@@ -21,6 +21,7 @@
     "lint": "lerna run lint",
     "format": "lerna run format",
     "clean": "lerna run clean",
+    "release": "lerna version",
     "prepare": "husky"
   },
   "devDependencies": {
