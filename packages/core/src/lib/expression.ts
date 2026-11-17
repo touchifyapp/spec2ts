@@ -23,9 +23,37 @@ export function toLiteral(ex: ts.Expression | string | number | bigint | undefin
     if (ex === "true") return ts.factory.createTrue();
     if (ex === "false") return ts.factory.createFalse();
     if (typeof ex === "string") return ts.factory.createStringLiteral(ex);
-    if (typeof ex === "number") return ts.factory.createNumericLiteral(ex);
+    if (typeof ex === "number") return createNumericLiteral(ex);
     if (typeof ex === "bigint") return ts.factory.createBigIntLiteral(ex.toString());
     return ex;
+}
+
+/**
+ * Creates a numeric literal that supports negative numbers.
+ * TypeScript requires negative numbers to be expressed as a prefix unary expression (`-1`).
+ */
+export function createNumericLiteral(value: number): ts.NumericLiteral | ts.PrefixUnaryExpression {
+    if (value < 0) {
+        return ts.factory.createPrefixUnaryExpression(ts.SyntaxKind.MinusToken, ts.factory.createNumericLiteral(-value));
+    }
+
+    return ts.factory.createNumericLiteral(value);
+}
+
+/** Creates a literal type node from a JSON primitive value (string, number, boolean or null). */
+export function createLiteralType(value: string | number | boolean | null): ts.LiteralTypeNode {
+    if (value === null) return ts.factory.createLiteralTypeNode(ts.factory.createNull());
+
+    switch (typeof value) {
+        case "string":
+            return ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(value));
+        case "number":
+            return ts.factory.createLiteralTypeNode(createNumericLiteral(value));
+        case "boolean":
+            return ts.factory.createLiteralTypeNode(value ? ts.factory.createTrue() : ts.factory.createFalse());
+        default:
+            throw new Error(`Unsupported literal value: ${JSON.stringify(value)}`);
+    }
 }
 
 export function toPropertyName(ex: ts.PropertyName | string): ts.PropertyName;

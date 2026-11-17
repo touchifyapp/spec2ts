@@ -275,12 +275,14 @@ export function createTypeOrInterfaceDeclaration({
                 modifiers,
                 name,
                 members,
-                heritageClauses: [
-                    ts.factory.createHeritageClause(
-                        ts.SyntaxKind.ExtendsKeyword,
-                        extend.map((t) => ts.factory.createExpressionWithTypeArguments(t, undefined)),
-                    ),
-                ],
+                heritageClauses: extend.length
+                    ? [
+                          ts.factory.createHeritageClause(
+                              ts.SyntaxKind.ExtendsKeyword,
+                              extend.map((t) => ts.factory.createExpressionWithTypeArguments(t, undefined)),
+                          ),
+                      ]
+                    : undefined,
             });
         }
     }
