@@ -1,4 +1,8 @@
 import * as core from "@spec2ts/core";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 import ts from "typescript";
 import { describe, test, expect } from "vitest";
 
@@ -161,6 +165,83 @@ describe("openapi-parser", () => {
             expect(func).toHaveProperty(["type", "typeArguments", 0, "typeName", "escapedText"], "ApiResponse");
             expect(func).toHaveProperty(["type", "typeArguments", 0, "typeArguments", 0, "kind"], ts.SyntaxKind.TypeReference);
             expect(func).toHaveProperty(["type", "typeArguments", 0, "typeArguments", 0, "typeName", "escapedText"], "Pets");
+        });
+
+        describe("with non-JSON responses", () => {
+            const printFunction = async (name: string): Promise<string> => {
+                const file = await generateClient(loadSpec("content-types.yml"));
+                const func = core.findNode<ts.FunctionDeclaration>(
+                    file.statements,
+                    ts.SyntaxKind.FunctionDeclaration,
+                    (node) => node.name?.text === name,
+                );
+                return core.printer.printNode(func!);
+            };
+
+            test("should read JSON media types as JSON", async () => {
+                expect(await printFunction("getJson")).toContain("Promise<ApiResponse<GetJsonResponse>>");
+                expect(await printFunction("getJson")).toContain('http.fetchJson("/json", {');
+                expect(await printFunction("getProblem")).toContain('http.fetchJson("/problem", {');
+            });
+
+            test("should read text media types as string", async () => {
+                const csv = await printFunction("getCsv");
+                expect(csv).toContain("Promise<ApiResponse<string>>");
+                expect(csv).toContain('http.fetchText("/csv", {');
+                expect(csv).toContain('}, "text/csv");');
+
+                const xml = await printFunction("getXml");
+                expect(xml).toContain("Promise<ApiResponse<string>>");
+                expect(xml).toContain('http.fetchText("/xml", {');
+                expect(xml).toContain('}, "application/xml");');
+            });
+
+            test("should read other media types as Blob", async () => {
+                const excel = await printFunction("getExcel");
+                expect(excel).toContain("Promise<ApiResponse<Blob>>");
+                expect(excel).toContain('http.fetchBlob("/excel", {');
+                expect(excel).toContain('}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");');
+
+                const binary = await printFunction("getBinary");
+                expect(binary).toContain("Promise<ApiResponse<Blob>>");
+                expect(binary).toContain('http.fetchBlob("/binary", {');
+                expect(binary).toContain('}, "application/octet-stream");');
+            });
+
+            test("should prefer JSON when several media types are available", async () => {
+                const negotiated = await printFunction("getNegotiated");
+                expect(negotiated).toContain("Promise<ApiResponse<GetNegotiatedResponse>>");
+                expect(negotiated).toContain('http.fetchJson("/negotiated", {');
+            });
+
+            test("should read response bodies at runtime without corrupting binary data", async () => {
+                const file = await generateClient(loadSpec("content-types.yml"));
+                const { outputText } = ts.transpileModule(core.printer.printFile(file), {
+                    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+                });
+
+                const dir = mkdtempSync(path.join(tmpdir(), "spec2ts-"));
+                const modulePath = path.join(dir, "client.mjs");
+                writeFileSync(modulePath, outputText);
+                const client = await import(pathToFileURL(modulePath).href);
+
+                const bytes = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 0xff, 0xfe, 0x00, 0x80]);
+                const accepts: string[] = [];
+                const fetch = async (_url: string, init: RequestInit): Promise<Response> => {
+                    const accept = (init.headers as Record<string, string>).Accept;
+                    accepts.push(accept);
+                    return new Response(accept === "text/csv" ? "a;b\n1;2" : bytes, { status: 200 });
+                };
+
+                const csv = await client.getCsv({ fetch });
+                expect(csv.data).toBe("a;b\n1;2");
+
+                const excel = await client.getExcel({ fetch });
+                expect(excel.data).toBeInstanceOf(Blob);
+                expect(new Uint8Array(await excel.data.arrayBuffer())).toEqual(bytes);
+
+                expect(accepts).toEqual(["text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]);
+            });
         });
 
         test("should generate a body parameter", async () => {

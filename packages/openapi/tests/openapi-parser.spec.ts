@@ -1,3 +1,4 @@
+import { printer } from "@spec2ts/core";
 import { describe, test, expect } from "vitest";
 
 import { parseOpenApi } from "../src/lib/openapi-parser";
@@ -80,6 +81,21 @@ describe("openapi-parser", () => {
 
             expect(all).toContain(responses[0]);
             expect(responses[0]).toHaveProperty("name.text", "FindPetsResponse");
+        });
+
+        test("should type responses according to their media type", async () => {
+            const schema = loadSpec("content-types.yml");
+            const { responses } = await parseOpenApi(schema);
+
+            const output = printer.printNodes(responses);
+
+            expect(output).toContain("export interface GetJsonResponse {\n    id?: number;\n}");
+            expect(output).toContain("export interface GetProblemResponse {\n    title?: string;\n}");
+            expect(output).toContain("export type GetCsvResponse = string;");
+            expect(output).toContain("export type GetXmlResponse = string;");
+            expect(output).toContain("export type GetExcelResponse = Blob;");
+            expect(output).toContain("export type GetBinaryResponse = Blob;");
+            expect(output).toContain("export type GetNegotiatedResponse = string[];");
         });
 
         test("should export a type for schemas in definitions", async () => {

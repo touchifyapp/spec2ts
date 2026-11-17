@@ -4,7 +4,7 @@ import * as core from "@spec2ts/core";
 import { type ParserContext, resolveReference } from "@spec2ts/jsonschema";
 import ts from "typescript";
 
-import { Method, OApiGeneratorContext, isMethod, parseOperation } from "./core-parser";
+import { type ParsedOperation, Method, OApiGeneratorContext, isMethod, parseOperation } from "./core-parser";
 import { parseServers, defaultBaseUrl } from "./server-parser";
 import { camelCase } from "./util";
 
@@ -112,7 +112,7 @@ function generateFunction(
     operation: OperationObject,
     context: ParserContext,
 ): ts.FunctionDeclaration {
-    const { name, query, header, paramsVars, args, bodyMode, bodyVar, response, responseVoid, responseJSON } = parseOperation(
+    const { name, query, header, paramsVars, args, bodyMode, bodyVar, response, responseMode, responseMediaType } = parseOperation(
         path,
         item,
         method,
@@ -161,6 +161,13 @@ function generateFunction(
         fetchArgs.push(bodyMode ? callFunction("http", bodyMode, [initObj]) : initObj);
     }
 
+    const fetchFunction = getFetchFunction(responseMode);
+    if ((fetchFunction === "fetchText" || fetchFunction === "fetchBlob") && responseMediaType) {
+        // pass the media type to set the Accept header
+        if (fetchArgs.length === 1) fetchArgs.push(ts.factory.createObjectLiteralExpression());
+        fetchArgs.push(ts.factory.createStringLiteral(responseMediaType));
+    }
+
     return core.addComment(
         core.createFunctionDeclaration(
             name,
@@ -169,13 +176,7 @@ function generateFunction(
                 type: ts.factory.createTypeReferenceNode("Promise", [ts.factory.createTypeReferenceNode("ApiResponse", [response])]),
             },
             args,
-            core.block(
-                ts.factory.createReturnStatement(
-                    ts.factory.createAwaitExpression(
-                        callFunction("http", responseJSON ? "fetchJson" : responseVoid ? "fetchVoid" : "fetch", fetchArgs),
-                    ),
-                ),
-            ),
+            core.block(ts.factory.createReturnStatement(ts.factory.createAwaitExpression(callFunction("http", fetchFunction, fetchArgs)))),
         ),
         operation.summary || operation.description,
     );
@@ -217,6 +218,21 @@ function generateUrl(path: string, qs?: ts.CallExpression): ts.Expression {
 //#endregion
 
 //#region Utils
+
+function getFetchFunction(responseMode: ParsedOperation["responseMode"]): string {
+    switch (responseMode) {
+        case "json":
+            return "fetchJson";
+        case "text":
+            return "fetchText";
+        case "blob":
+            return "fetchBlob";
+        case "void":
+            return "fetchVoid";
+        default:
+            return "fetch";
+    }
+}
 
 function callFunction(ns: string, name: string, args: ts.Expression[]): ts.CallExpression {
     return core.createCall(ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier(ns), name), { args });

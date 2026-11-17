@@ -1,0 +1,83 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Content types
+paths:
+  /json:
+    get:
+      operationId: getJson
+      responses:
+        "200":
+          description: JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+  /problem:
+    get:
+      operationId: getProblem
+      responses:
+        "200":
+          description: JSON variant
+          content:
+            application/problem+json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+  /csv:
+    get:
+      operationId: getCsv
+      responses:
+        "200":
+          description: CSV
+          content:
+            text/csv:
+              schema:
+                type: string
+  /xml:
+    get:
+      operationId: getXml
+      responses:
+        "200":
+          description: XML
+          content:
+            application/xml: {}
+  /excel:
+    get:
+      operationId: getExcel
+      responses:
+        "200":
+          description: Excel
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+  /binary:
+    get:
+      operationId: getBinary
+      responses:
+        "200":
+          description: Binary
+          content:
+            application/octet-stream: {}
+  /negotiated:
+    get:
+      operationId: getNegotiated
+      responses:
+        "200":
+          description: CSV or JSON
+          content:
+            text/csv:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
