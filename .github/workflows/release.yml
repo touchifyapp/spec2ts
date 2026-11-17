@@ -25,12 +25,13 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
+          package-manager-cache: false
 
       - name: List unpublished versions
         id: check
@@ -58,12 +59,13 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
+          package-manager-cache: false
 
       - name: Install Dependencies
         run: npm ci
@@ -72,7 +74,7 @@ jobs:
         run: npm run build
 
       - name: Publish packages
-        run: npx lerna publish from-package --yes
+        run: npx lerna publish from-package --yes --summary-file lerna-publish-summary.json
 
       - name: Tag published versions
         if: ${{ !cancelled() }}
@@ -80,6 +82,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch --tags --quiet
+
+          # Versions published by this run, from lerna's summary (only written when every package was published).
+          # The registry is not queried for them: it can take several minutes to list a freshly published version.
+          published=""
+          if [ -f lerna-publish-summary.json ]; then
+            published=$(node -p "require('./lerna-publish-summary.json').map((p) => p.packageName + '@' + p.version).join(' ')")
+          fi
 
           for manifest in packages/*/package.json; do
             name=$(node -p "require('./$manifest').name")
@@ -90,14 +99,13 @@ jobs:
               continue
             fi
 
-            # retry a few times: a freshly published version can take a few seconds to appear on the registry
-            for attempt in 1 2 3 4 5; do
-              if [ -n "$(npm view "$tag" version 2>/dev/null)" ]; then
-                git tag -a "$tag" -m "$tag"
-                git push origin "refs/tags/$tag"
-                echo "::notice::Tagged $tag"
-                break
-              fi
-              sleep 5
-            done
+            # Not in the summary: the version may have been published by a previous run that failed partway.
+            if [[ " $published " != *" $tag "* ]] && [ -z "$(npm view "$tag" version 2>/dev/null)" ]; then
+              echo "::warning::$tag is not published, skipping tag"
+              continue
+            fi
+
+            git tag -a "$tag" -m "$tag"
+            git push origin "refs/tags/$tag"
+            echo "::notice::Tagged $tag"
           done
