@@ -112,5 +112,49 @@ Any new feature must be accompanied by:
 - a documentation of the usage 
 - valid tests covering the feature 
 
+## Release
+
+> Maintainers only.
+
+Packages are versioned independently from [Conventional Commits](https://www.conventionalcommits.org/) (`fix:` bumps the patch version, `feat:` the minor version, and a breaking change the major version).
+Releasing has two steps: bump the versions locally through a pull request, then let the CI publish to npm.
+
+### 1. Bump versions
+
+`master` only accepts changes through pull requests, so versions are bumped on a `@release/*` branch:
+
+```sh
+git checkout master && git pull
+git checkout -b @release/$(date +%Y-%m-%d)
+npm run release
+```
+
+`npm run release` runs `lerna version`, which:
+- computes the next version of each changed package from the commits since its last tag;
+- updates the `package.json` files, including the ranges of internal `@spec2ts/*` dependencies, and `package-lock.json`;
+- updates the `CHANGELOG.md` files.
+
+It does not commit, tag or push. Review the changes, then commit them and open a pull request:
+
+```sh
+git commit -am "chore(release): publish packages"
+git push -u origin HEAD
+gh pr create --fill
+```
+
+Do not tag the release branch: pull requests are squashed or rebased, so tags would not point to commits on `master`.
+
+### 2. Publish
+
+When the release pull request is merged, the [Release workflow](.github/workflows/release.yml) runs on `master`:
+1. It lists the packages whose version in `package.json` is not yet published on npm. If there are none, it stops there.
+2. It waits for approval on the `npm` environment.
+3. It runs `lerna publish from-package`, using [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC). No npm token or OTP is needed, and packages are published with provenance.
+4. It tags each published version (`@spec2ts/<package>@<version>`) on the `master` commit.
+
+If publishing fails partway, re-run the workflow (or run it manually with *Run workflow*): it only publishes and tags the versions that are still missing.
+
+Each package must have a trusted publisher configured on npmjs.com (repository `touchifyapp/spec2ts`, workflow `release.yml`, environment `npm`). A new package must be published manually once before its trusted publisher can be configured.
+
 ## License 
 By contributing to spec2ts, you agree that your contributions will be licensed under its MIT license. 

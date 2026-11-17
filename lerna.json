@@ -2,14 +2,18 @@
   "version": "independent",
   "command": {
     "version": {
-      "allowBranch": ["master", "@release/*"],
+      "allowBranch": ["@release/*"],
       "conventionalCommits": true,
-      "message": "chore(release): publish packages",
+      "gitTagVersion": false,
+      "push": false,
       "ignoreChanges": [
         "**/*.md",
         "**/LICENSE",
         "**/tests/**"
       ]
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org/"
     },
     "bootstrap": {
       "hoist": "**"
