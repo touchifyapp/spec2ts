@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fopenapi-client%404.1.1...%40spec2ts%2Fopenapi-client%404.2.0) (2026-11-17)
+
+### Bug Fixes
+
+* support negative/boolean/null literals and inline allOf ([#42](https://github.com/touchifyapp/spec2ts/issues/42)) ([21b9df6](https://github.com/touchifyapp/spec2ts/commit/21b9df66db51ee5fd5b2849fcbb502a6fc6a416d)), closes [#41](https://github.com/touchifyapp/spec2ts/issues/41)
+
+### Features
+
+* support non-JSON response media types ([#44](https://github.com/touchifyapp/spec2ts/issues/44)) ([cc2c61b](https://github.com/touchifyapp/spec2ts/commit/cc2c61baa098ff23a0c14fd0a88071f22127d05f))
+
+
 ## [4.1.1](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fopenapi-client%404.1.0...%40spec2ts%2Fopenapi-client%404.1.1) (2026-09-07)
 
 **Note:** Version bump only for package @spec2ts/openapi-client
