@@ -198,14 +198,35 @@ describe("openapi-parser", () => {
 
             test("should read other media types as Blob", async () => {
                 const excel = await printFunction("getExcel");
-                expect(excel).toContain("Promise<ApiResponse<Blob>>");
+                expect(excel).toContain("Promise<ApiResponse<globalThis.Blob>>");
                 expect(excel).toContain('http.fetchBlob("/excel", {');
                 expect(excel).toContain('}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");');
 
                 const binary = await printFunction("getBinary");
-                expect(binary).toContain("Promise<ApiResponse<Blob>>");
+                expect(binary).toContain("Promise<ApiResponse<globalThis.Blob>>");
                 expect(binary).toContain('http.fetchBlob("/binary", {');
                 expect(binary).toContain('}, "application/octet-stream");');
+            });
+
+            test("should not let a `Blob` schema shadow the DOM Blob type", async () => {
+                const file = await generateClient(loadSpec("content-types.yml"));
+                const source = core.printer.printFile(file);
+                expect(source).toContain("export interface Blob {");
+
+                const dir = mkdtempSync(path.join(tmpdir(), "spec2ts-"));
+                const filePath = path.join(dir, "client.ts");
+                writeFileSync(filePath, source);
+
+                const program = ts.createProgram([filePath], {
+                    noEmit: true,
+                    strict: true,
+                    target: ts.ScriptTarget.ES2022,
+                    module: ts.ModuleKind.ESNext,
+                    lib: ["lib.es2022.d.ts", "lib.dom.d.ts"],
+                    types: [],
+                });
+                const diagnostics = ts.getPreEmitDiagnostics(program).map((d) => ts.flattenDiagnosticMessageText(d.messageText, "\n"));
+                expect(diagnostics).toEqual([]);
             });
 
             test("should prefer JSON when several media types are available", async () => {

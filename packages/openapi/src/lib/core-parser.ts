@@ -210,7 +210,11 @@ export function getResponseType(content: ContentObject | undefined, context: Par
         case "text":
             return core.keywordType.string;
         case "blob":
-            return ts.factory.createTypeReferenceNode("Blob", undefined);
+            // Qualify with `globalThis` so a `Blob` schema declared in the spec does not shadow the DOM type.
+            return ts.factory.createTypeReferenceNode(
+                ts.factory.createQualifiedName(ts.factory.createIdentifier("globalThis"), "Blob"),
+                undefined,
+            );
         default:
             return res.schema ? getTypeFromSchema(res.schema as JSONSchema, context) : undefined;
     }
