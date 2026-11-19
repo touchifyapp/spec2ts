@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.1](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fopenapi%404.2.0...%40spec2ts%2Fopenapi%404.2.1) (2026-11-19)
+
+### Bug Fixes
+
+* qualify Blob types with globalThis ([#49](https://github.com/touchifyapp/spec2ts/issues/49)) ([e9a296f](https://github.com/touchifyapp/spec2ts/commit/e9a296f0b7442f4c1b27494e5298fa33e528121f))
+
+
 # [4.2.0](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fopenapi%404.1.1...%40spec2ts%2Fopenapi%404.2.0) (2026-11-17)
 
 ### Features
