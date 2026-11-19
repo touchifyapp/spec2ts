@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.3](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fjsonschema%404.1.2...%40spec2ts%2Fjsonschema%404.1.3) (2026-11-19)
+
+### Bug Fixes
+
+* qualify Blob types with globalThis ([#49](https://github.com/touchifyapp/spec2ts/issues/49)) ([e9a296f](https://github.com/touchifyapp/spec2ts/commit/e9a296f0b7442f4c1b27494e5298fa33e528121f))
+
+
 ## [4.1.2](https://github.com/touchifyapp/spec2ts/compare/%40spec2ts%2Fjsonschema%404.1.1...%40spec2ts%2Fjsonschema%404.1.2) (2026-11-17)
 
 ### Bug Fixes
