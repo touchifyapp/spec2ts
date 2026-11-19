@@ -81,3 +81,20 @@ paths:
                 type: array
                 items:
                   type: string
+  /blob-entity:
+    get:
+      operationId: getBlobEntity
+      responses:
+        "200":
+          description: A JSON schema named like the DOM Blob type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Blob"
+components:
+  schemas:
+    Blob:
+      type: object
+      properties:
+        name:
+          type: string

@@ -136,7 +136,11 @@ export function getBaseTypeFromSchema(schema: JSONSchema | JSONReference | undef
     }
 
     if (schema.format == "binary") {
-        return ts.factory.createTypeReferenceNode("Blob", []);
+        // Qualify with `globalThis` so a `Blob` schema declared in the spec does not shadow the DOM type.
+        return ts.factory.createTypeReferenceNode(
+            ts.factory.createQualifiedName(ts.factory.createIdentifier("globalThis"), "Blob"),
+            undefined,
+        );
     }
 
     if (context.options.enableDate && (schema.format === "date" || schema.format === "date-time")) {

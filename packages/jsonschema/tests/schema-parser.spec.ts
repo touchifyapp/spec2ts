@@ -246,6 +246,14 @@ describe("schema-parser", () => {
             expect(decla).toHaveProperty(["members", 0, "type", "types", 1, "typeName", "escapedText"], "Date");
         });
 
+        test("should type binary format as globalThis.Blob", async () => {
+            const schema = loadSchema("formats.schema.json");
+            const res = await parseSchema(schema, { cwd: getAssetsPath() });
+
+            const output = cg.printer.printNodes(res);
+            expect(output).toContain("picture?: globalThis.Blob;");
+        });
+
         test("should parse const as literal type", async () => {
             const schema = loadSchema("const.schema.json");
             const res = await parseSchema(schema, { cwd: getAssetsPath() });

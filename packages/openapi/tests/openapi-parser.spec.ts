@@ -93,8 +93,8 @@ describe("openapi-parser", () => {
             expect(output).toContain("export interface GetProblemResponse {\n    title?: string;\n}");
             expect(output).toContain("export type GetCsvResponse = string;");
             expect(output).toContain("export type GetXmlResponse = string;");
-            expect(output).toContain("export type GetExcelResponse = Blob;");
-            expect(output).toContain("export type GetBinaryResponse = Blob;");
+            expect(output).toContain("export type GetExcelResponse = globalThis.Blob;");
+            expect(output).toContain("export type GetBinaryResponse = globalThis.Blob;");
             expect(output).toContain("export type GetNegotiatedResponse = string[];");
         });
 

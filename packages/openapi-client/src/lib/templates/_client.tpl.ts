@@ -187,7 +187,7 @@ export const http = {
         return http.response(res, await res.text());
     },
 
-    async fetchBlob(url: string, req: FetchRequestOptions = {}, accept = "*/*"): Promise<ApiResponse<Blob>> {
+    async fetchBlob(url: string, req: FetchRequestOptions = {}, accept = "*/*"): Promise<ApiResponse<globalThis.Blob>> {
         const res = await http.request(url, {
             ...req,
             headers: {
